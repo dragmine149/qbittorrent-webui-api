@@ -1,14 +1,28 @@
 use core::str;
-use std::{str::FromStr};
+use std::str::FromStr;
 
 use reqwest::{Client as ReqwestClient, Url};
 use tokio::sync::RwLock;
 
-use crate::error::Error;
+use crate::{error::Error, models::Torrent};
 
+#[derive(Debug)]
 pub struct Creddentials {
     username: String,
     password: String,
+}
+
+impl Creddentials {
+    pub fn new<T: ToString>(username: T, password: T) -> Self {
+        Self {
+            username: username.to_string(),
+            password: password.to_string(),
+        }
+    }
+
+    pub fn quary_string(&self) -> String {
+        return format!("username={}&password={}", self.username, self.password);
+    }
 }
 
 pub struct Client {
@@ -37,18 +51,14 @@ impl Client {
 
     pub async fn login(&self, cred: Creddentials) -> Result<(), Error> {
         let url = self.build_url("/api/v2/auth/login").await?;
-
         let res = self
             .http_client
             .post(url)
-            .body(format!(
-                "username={}&password={}",
-                cred.username, cred.password
-            ))
+            .body(cred.quary_string())
+            .header("Content-Type", "application/x-www-form-urlencoded")
             .header("refer", self.base_url.read().await.to_string())
             .send()
             .await?;
-
         if res.status().is_success() {
             Ok(())
         } else {
@@ -62,5 +72,19 @@ impl Client {
         self.http_client.post(url).send().await?;
 
         Ok(())
+    }
+
+    // ########################
+    // Torrents
+    // ########################
+
+    pub async fn get_torrents(&self) -> Result<Vec<Torrent>, Error> {
+        let url = self.build_url("api/v2/torrents/info").await?;
+
+        let response = self.http_client.get(url).send().await?;
+
+        let torrents = response.json::<Vec<Torrent>>().await?;
+
+        Ok(torrents)
     }
 }
