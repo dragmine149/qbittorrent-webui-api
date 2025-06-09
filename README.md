@@ -35,7 +35,7 @@
  - [x] Get torrent list
  - [x] Get torrent generic properties
  - [x] Get torrent trackers
- - [ ] Get torrent web seeds
+ - [x] Get torrent web seeds
  - [ ] Get torrent contents
  - [ ] Get torrent pieces' states
  - [ ] Get torrent pieces' hashes

@@ -1,12 +1,12 @@
 use core::str;
-use std::{hash, str::FromStr};
+use std::str::FromStr;
 
 use reqwest::{Client as ReqwestClient, Url};
 use tokio::sync::RwLock;
 
 use crate::{
     error::Error,
-    models::{TorrentInfo, TorrentProperties, TorrentTracker},
+    models::{TorrentInfo, TorrentProperties, TorrentTracker, TorrentWebSeed},
     parames::TorrentListParams,
 };
 
@@ -152,5 +152,20 @@ impl Client {
             .await?;
 
         Ok(trackers)
+    }
+
+    pub async fn torrent_webseeds(&self, hash: &str) -> Result<Vec<TorrentWebSeed>, Error> {
+        let mut url = self.build_url("api/v2/torrents/webseeds").await?;
+        url.set_query(Some(&format!("hash={}", hash)));
+
+        let webseeds = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<TorrentWebSeed>>()
+            .await?;
+
+        Ok(webseeds)
     }
 }

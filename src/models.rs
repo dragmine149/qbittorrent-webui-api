@@ -99,3 +99,8 @@ pub struct TorrentTracker {
     pub num_downloaded: isize,
     pub msg: String,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TorrentWebSeed {
+    pub url: String,
+}
