@@ -4,7 +4,7 @@ use std::str::FromStr;
 use reqwest::{Client as ReqwestClient, Url};
 use tokio::sync::RwLock;
 
-use crate::{error::Error, models::Torrent};
+use crate::{error::Error, models::Torrent, parames::TorrentListParams};
 
 #[derive(Debug)]
 pub struct Creddentials {
@@ -78,8 +78,33 @@ impl Client {
     // Torrents
     // ########################
 
-    pub async fn get_torrents(&self) -> Result<Vec<Torrent>, Error> {
-        let url = self.build_url("api/v2/torrents/info").await?;
+    pub async fn torrent_list(&self, parames: TorrentListParams) -> Result<Vec<Torrent>, Error> {
+        let mut url = self.build_url("api/v2/torrents/info").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("reverse", &parames.reverse.to_string());
+        if let Some(filter) = parames.filter {
+            query.append_pair("filter", &filter.to_string());
+        }
+        if let Some(category) = parames.category {
+            query.append_pair("category", &category);
+        }
+        if let Some(tag) = parames.tag {
+            query.append_pair("tag", &tag);
+        }
+        if let Some(sort) = parames.sort {
+            query.append_pair("sort", &sort.to_string());
+        }
+        if let Some(limit) = parames.limit {
+            query.append_pair("limit", &limit.to_string());
+        }
+        if let Some(offset) = parames.offset {
+            query.append_pair("offset", &offset.to_string());
+        }
+        if let Some(hashes) = parames.hashes {
+            query.append_pair("hashes", &hashes.join("|"));
+        }
+        drop(query);
 
         let response = self.http_client.get(url).send().await?;
 
