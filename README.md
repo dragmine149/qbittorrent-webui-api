@@ -1,12 +1,16 @@
 
+# Qbittorrent WebUI Api
+Rust API wraper for Qbittorrent WebUI
 
+Supported Qbittorrent version: `5.0`
 
+[WebUI documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0))
 
 ## Implemented
-- Authentication
+### Authentication
  - [x] Login
  - [x] Logout
-- Application
+### Application
  - [ ] Get application version
  - [ ] Get API version
  - [ ] Get build info
@@ -16,13 +20,13 @@
  - [ ] Get default save path
  - [ ] Get cookies
  - [ ] Set cookies
-- Log
+### Log
  - [ ] Get log
  - [ ] Get peer log
-- Sync
+### Sync
  - [ ] Get main data
  - [ ] Get torrent peers data
-- Transfer info
+### Transfer info
  - [ ] Get global transfer info
  - [ ] Get alternative speed limits state
  - [ ] Toggle alternative speed limits
@@ -31,7 +35,7 @@
  - [ ] Get global upload limit
  - [ ] Set global upload limit
  - [ ] Ban peers
-- Torrent management
+### Torrent management
  - [x] Get torrent list
  - [x] Get torrent generic properties
  - [x] Get torrent trackers
@@ -78,7 +82,7 @@
  - [ ] Set super seeding
  - [ ] Rename file
  - [ ] Rename folder
-- RSS (experimental)
+### RSS (experimental)
  - [ ] Add folder
  - [ ] Add feed
  - [ ] Remove item
@@ -91,7 +95,7 @@
  - [ ] Remove auto-downloading rule
  - [ ] Get all auto-downloading rules
  - [ ] Get all articles matching a rule
-- Search
+### Search
  - [ ] Start search
  - [ ] Stop search
  - [ ] Get search status
