@@ -87,3 +87,15 @@ pub struct TorrentProperties {
     pub up_speed: isize,
     pub private: bool,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TorrentTracker {
+    pub url: String,
+    pub status: isize,
+    pub tier: isize,
+    pub num_peers: isize,
+    pub num_seeds: isize,
+    pub num_leeches: isize,
+    pub num_downloaded: isize,
+    pub msg: String,
+}

@@ -6,7 +6,7 @@ use tokio::sync::RwLock;
 
 use crate::{
     error::Error,
-    models::{TorrentInfo, TorrentProperties},
+    models::{TorrentInfo, TorrentProperties, TorrentTracker},
     parames::TorrentListParams,
 };
 
@@ -137,5 +137,20 @@ impl Client {
             .await?;
 
         Ok(torrent)
+    }
+
+    pub async fn torrent_trackers(&self, hash: &str) -> Result<Vec<TorrentTracker>, Error> {
+        let mut url = self.build_url("api/v2/torrents/trackers").await?;
+        url.set_query(Some(&format!("hash={}", hash)));
+
+        let trackers = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<TorrentTracker>>()
+            .await?;
+
+        Ok(trackers)
     }
 }
