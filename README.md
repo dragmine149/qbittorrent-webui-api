@@ -39,16 +39,16 @@
  - [x] Get torrent contents
  - [x] Get torrent pieces' states
  - [x] Get torrent pieces' hashes
- - [ ] Pause torrents
- - [ ] Resume torrents
- - [ ] Delete torrents
- - [ ] Recheck torrents
- - [ ] Reannounce torrents
+ - [x] Pause torrents
+ - [x] Resume torrents
+ - [x] Delete torrents
+ - [x] Recheck torrents
+ - [x] Reannounce torrents
+ - [ ] Add new torrent
+ - [ ] Add trackers to torrent
  - [ ] Edit trackers
  - [ ] Remove trackers
  - [ ] Add peers
- - [ ] Add new torrent
- - [ ] Add trackers to torrent
  - [ ] Increase torrent priority
  - [ ] Decrease torrent priority
  - [ ] Maximal torrent priority

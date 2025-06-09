@@ -236,4 +236,53 @@ impl Client {
 
         Ok(pieces)
     }
+
+    pub async fn torrent_pause(&self, hashes: Vec<&str>) -> Result<(), Error> {
+        let mut url = self.build_url("api/v2/torrents/stop").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("hashes", &hashes.join("|"));
+        drop(query);
+
+        self.http_client.get(url).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_resume(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
+        let mut url = self.build_url("api/v2/torrents/delete").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("hashes", &hashes.join("|"));
+        query.append_pair("deleteFiles", &delete_files.to_string());
+        drop(query);
+
+        self.http_client.get(url).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_recheck(&self, hashes: Vec<&str>) -> Result<(), Error> {
+        let mut url = self.build_url("api/v2/torrents/recheck").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("hashes", &hashes.join("|"));
+        drop(query);
+
+        self.http_client.get(url).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_reannounce(&self, hashes: Vec<&str>) -> Result<(), Error> {
+        let mut url = self.build_url("api/v2/torrents/reannounce").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("hashes", &hashes.join("|"));
+        drop(query);
+
+        self.http_client.get(url).send().await?;
+
+        Ok(())
+    }
 }
