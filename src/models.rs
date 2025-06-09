@@ -1,6 +1,12 @@
-use serde::{Deserialize, Serialize};
+use std::fmt;
 
-#[derive(Debug, Serialize, Deserialize)]
+use serde::{
+    Deserialize, Deserializer, Serialize,
+    de::{self, Visitor},
+};
+use serde_repr::Deserialize_repr;
+
+#[derive(Debug, Deserialize)]
 pub struct TorrentInfo {
     pub added_on: isize,
     pub amount_left: isize,
@@ -50,7 +56,7 @@ pub struct TorrentInfo {
     pub upspeed: isize,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct TorrentProperties {
     pub save_path: String,
     pub creation_date: isize,
@@ -88,7 +94,7 @@ pub struct TorrentProperties {
     pub private: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct TorrentTracker {
     pub url: String,
     pub status: isize,
@@ -100,7 +106,28 @@ pub struct TorrentTracker {
     pub msg: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct TorrentWebSeed {
     pub url: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TorrentContent {
+    pub index: usize,
+    pub name: String,
+    pub size: usize,
+    pub progress: f32,
+    pub priority: FilePriority,
+    pub is_seed: Option<bool>,
+    pub piece_range: Vec<usize>,
+    pub availability: f32,
+}
+
+#[derive(Debug, Deserialize_repr)]
+#[repr(u8)]
+pub enum FilePriority {
+    DoNotDownload = 0,
+    Normal = 1,
+    High = 6,
+    Maximal = 7,
 }

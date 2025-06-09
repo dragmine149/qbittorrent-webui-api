@@ -6,7 +6,7 @@ use tokio::sync::RwLock;
 
 use crate::{
     error::Error,
-    models::{TorrentInfo, TorrentProperties, TorrentTracker, TorrentWebSeed},
+    models::{TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker, TorrentWebSeed},
     parames::TorrentListParams,
 };
 
@@ -164,6 +164,38 @@ impl Client {
             .send()
             .await?
             .json::<Vec<TorrentWebSeed>>()
+            .await?;
+
+        Ok(webseeds)
+    }
+
+    pub async fn torrent_contents(
+        &self,
+        hash: &str,
+        indexes: Option<Vec<usize>>,
+    ) -> Result<Vec<TorrentContent>, Error> {
+        let mut url = self.build_url("api/v2/torrents/files").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("hash", &hash);
+        if let Some(indexes) = indexes {
+            query.append_pair(
+                "filter",
+                &indexes
+                    .iter()
+                    .map(|&x| x.to_string())
+                    .collect::<Vec<String>>()
+                    .join("|"),
+            );
+        }
+        drop(query);
+
+        let webseeds = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<TorrentContent>>()
             .await?;
 
         Ok(webseeds)
