@@ -1,10 +1,14 @@
 use core::str;
-use std::str::FromStr;
+use std::{hash, str::FromStr};
 
 use reqwest::{Client as ReqwestClient, Url};
 use tokio::sync::RwLock;
 
-use crate::{error::Error, models::Torrent, parames::TorrentListParams};
+use crate::{
+    error::Error,
+    models::{TorrentInfo, TorrentProperties},
+    parames::TorrentListParams,
+};
 
 #[derive(Debug)]
 pub struct Creddentials {
@@ -78,7 +82,10 @@ impl Client {
     // Torrents
     // ########################
 
-    pub async fn torrent_list(&self, parames: TorrentListParams) -> Result<Vec<Torrent>, Error> {
+    pub async fn torrent_list(
+        &self,
+        parames: TorrentListParams,
+    ) -> Result<Vec<TorrentInfo>, Error> {
         let mut url = self.build_url("api/v2/torrents/info").await?;
 
         let mut query = url.query_pairs_mut();
@@ -106,10 +113,29 @@ impl Client {
         }
         drop(query);
 
-        let response = self.http_client.get(url).send().await?;
-
-        let torrents = response.json::<Vec<Torrent>>().await?;
+        let torrents = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<TorrentInfo>>()
+            .await?;
 
         Ok(torrents)
+    }
+
+    pub async fn torrent_properties(&self, hash: &str) -> Result<TorrentProperties, Error> {
+        let mut url = self.build_url("api/v2/torrents/properties").await?;
+        url.set_query(Some(&format!("hash={}", hash)));
+
+        let torrent = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<TorrentProperties>()
+            .await?;
+
+        Ok(torrent)
     }
 }
