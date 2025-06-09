@@ -237,7 +237,7 @@ impl Client {
         Ok(pieces)
     }
 
-    pub async fn torrent_pause(&self, hashes: Vec<&str>) -> Result<(), Error> {
+    pub async fn torrent_stop(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let mut url = self.build_url("api/v2/torrents/stop").await?;
 
         let mut query = url.query_pairs_mut();
@@ -249,7 +249,7 @@ impl Client {
         Ok(())
     }
 
-    pub async fn torrent_resume(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
+    pub async fn torrent_start(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
         let mut url = self.build_url("api/v2/torrents/delete").await?;
 
         let mut query = url.query_pairs_mut();

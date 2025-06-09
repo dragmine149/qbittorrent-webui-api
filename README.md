@@ -43,11 +43,11 @@ Supported Qbittorrent version: `5.0`
  - [x] Get torrent contents
  - [x] Get torrent pieces' states
  - [x] Get torrent pieces' hashes
- - [x] Pause torrents
- - [x] Resume torrents
- - [x] Delete torrents
+ - [x] Stop torrents
+ - [x] Start torrents
  - [x] Recheck torrents
  - [x] Reannounce torrents
+ - [ ] Delete torrents
  - [ ] Add new torrent
  - [ ] Add trackers to torrent
  - [ ] Edit trackers
