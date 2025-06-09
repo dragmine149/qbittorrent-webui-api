@@ -1,34 +1,49 @@
+use core::str;
 use std::{io::Error, str::FromStr};
 
-use reqwest::{Client, Url};
+use reqwest::{Client as ReqwestClient, Url};
 use tokio::sync::RwLock;
 
-pub struct QbitTorrentClient {
-    http_client: Client,
+pub struct Creddentials {
+    username: String,
+    password: String,
+}
+
+pub struct Client {
+    http_client: ReqwestClient,
     base_url: RwLock<Url>,
 }
 
-impl QbitTorrentClient {
+impl Client {
     pub async fn new(url: &str) -> Result<Self, Error> {
-        let http_client = Client::new();
+        let http_client = ReqwestClient::builder()
+            .cookie_store(true)
+            .build()
+            .unwrap();
 
         let base_url = Url::from_str(url).unwrap();
 
-        Ok(QbitTorrentClient {
+        Ok(Self { 
             http_client: http_client,
             base_url: RwLock::new(base_url),
         })
     }
 
-    pub async fn login(&self, username: &str, password: &str) -> Result<(), Error> {
+    async fn build_url(&self, endpoint: &str) -> Result<Url, Error> {
         let base_url = self.base_url.read().await;
-        let url = base_url.join("/api/v2/auth/login").unwrap();
+        let url = base_url.join(endpoint).unwrap(); 
+        
+        Ok(url)
+    }
+
+    pub async fn login(&self, cred: Creddentials) -> Result<(), Error> {
+        let url = self.build_url("/api/v2/auth/login").await.unwrap();
 
         let res = self
             .http_client
             .post(url)
-            .body(format!("username={}&password={}", username, password))
-            .header("refer", base_url.to_string())
+            .body(format!("username={}&password={}", cred.username, cred.password))
+            .header("refer", self.base_url.read().await.to_string())
             .send()
             .await
             .unwrap();
@@ -44,8 +59,7 @@ impl QbitTorrentClient {
     }
 
     pub async fn logout(&self) -> Result<(), Error> {
-        let base_url = self.base_url.read().await;
-        let url = base_url.join("/api/v2/logout").unwrap();
+        let url = self.build_url("/api/v2/logout").await.unwrap();
 
         self.http_client.post(url).send().await.unwrap();
 

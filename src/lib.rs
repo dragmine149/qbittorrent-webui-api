@@ -1,3 +1,3 @@
 mod client;
 
-pub use client::QbitTorrentClient;
+pub use client::Client;
