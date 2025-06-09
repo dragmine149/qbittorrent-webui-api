@@ -36,9 +36,9 @@
  - [x] Get torrent generic properties
  - [x] Get torrent trackers
  - [x] Get torrent web seeds
- - [ ] Get torrent contents
- - [ ] Get torrent pieces' states
- - [ ] Get torrent pieces' hashes
+ - [x] Get torrent contents
+ - [x] Get torrent pieces' states
+ - [x] Get torrent pieces' hashes
  - [ ] Pause torrents
  - [ ] Resume torrents
  - [ ] Delete torrents
@@ -78,7 +78,7 @@
  - [ ] Set super seeding
  - [ ] Rename file
  - [ ] Rename folder
-RSS (experimental)
+- RSS (experimental)
  - [ ] Add folder
  - [ ] Add feed
  - [ ] Remove item
@@ -91,7 +91,7 @@ RSS (experimental)
  - [ ] Remove auto-downloading rule
  - [ ] Get all auto-downloading rules
  - [ ] Get all articles matching a rule
-Search
+- Search
  - [ ] Start search
  - [ ] Stop search
  - [ ] Get search status

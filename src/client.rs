@@ -200,4 +200,40 @@ impl Client {
 
         Ok(webseeds)
     }
+
+    pub async fn torrent_pieces_states(&self, hash: &str) -> Result<Vec<u8>, Error> {
+        let mut url = self.build_url("api/v2/torrents/pieceStates").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("hash", &hash);
+        drop(query);
+
+        let pieces = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<u8>>()
+            .await?;
+
+        Ok(pieces)
+    }
+
+    pub async fn torrent_pieces_hashes(&self, hash: &str) -> Result<Vec<String>, Error> {
+        let mut url = self.build_url("api/v2/torrents/pieceHashes").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("hash", &hash);
+        drop(query);
+
+        let pieces = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<String>>()
+            .await?;
+
+        Ok(pieces)
+    }
 }
