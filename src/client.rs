@@ -18,9 +18,9 @@ pub struct Client {
 
 impl Client {
     pub async fn new(url: &str) -> Result<Self, Error> {
-        let http_client = ReqwestClient::builder().cookie_store(true).build().unwrap();
+        let http_client = ReqwestClient::builder().cookie_store(true).build()?;
 
-        let base_url = Url::from_str(url).unwrap();
+        let base_url = Url::from_str(url)?;
 
         Ok(Self {
             http_client: http_client,
@@ -57,9 +57,9 @@ impl Client {
     }
 
     pub async fn logout(&self) -> Result<(), Error> {
-        let url = self.build_url("/api/v2/logout").await.unwrap();
+        let url = self.build_url("/api/v2/logout").await?;
 
-        self.http_client.post(url).send().await.unwrap();
+        self.http_client.post(url).send().await?;
 
         Ok(())
     }
