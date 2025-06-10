@@ -1,13 +1,13 @@
 use core::str;
 use std::str::FromStr;
 
-use reqwest::{Client as ReqwestClient, Url};
+use reqwest::{Client as ReqwestClient, Url, multipart};
 use tokio::sync::RwLock;
 
 use crate::{
     error::Error,
     models::{TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker, TorrentWebSeed},
-    parames::TorrentListParams,
+    parames::{TorrentAddUrls, TorrentListParams},
 };
 
 #[derive(Debug)]
@@ -282,6 +282,52 @@ impl Client {
         drop(query);
 
         self.http_client.get(url).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_add(&self, params: TorrentAddUrls) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/add").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("urls", params.urls.join("\n"));
+        form = form.text("skip_checking", params.skip_checking.to_string());
+        form = form.text("paused", params.paused.to_string());
+        form = form.text("autoTMM", params.auto_tmm.to_string());
+        form = form.text("sequentialDownload", params.sequential_download.to_string());
+        form = form.text(
+            "firstLastPiecePrio",
+            params.first_last_piece_prio.to_string(),
+        );
+        if let Some(savepath) = params.savepath {
+            form = form.text("savepath", savepath);
+        }
+        if let Some(category) = params.category {
+            form = form.text("category", category);
+        }
+        if let Some(tags) = params.tags {
+            form = form.text("tags", tags.join(","));
+        }
+        if let Some(root_folder) = params.root_folder {
+            form = form.text("root_folder", root_folder);
+        }
+        if let Some(rename) = params.rename {
+            form = form.text("rename", rename);
+        }
+        if let Some(up_limit) = params.up_limit {
+            form = form.text("upLimit", up_limit.to_string());
+        }
+        if let Some(dl_limit) = params.dl_limit {
+            form = form.text("dlLimit", dl_limit.to_string());
+        }
+        if let Some(ratio_limit) = params.ratio_limit {
+            form = form.text("ratioLimit", ratio_limit.to_string());
+        }
+        if let Some(seeding_time_limit) = params.seeding_time_limit {
+            form = form.text("seedingTimeLimit", seeding_time_limit.to_string());
+        }
+
+        self.http_client.post(url).multipart(form).send().await?;
 
         Ok(())
     }

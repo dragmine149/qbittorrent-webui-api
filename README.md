@@ -45,10 +45,10 @@ Supported Qbittorrent version: `5.0`
  - [x] Get torrent pieces' hashes
  - [x] Stop torrents
  - [x] Start torrents
+ - [ ] Delete torrents
  - [x] Recheck torrents
  - [x] Reannounce torrents
- - [ ] Delete torrents
- - [ ] Add new torrent
+ - [x] Add new torrent
  - [ ] Add trackers to torrent
  - [ ] Edit trackers
  - [ ] Remove trackers

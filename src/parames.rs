@@ -164,3 +164,44 @@ impl ToString for TorrentSort {
         }
     }
 }
+
+#[derive(Debug)]
+pub struct TorrentAddUrls {
+    pub urls: Vec<String>,
+    pub savepath: Option<String>,
+    pub category: Option<String>,
+    pub tags: Option<Vec<String>>,
+    pub skip_checking: bool,
+    pub paused: bool,
+    pub root_folder: Option<String>,
+    pub rename: Option<String>,
+    pub up_limit: Option<usize>,
+    pub dl_limit: Option<usize>,
+    pub ratio_limit: Option<f32>,
+    pub seeding_time_limit: Option<usize>,
+    pub auto_tmm: bool,
+    pub sequential_download: bool,
+    pub first_last_piece_prio: bool,
+}
+
+impl TorrentAddUrls {
+    pub fn deafult(urls: Vec<String>) -> Self {
+        Self {
+            urls,
+            savepath: None,
+            category: None,
+            tags: None,
+            skip_checking: false,
+            paused: false,
+            root_folder: None,
+            rename: None,
+            up_limit: None,
+            dl_limit: None,
+            ratio_limit: None,
+            seeding_time_limit: None,
+            auto_tmm: false,
+            sequential_download: false,
+            first_last_piece_prio: false,
+        }
+    }
+}
