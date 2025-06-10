@@ -49,9 +49,9 @@ Supported Qbittorrent version: `5.0`
  - [x] Recheck torrents
  - [x] Reannounce torrents
  - [x] Add new torrent
- - [ ] Add trackers to torrent
- - [ ] Edit trackers
- - [ ] Remove trackers
+ - [x] Add trackers to torrent
+ - [x] Edit trackers
+ - [x] Remove trackers
  - [ ] Add peers
  - [ ] Increase torrent priority
  - [ ] Decrease torrent priority

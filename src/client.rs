@@ -7,7 +7,7 @@ use tokio::sync::RwLock;
 use crate::{
     error::Error,
     models::{TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker, TorrentWebSeed},
-    parames::{TorrentAddUrls, TorrentListParams},
+    parames::{TorrentAddUrls, TorrentListParams, TorrentTrackersEdit, TorrentTrackersList},
 };
 
 #[derive(Debug)]
@@ -338,6 +338,43 @@ impl Client {
         if let Some(seeding_time_limit) = params.seeding_time_limit {
             form = form.text("seedingTimeLimit", seeding_time_limit.to_string());
         }
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_trackers_add(&self, params: TorrentTrackersList) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/addTrackers").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("hash", params.hash);
+        form = form.text("urls", params.urls.join("%0A"));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_trackers_edit(&self, params: TorrentTrackersEdit) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/editTracker").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("hash", params.hash);
+        form = form.text("origUrl", params.orig_url);
+        form = form.text("newUrl", params.new_url);
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_trackers_delete(&self, params: TorrentTrackersList) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/removeTrackers").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("hash", params.hash);
+        form = form.text("urls", params.urls.join("|"));
 
         self.http_client.post(url).multipart(form).send().await?;
 

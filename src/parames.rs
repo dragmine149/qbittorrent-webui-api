@@ -205,3 +205,16 @@ impl TorrentAddUrls {
         }
     }
 }
+
+#[derive(Debug)]
+pub struct TorrentTrackersList {
+    pub hash: String,
+    pub urls: Vec<String>,
+}
+
+#[derive(Debug)]
+pub struct TorrentTrackersEdit {
+    pub hash: String,
+    pub orig_url: String,
+    pub new_url: String,
+}
