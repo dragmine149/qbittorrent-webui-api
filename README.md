@@ -45,7 +45,7 @@ Supported Qbittorrent version: `5.0`
  - [x] Get torrent pieces' hashes
  - [x] Stop torrents
  - [x] Start torrents
- - [ ] Delete torrents
+ - [x] Delete torrents
  - [x] Recheck torrents
  - [x] Reannounce torrents
  - [x] Add new torrent

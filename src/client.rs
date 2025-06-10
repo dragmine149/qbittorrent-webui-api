@@ -249,7 +249,19 @@ impl Client {
         Ok(())
     }
 
-    pub async fn torrent_start(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
+    pub async fn torrent_start(&self, hashes: Vec<&str>) -> Result<(), Error> {
+        let mut url = self.build_url("api/v2/torrents/start").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("hashes", &hashes.join("|"));
+        drop(query);
+
+        self.http_client.get(url).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_delete(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
         let mut url = self.build_url("api/v2/torrents/delete").await?;
 
         let mut query = url.query_pairs_mut();
