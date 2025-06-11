@@ -92,8 +92,8 @@ Supported Qbittorrent version: `5.0`
 - [x] Set first/last piece priority
 - [x] Set force start
 - [x] Set super seeding
-- [ ] Rename file
-- [ ] Rename folder
+- [x] Rename file   // Unsure if this is for the file or the torrent
+- [x] Rename folder // Unsure if this is for the file or the torrent
 
 ### RSS (experimental)
 

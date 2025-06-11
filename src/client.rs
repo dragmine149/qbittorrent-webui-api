@@ -966,6 +966,42 @@ impl Client {
         Ok(())
     }
 
+    pub async fn torrent_rename_file(
+        &self,
+        hash: &str,
+        old_path: &str,
+        new_path: &str,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/renameFile").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("hash", hash.to_string());
+        form = form.text("oldPath", old_path.to_string());
+        form = form.text("newPath", new_path.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_rename_folder(
+        &self,
+        hash: &str,
+        old_path: &str,
+        new_path: &str,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/renameFolder").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("hash", hash.to_string());
+        form = form.text("oldPath", old_path.to_string());
+        form = form.text("newPath", new_path.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
     // ########################
     // RSS
     // ########################
