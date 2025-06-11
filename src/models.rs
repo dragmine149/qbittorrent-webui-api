@@ -126,3 +126,12 @@ pub enum FilePriority {
     High = 6,
     Maximal = 7,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct LogPeers {
+    pub id: usize,
+    pub ip: String,
+    pub timestamp: usize,
+    pub blocked: bool,
+    pub reason: String,
+}

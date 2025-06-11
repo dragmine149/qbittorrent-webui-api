@@ -1,108 +1,124 @@
-
 # Qbittorrent WebUI Api
+
 Rust API wraper for Qbittorrent WebUI
 
 Supported Qbittorrent version: `5.0`
 
-[WebUI documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0))
+[WebUI documentation](<https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)>)
 
 ## Implemented
+
 ### Authentication
- - [x] Login
- - [x] Logout
+
+- [x] Login
+- [x] Logout
+
 ### Application
- - [ ] Get application version
- - [ ] Get API version
- - [ ] Get build info
- - [ ] Shutdown application
- - [ ] Get application preferences
- - [ ] Set application preferences
- - [ ] Get default save path
- - [ ] Get cookies
- - [ ] Set cookies
+
+- [ ] Get application version
+- [ ] Get API version
+- [ ] Get build info
+- [ ] Shutdown application
+- [ ] Get application preferences
+- [ ] Set application preferences
+- [ ] Get default save path
+- [ ] Get cookies
+- [ ] Set cookies
+
 ### Log
- - [ ] Get log
- - [ ] Get peer log
+
+- [ ] Get log
+- [x] Get peer log
+
 ### Sync
- - [ ] Get main data
- - [ ] Get torrent peers data
+
+- [ ] Get main data
+- [] ~~Get torrent peers data~~ // Incomplete documentation for API
+
 ### Transfer info
- - [ ] Get global transfer info
- - [ ] Get alternative speed limits state
- - [ ] Toggle alternative speed limits
- - [ ] Get global download limit
- - [ ] Set global download limit
- - [ ] Get global upload limit
- - [ ] Set global upload limit
- - [ ] Ban peers
+
+- [ ] Get global transfer info
+- [ ] Get alternative speed limits state
+- [ ] Toggle alternative speed limits
+- [ ] Get global download limit
+- [ ] Set global download limit
+- [ ] Get global upload limit
+- [ ] Set global upload limit
+- [x] Ban peers
+
 ### Torrent management
- - [x] Get torrent list
- - [x] Get torrent generic properties
- - [x] Get torrent trackers
- - [x] Get torrent web seeds
- - [x] Get torrent contents
- - [x] Get torrent pieces' states
- - [x] Get torrent pieces' hashes
- - [x] Stop torrents
- - [x] Start torrents
- - [x] Delete torrents
- - [x] Recheck torrents
- - [x] Reannounce torrents
- - [x] Add new torrent
- - [x] Add trackers to torrent
- - [x] Edit trackers
- - [x] Remove trackers
- - [ ] Add peers
- - [ ] Increase torrent priority
- - [ ] Decrease torrent priority
- - [ ] Maximal torrent priority
- - [ ] Minimal torrent priority
- - [ ] Set file priority
- - [ ] Get torrent download limit
- - [ ] Set torrent download limit
- - [ ] Set torrent share limit
- - [ ] Get torrent upload limit
- - [ ] Set torrent upload limit
- - [ ] Set torrent location
- - [ ] Set torrent name
- - [ ] Set torrent category
- - [ ] Get all categories
- - [ ] Add new category
- - [ ] Edit category
- - [ ] Remove categories
- - [ ] Add torrent tags
- - [ ] Remove torrent tags
- - [ ] Get all tags
- - [ ] Create tags
- - [ ] Delete tags
- - [ ] Set automatic torrent management
- - [ ] Toggle sequential download
- - [ ] Set first/last piece priority
- - [ ] Set force start
- - [ ] Set super seeding
- - [ ] Rename file
- - [ ] Rename folder
+
+- [x] Get torrent list
+- [x] Get torrent generic properties
+- [x] Get torrent trackers
+- [x] Get torrent web seeds
+- [x] Get torrent contents
+- [x] Get torrent pieces' states
+- [x] Get torrent pieces' hashes
+- [x] Stop torrents
+- [x] Start torrents
+- [x] Delete torrents
+- [x] Recheck torrents
+- [x] Reannounce torrents
+- [x] Add new torrent
+- [x] Add trackers to torrent
+- [x] Edit trackers
+- [x] Remove trackers
+- [x] Add peers
+- [ ] Increase torrent priority
+- [ ] Decrease torrent priority
+- [ ] Maximal torrent priority
+- [ ] Minimal torrent priority
+- [ ] Set file priority
+- [ ] Get torrent download limit
+- [ ] Set torrent download limit
+- [ ] Set torrent share limit
+- [ ] Get torrent upload limit
+- [ ] Set torrent upload limit
+- [ ] Set torrent location
+- [ ] Set torrent name
+- [ ] Set torrent category
+- [ ] Get all categories
+- [ ] Add new category
+- [ ] Edit category
+- [ ] Remove categories
+- [ ] Add torrent tags
+- [ ] Remove torrent tags
+- [ ] Get all tags
+- [ ] Create tags
+- [ ] Delete tags
+- [ ] Set automatic torrent management
+- [ ] Toggle sequential download
+- [ ] Set first/last piece priority
+- [ ] Set force start
+- [ ] Set super seeding
+- [ ] Rename file
+- [ ] Rename folder
+
 ### RSS (experimental)
- - [ ] Add folder
- - [ ] Add feed
- - [ ] Remove item
- - [ ] Move item
- - [ ] Get all items
- - [ ] Mark as read
- - [ ] Refresh item
- - [ ] Set auto-downloading rule
- - [ ] Rename auto-downloading rule
- - [ ] Remove auto-downloading rule
- - [ ] Get all auto-downloading rules
- - [ ] Get all articles matching a rule
+
+- [ ] Add folder
+- [ ] Add feed
+- [ ] Remove item
+- [ ] Move item
+- [ ] Get all items
+- [ ] Mark as read
+- [ ] Refresh item
+- [ ] Set auto-downloading rule
+- [ ] Rename auto-downloading rule
+- [ ] Remove auto-downloading rule
+- [ ] Get all auto-downloading rules
+- [ ] Get all articles matching a rule
+
 ### Search
- - [ ] Start search
- - [ ] Stop search
- - [ ] Get search status
- - [ ] Get search results
- - [ ] Delete search
- - [ ] Get search plugins
- - [ ] Install search plugin
- - [ ] Uninstall search plugin
- - [ ] Enable search plugin
- - [ ] Update search plugins
+
+- [ ] Start search
+- [ ] Stop search
+- [ ] Get search status
+- [ ] Get search results
+- [ ] Delete search
+- [ ] Get search plugins
+- [ ] Install search plugin
+- [ ] Uninstall search plugin
+- [ ] Enable search plugin
+- [ ] Update search plugins

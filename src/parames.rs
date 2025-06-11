@@ -218,3 +218,9 @@ pub struct TorrentTrackersEdit {
     pub orig_url: String,
     pub new_url: String,
 }
+
+#[derive(Debug)]
+pub struct TorrentAddPeers {
+    pub hashes: Vec<String>,
+    pub peers: Vec<String>,
+}

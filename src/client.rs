@@ -6,8 +6,13 @@ use tokio::sync::RwLock;
 
 use crate::{
     error::Error,
-    models::{TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker, TorrentWebSeed},
-    parames::{TorrentAddUrls, TorrentListParams, TorrentTrackersEdit, TorrentTrackersList},
+    models::{
+        LogPeers, TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker, TorrentWebSeed,
+    },
+    parames::{
+        TorrentAddPeers, TorrentAddUrls, TorrentListParams, TorrentTrackersEdit,
+        TorrentTrackersList,
+    },
 };
 
 #[derive(Debug)]
@@ -89,13 +94,45 @@ impl Client {
     // Log
     // ########################
 
+    pub async fn log_peer(&self, last_known_id: Option<usize>) -> Result<Vec<LogPeers>, Error> {
+        let mut url = self.build_url("api/v2/log/peers").await?;
+        if let Some(id) = last_known_id {
+            url.set_query(Some(&format!("last_known_id={}", id)));
+        }
+
+        let log = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<LogPeers>>()
+            .await?;
+
+        Ok(log)
+    }
+
     // ########################
     // Sync
     // ########################
 
+    pub async fn torrent_peers_data(&self, _hash: &str, _rid: usize) -> Result<Vec<()>, Error> {
+        todo!("Not added. Documentaion missing!")
+    }
+
     // ########################
     // Transfer info
     // ########################
+
+    pub async fn transfer_peers_ban(&self, peers: Vec<String>) -> Result<(), Error> {
+        let url = self.build_url("api/v2/transfer/banPeers").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("peers", peers.join("|"));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
 
     // ########################
     // Torrent management
@@ -394,6 +431,18 @@ impl Client {
         let mut form = multipart::Form::new();
         form = form.text("hash", params.hash);
         form = form.text("urls", params.urls.join("|"));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_peers_add(&self, params: TorrentAddPeers) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/addPeers").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("hashes", params.hashes.join("|"));
+        form = form.text("peers", params.peers.join("|"));
 
         self.http_client.post(url).multipart(form).send().await?;
 
