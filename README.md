@@ -33,17 +33,17 @@ Supported Qbittorrent version: `5.0`
 ### Sync
 
 - [ ] Get main data
-- [] ~~Get torrent peers data~~ // Incomplete documentation for API
+- [ ] ~~Get torrent peers data~~ // Incomplete documentation for API
 
 ### Transfer info
 
 - [ ] Get global transfer info
-- [ ] Get alternative speed limits state
-- [ ] Toggle alternative speed limits
-- [ ] Get global download limit
-- [ ] Set global download limit
-- [ ] Get global upload limit
-- [ ] Set global upload limit
+- [x] Get alternative speed limits state
+- [x] Toggle alternative speed limits
+- [x] Get global download limit
+- [x] Set global download limit
+- [x] Get global upload limit
+- [x] Set global upload limit
 - [x] Ban peers
 
 ### Torrent management
@@ -70,11 +70,11 @@ Supported Qbittorrent version: `5.0`
 - [x] Maximal torrent priority
 - [x] Minimal torrent priority
 - [x] Set file priority
-- [ ] Get torrent download limit
-- [ ] Set torrent download limit
-- [ ] Set torrent share limit
-- [ ] Get torrent upload limit
-- [ ] Set torrent upload limit
+- [x] Get torrent download limit
+- [x] Set torrent download limit
+- [x] Set torrent share limit
+- [x] Get torrent upload limit
+- [x] Set torrent upload limit
 - [ ] Set torrent location
 - [ ] Set torrent name
 - [ ] Set torrent category

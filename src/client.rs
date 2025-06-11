@@ -1,5 +1,5 @@
 use core::str;
-use std::str::FromStr;
+use std::{collections::HashMap, str::FromStr};
 
 use reqwest::{Client as ReqwestClient, Url, multipart};
 use tokio::sync::RwLock;
@@ -123,6 +123,74 @@ impl Client {
     // ########################
     // Transfer info
     // ########################
+
+    pub async fn transfer_get_alternative_speed_limit(&self) -> Result<u8, Error> {
+        let url = self.build_url("api/v2/transfer/speedLimitsMode").await?;
+
+        let is_active = self.http_client.get(url).send().await?.json::<u8>().await?;
+
+        Ok(is_active)
+    }
+
+    pub async fn transfer_toggle_alternative_speed_limit(&self) -> Result<(), Error> {
+        let url = self
+            .build_url("api/v2/transfer/toggleSpeedLimitsMode")
+            .await?;
+
+        self.http_client.post(url).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn transfer_get_global_download_limit(&self) -> Result<usize, Error> {
+        let url = self.build_url("api/v2/transfer/downloadLimit").await?;
+
+        let limites = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<usize>()
+            .await?;
+
+        Ok(limites)
+    }
+
+    pub async fn transfer_set_global_download_limit(&self, limit: usize) -> Result<(), Error> {
+        let url = self.build_url("api/v2/transfer/setDownloadLimit").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("limit", limit.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn transfer_get_global_upload_limit(&self) -> Result<usize, Error> {
+        let url = self.build_url("api/v2/transfer/uploadLimit").await?;
+
+        let limites = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<usize>()
+            .await?;
+
+        Ok(limites)
+    }
+
+    pub async fn transfer_set_global_upload_limit(&self, limit: usize) -> Result<(), Error> {
+        let url = self.build_url("api/v2/transfer/setUploadLimit").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("limit", limit.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
 
     pub async fn transfer_peers_ban(&self, peers: Vec<String>) -> Result<(), Error> {
         let url = self.build_url("api/v2/transfer/banPeers").await?;
@@ -522,6 +590,123 @@ impl Client {
         form = form.text("hash", hash.to_string());
         form = form.text("id", id.to_string());
         form = form.text("priority", serde_json::to_string(&priority)?);
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_get_download_limit(
+        &self,
+        hashes: Option<Vec<&str>>,
+    ) -> Result<HashMap<String, usize>, Error> {
+        let mut url = self.build_url("api/v2/torrents/downloadLimit").await?;
+
+        let mut query = url.query_pairs_mut();
+        if let Some(hashes) = hashes {
+            query.append_pair("hashes", &hashes.join("|"));
+        } else {
+            query.append_pair("hashes", "all");
+        }
+        drop(query);
+
+        let limites = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<HashMap<String, usize>>()
+            .await?;
+
+        Ok(limites)
+    }
+
+    pub async fn torrent_set_download_limit(
+        &self,
+        hashes: Option<Vec<&str>>,
+        limit: usize,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setDownloadLimit").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("limit", limit.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_set_share_limit(
+        &self,
+        hashes: Option<Vec<&str>>,
+        ratio_limit: f32,
+        seeding_time_limit: isize,
+        inactive_seeding_time_limit: isize,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setShareLimits").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("ratioLimit", ratio_limit.to_string());
+        form = form.text("seedingTimeLimit", seeding_time_limit.to_string());
+        form = form.text(
+            "inactiveSeedingTimeLimit",
+            inactive_seeding_time_limit.to_string(),
+        );
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_get_upload_limit(
+        &self,
+        hashes: Option<Vec<&str>>,
+    ) -> Result<HashMap<String, usize>, Error> {
+        let mut url = self.build_url("api/v2/torrents/uploadLimit").await?;
+
+        let mut query = url.query_pairs_mut();
+        if let Some(hashes) = hashes {
+            query.append_pair("hashes", &hashes.join("|"));
+        } else {
+            query.append_pair("hashes", "all");
+        }
+        drop(query);
+
+        let limites = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<HashMap<String, usize>>()
+            .await?;
+
+        Ok(limites)
+    }
+
+    pub async fn torrent_set_upload_limit(
+        &self,
+        hashes: Option<Vec<&str>>,
+        limit: usize,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setUploadLimit").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("limit", limit.to_string());
 
         self.http_client.post(url).multipart(form).send().await?;
 
