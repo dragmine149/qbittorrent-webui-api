@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use serde_repr::Deserialize_repr;
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[derive(Debug, Deserialize)]
 pub struct TorrentInfo {
@@ -118,7 +118,7 @@ pub struct TorrentContent {
     pub availability: f32,
 }
 
-#[derive(Debug, Deserialize_repr)]
+#[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum FilePriority {
     DoNotDownload = 0,

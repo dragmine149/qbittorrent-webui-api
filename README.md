@@ -65,11 +65,11 @@ Supported Qbittorrent version: `5.0`
 - [x] Edit trackers
 - [x] Remove trackers
 - [x] Add peers
-- [ ] Increase torrent priority
-- [ ] Decrease torrent priority
-- [ ] Maximal torrent priority
-- [ ] Minimal torrent priority
-- [ ] Set file priority
+- [x] Increase torrent priority
+- [x] Decrease torrent priority
+- [x] Maximal torrent priority
+- [x] Minimal torrent priority
+- [x] Set file priority
 - [ ] Get torrent download limit
 - [ ] Set torrent download limit
 - [ ] Set torrent share limit

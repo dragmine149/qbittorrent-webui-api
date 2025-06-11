@@ -7,7 +7,8 @@ use tokio::sync::RwLock;
 use crate::{
     error::Error,
     models::{
-        LogPeers, TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker, TorrentWebSeed,
+        FilePriority, LogPeers, TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker,
+        TorrentWebSeed,
     },
     parames::{
         TorrentAddPeers, TorrentAddUrls, TorrentListParams, TorrentTrackersEdit,
@@ -443,6 +444,84 @@ impl Client {
         let mut form = multipart::Form::new();
         form = form.text("hashes", params.hashes.join("|"));
         form = form.text("peers", params.peers.join("|"));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_increase_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/increasePrio").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_decrease_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/decreasePrio").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_max_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/topPrio").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_min_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/bottomPrio").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_file_priority(
+        &self,
+        hash: &str,
+        id: usize,
+        priority: FilePriority,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/bottomPrio").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("hash", hash.to_string());
+        form = form.text("id", id.to_string());
+        form = form.text("priority", serde_json::to_string(&priority)?);
 
         self.http_client.post(url).multipart(form).send().await?;
 
