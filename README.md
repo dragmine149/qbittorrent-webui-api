@@ -87,11 +87,11 @@ Supported Qbittorrent version: `5.0`
 - [x] Get all tags
 - [x] Create tags
 - [x] Delete tags
-- [ ] Set automatic torrent management
-- [ ] Toggle sequential download
-- [ ] Set first/last piece priority
-- [ ] Set force start
-- [ ] Set super seeding
+- [x] Set automatic torrent management
+- [x] Toggle sequential download
+- [x] Set first/last piece priority
+- [x] Set force start
+- [x] Set super seeding
 - [ ] Rename file
 - [ ] Rename folder
 

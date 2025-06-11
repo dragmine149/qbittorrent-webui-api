@@ -866,6 +866,106 @@ impl Client {
         Ok(())
     }
 
+    pub async fn torrent_set_automatic_torrent_managment(
+        &self,
+        hashes: Option<Vec<&str>>,
+        enable: bool,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setAutoManagement").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("enable", enable.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_toggle_sequential_download(
+        &self,
+        hashes: Option<Vec<&str>>,
+    ) -> Result<(), Error> {
+        let url = self
+            .build_url("api/v2/torrents/toggleSequentialDownload")
+            .await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_toggle_first_last_priority(
+        &self,
+        hashes: Option<Vec<&str>>,
+    ) -> Result<(), Error> {
+        let url = self
+            .build_url("api/v2/torrents/toggleFirstLastPiecePrio")
+            .await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_set_force_start(
+        &self,
+        hashes: Option<Vec<&str>>,
+        enable: bool,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setForceStart").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("value", enable.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_set_super_seeding(
+        &self,
+        hashes: Option<Vec<&str>>,
+        enable: bool,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setSuperSeeding").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("value", enable.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
     // ########################
     // RSS
     // ########################
