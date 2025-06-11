@@ -82,11 +82,11 @@ Supported Qbittorrent version: `5.0`
 - [x] Add new category
 - [x] Edit category
 - [x] Remove categories
-- [ ] Add torrent tags
-- [ ] Remove torrent tags
-- [ ] Get all tags
-- [ ] Create tags
-- [ ] Delete tags
+- [x] Add torrent tags
+- [x] Remove torrent tags
+- [x] Get all tags
+- [x] Create tags
+- [x] Delete tags
 - [ ] Set automatic torrent management
 - [ ] Toggle sequential download
 - [ ] Set first/last piece priority

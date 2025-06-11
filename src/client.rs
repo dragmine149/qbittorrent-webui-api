@@ -790,6 +790,82 @@ impl Client {
         Ok(())
     }
 
+    pub async fn torrent_add_tags(
+        &self,
+        hashes: Option<Vec<&str>>,
+        tags: Vec<&str>,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/addTags").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("tags", tags.join(","));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_remove_tags(
+        &self,
+        hashes: Option<Vec<&str>>,
+        tags: Vec<&str>,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/removeTags").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("tags", tags.join(","));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_tags(&self) -> Result<Vec<String>, Error> {
+        let url = self.build_url("api/v2/torrents/tags").await?;
+
+        let tags = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<String>>()
+            .await?;
+
+        Ok(tags)
+    }
+
+    pub async fn torrent_create_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/createTags").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("tags", tags.join(","));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_delete_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/deleteTags").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("tags", tags.join(","));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
     // ########################
     // RSS
     // ########################
