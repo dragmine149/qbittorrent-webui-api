@@ -77,11 +77,11 @@ Supported Qbittorrent version: `5.0`
 - [x] Set torrent upload limit
 - [ ] Set torrent location
 - [ ] Set torrent name
-- [ ] Set torrent category
-- [ ] Get all categories
-- [ ] Add new category
-- [ ] Edit category
-- [ ] Remove categories
+- [x] Set torrent category
+- [x] Get all categories
+- [x] Add new category
+- [x] Edit category
+- [x] Remove categories
 - [ ] Add torrent tags
 - [ ] Remove torrent tags
 - [ ] Get all tags

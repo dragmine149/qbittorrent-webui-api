@@ -713,6 +713,83 @@ impl Client {
         Ok(())
     }
 
+    pub async fn torrent_set_category(
+        &self,
+        hashes: Option<Vec<&str>>,
+        category: &str,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setCategory").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("category", category.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_categories(&self) -> Result<Vec<String>, Error> {
+        let url = self.build_url("api/v2/torrents/categories").await?;
+
+        let categories = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<String>>()
+            .await?;
+
+        Ok(categories)
+    }
+
+    pub async fn torrent_create_category(
+        &self,
+        category: &str,
+        save_path: &str,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/createCategory").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("category", category.to_string());
+        form = form.text("savePath", save_path.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_edit_category(
+        &self,
+        category: &str,
+        save_path: &str,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/editCategory").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("category", category.to_string());
+        form = form.text("savePath", save_path.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_remove_categories(&self, categories: Vec<&str>) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/removeCategories").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("categories", categories.join("\n"));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
     // ########################
     // RSS
     // ########################
