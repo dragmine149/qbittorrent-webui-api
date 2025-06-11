@@ -516,7 +516,7 @@ impl Client {
         id: usize,
         priority: FilePriority,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/bottomPrio").await?;
+        let url = self.build_url("api/v2/torrents/filePrio").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
