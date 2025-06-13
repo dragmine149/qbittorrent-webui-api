@@ -4,6 +4,7 @@ use std::str::FromStr;
 use reqwest::{Client as ReqwestClient, Url};
 use tokio::sync::RwLock;
 
+mod application;
 mod authentication;
 mod log;
 mod sync;
