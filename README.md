@@ -15,9 +15,9 @@ Supported Qbittorrent version: `5.0`
 
 ### Application
 
-- [ ] Get application version
-- [ ] Get API version
-- [ ] Get build info
+- [x] Get application version
+- [x] Get API version
+- [x] Get build info
 - [ ] Shutdown application
 - [ ] Get application preferences
 - [ ] Set application preferences

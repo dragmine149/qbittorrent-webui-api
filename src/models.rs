@@ -311,3 +311,12 @@ pub struct PeerData {
     pub up_speed: Option<usize>,
     pub uploaded: Option<usize>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct BuildInfo {
+    pub qt: String,
+    pub libtorrent: String,
+    pub boost: String,
+    pub openssl: String,
+    pub bitness: u8,
+}
