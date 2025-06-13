@@ -1,13 +1,12 @@
 use core::str;
-use std::{collections::HashMap, str::FromStr};
+use std::collections::HashMap;
 
-use reqwest::{Client as ReqwestClient, Url, multipart};
-use tokio::sync::RwLock;
+use reqwest::multipart;
 
 use crate::{
     error::Error,
     models::{
-        FilePriority, LogPeers, TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker,
+        FilePriority, TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker,
         TorrentWebSeed,
     },
     parames::{
@@ -16,197 +15,7 @@ use crate::{
     },
 };
 
-#[derive(Debug)]
-pub struct Creddentials {
-    username: String,
-    password: String,
-}
-
-impl Creddentials {
-    pub fn new<T: ToString>(username: T, password: T) -> Self {
-        Self {
-            username: username.to_string(),
-            password: password.to_string(),
-        }
-    }
-
-    pub fn quary_string(&self) -> String {
-        return format!("username={}&password={}", self.username, self.password);
-    }
-}
-
-pub struct Client {
-    http_client: ReqwestClient,
-    base_url: RwLock<Url>,
-}
-
-impl Client {
-    pub async fn new(url: &str) -> Result<Self, Error> {
-        let http_client = ReqwestClient::builder().cookie_store(true).build()?;
-
-        let base_url = Url::from_str(url)?;
-
-        Ok(Self {
-            http_client: http_client,
-            base_url: RwLock::new(base_url),
-        })
-    }
-
-    async fn build_url(&self, endpoint: &str) -> Result<Url, Error> {
-        let base_url = self.base_url.read().await;
-        let url = base_url.join(endpoint)?;
-
-        Ok(url)
-    }
-
-    // ########################
-    // Authentication
-    // ########################
-
-    pub async fn login(&self, cred: Creddentials) -> Result<(), Error> {
-        let url = self.build_url("/api/v2/auth/login").await?;
-        let res = self
-            .http_client
-            .post(url)
-            .body(cred.quary_string())
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .header("refer", self.base_url.read().await.to_string())
-            .send()
-            .await?;
-        if res.status().is_success() {
-            Ok(())
-        } else {
-            Err(Error::AuthFailed)
-        }
-    }
-
-    pub async fn logout(&self) -> Result<(), Error> {
-        let url = self.build_url("/api/v2/logout").await?;
-
-        self.http_client.post(url).send().await?;
-
-        Ok(())
-    }
-    // ########################
-    // Application
-    // ########################
-
-    // ########################
-    // Log
-    // ########################
-
-    pub async fn log_peer(&self, last_known_id: Option<usize>) -> Result<Vec<LogPeers>, Error> {
-        let mut url = self.build_url("api/v2/log/peers").await?;
-        if let Some(id) = last_known_id {
-            url.set_query(Some(&format!("last_known_id={}", id)));
-        }
-
-        let log = self
-            .http_client
-            .get(url)
-            .send()
-            .await?
-            .json::<Vec<LogPeers>>()
-            .await?;
-
-        Ok(log)
-    }
-
-    // ########################
-    // Sync
-    // ########################
-
-    pub async fn torrent_peers_data(&self, _hash: &str, _rid: usize) -> Result<Vec<()>, Error> {
-        todo!("Not added. Documentaion missing!")
-    }
-
-    // ########################
-    // Transfer info
-    // ########################
-
-    pub async fn transfer_get_alternative_speed_limit(&self) -> Result<u8, Error> {
-        let url = self.build_url("api/v2/transfer/speedLimitsMode").await?;
-
-        let is_active = self.http_client.get(url).send().await?.json::<u8>().await?;
-
-        Ok(is_active)
-    }
-
-    pub async fn transfer_toggle_alternative_speed_limit(&self) -> Result<(), Error> {
-        let url = self
-            .build_url("api/v2/transfer/toggleSpeedLimitsMode")
-            .await?;
-
-        self.http_client.post(url).send().await?;
-
-        Ok(())
-    }
-
-    pub async fn transfer_get_global_download_limit(&self) -> Result<usize, Error> {
-        let url = self.build_url("api/v2/transfer/downloadLimit").await?;
-
-        let limites = self
-            .http_client
-            .get(url)
-            .send()
-            .await?
-            .json::<usize>()
-            .await?;
-
-        Ok(limites)
-    }
-
-    pub async fn transfer_set_global_download_limit(&self, limit: usize) -> Result<(), Error> {
-        let url = self.build_url("api/v2/transfer/setDownloadLimit").await?;
-
-        let mut form = multipart::Form::new();
-        form = form.text("limit", limit.to_string());
-
-        self.http_client.post(url).multipart(form).send().await?;
-
-        Ok(())
-    }
-
-    pub async fn transfer_get_global_upload_limit(&self) -> Result<usize, Error> {
-        let url = self.build_url("api/v2/transfer/uploadLimit").await?;
-
-        let limites = self
-            .http_client
-            .get(url)
-            .send()
-            .await?
-            .json::<usize>()
-            .await?;
-
-        Ok(limites)
-    }
-
-    pub async fn transfer_set_global_upload_limit(&self, limit: usize) -> Result<(), Error> {
-        let url = self.build_url("api/v2/transfer/setUploadLimit").await?;
-
-        let mut form = multipart::Form::new();
-        form = form.text("limit", limit.to_string());
-
-        self.http_client.post(url).multipart(form).send().await?;
-
-        Ok(())
-    }
-
-    pub async fn transfer_peers_ban(&self, peers: Vec<String>) -> Result<(), Error> {
-        let url = self.build_url("api/v2/transfer/banPeers").await?;
-
-        let mut form = multipart::Form::new();
-        form = form.text("peers", peers.join("|"));
-
-        self.http_client.post(url).multipart(form).send().await?;
-
-        Ok(())
-    }
-
-    // ########################
-    // Torrent management
-    // ########################
-
+impl super::Client {
     pub async fn torrent_list(
         &self,
         parames: TorrentListParams,
@@ -1033,12 +842,4 @@ impl Client {
 
         Ok(())
     }
-
-    // ########################
-    // RSS
-    // ########################
-
-    // ########################
-    // Search
-    // ########################
 }
