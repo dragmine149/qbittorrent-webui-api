@@ -713,6 +713,38 @@ impl Client {
         Ok(())
     }
 
+    pub async fn torrent_set_location(
+        &self,
+        hashes: Option<Vec<&str>>,
+        location: &str,
+    ) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setLocation").await?;
+
+        let mut form = multipart::Form::new();
+        if let Some(hashes) = hashes {
+            form = form.text("hashes", hashes.join("|"));
+        } else {
+            form = form.text("hashes", "all".to_string());
+        }
+        form = form.text("location", location.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    pub async fn torrent_set_name(&self, hash: &str, name: &str) -> Result<(), Error> {
+        let url = self.build_url("api/v2/torrents/setLocation").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("hash", hash.to_string());
+        form = form.text("name", name.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
     pub async fn torrent_set_category(
         &self,
         hashes: Option<Vec<&str>>,

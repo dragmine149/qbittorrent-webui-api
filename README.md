@@ -75,8 +75,8 @@ Supported Qbittorrent version: `5.0`
 - [x] Set torrent share limit
 - [x] Get torrent upload limit
 - [x] Set torrent upload limit
-- [ ] Set torrent location
-- [ ] Set torrent name
+- [x] Set torrent location
+- [x] Set torrent name
 - [x] Set torrent category
 - [x] Get all categories
 - [x] Add new category
