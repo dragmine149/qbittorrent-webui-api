@@ -130,6 +130,24 @@ pub enum FilePriority {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct LogItem {
+    pub id: usize,
+    pub message: String,
+    pub timestamp: usize,
+    #[serde(rename = "type")]
+    pub log_type: LogType,
+}
+
+#[derive(Debug, Deserialize_repr, Serialize_repr)]
+#[repr(u8)]
+pub enum LogType {
+    Normal = 1,
+    Info = 2,
+    Warning = 4,
+    Critical = 8,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct LogPeers {
     pub id: usize,
     pub ip: String,

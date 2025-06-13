@@ -27,7 +27,7 @@ Supported Qbittorrent version: `5.0`
 
 ### Log
 
-- [ ] Get log
+- [x] Get log
 - [x] Get peer log
 
 ### Sync
