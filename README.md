@@ -32,8 +32,8 @@ Supported Qbittorrent version: `5.0`
 
 ### Sync
 
-- [ ] Get main data
-- [ ] ~~Get torrent peers data~~ // Incomplete documentation for API
+- [x] Get main data
+- [x] Get torrent peers data // Incomplete documentation for API
 
 ### Transfer info
 
