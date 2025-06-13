@@ -37,7 +37,7 @@ Supported Qbittorrent version: `5.0`
 
 ### Transfer info
 
-- [ ] Get global transfer info
+- [x] Get global transfer info
 - [x] Get alternative speed limits state
 - [x] Toggle alternative speed limits
 - [x] Get global download limit

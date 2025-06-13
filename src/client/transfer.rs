@@ -1,8 +1,22 @@
 use reqwest::multipart;
 
-use crate::error::Error;
+use crate::{error::Error, models::TransferInfo};
 
 impl super::Client {
+    pub async fn transfer_get_global_transfer_info(&self) -> Result<TransferInfo, Error> {
+        let url = self.build_url("api/v2/transfer/info").await?;
+
+        let info = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<TransferInfo>()
+            .await?;
+
+        Ok(info)
+    }
+
     pub async fn transfer_get_alternative_speed_limit(&self) -> Result<u8, Error> {
         let url = self.build_url("api/v2/transfer/speedLimitsMode").await?;
 

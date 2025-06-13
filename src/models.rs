@@ -135,3 +135,27 @@ pub struct LogPeers {
     pub blocked: bool,
     pub reason: String,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct TransferInfo {
+    pub dl_info_speed: isize,
+    pub dl_info_data: isize,
+    pub up_info_speed: isize,
+    pub up_info_data: isize,
+    pub dl_rate_limit: isize,
+    pub dht_nodes: isize,
+    pub connection_status: ConnectionStatus,
+    // pub queueing: Option<bool>, Cant find this in the API?
+    pub last_external_address_v4: String, // This was not in the documentation!
+    pub last_external_address_v6: String, // This was not in the documentation!
+}
+
+#[derive(Debug, Deserialize)]
+pub enum ConnectionStatus {
+    #[serde(rename = "connected")]
+    Connected,
+    #[serde(rename = "firewalled")]
+    Firewalled,
+    #[serde(rename = "disconnected")]
+    Disconnected,
+}
