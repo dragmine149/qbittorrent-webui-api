@@ -1,10 +1,10 @@
 # Qbittorrent WebUI Api
 
-Rust API wraper for Qbittorrent WebUI
+Rust wrapper for Qbittorrent WebUI API
 
 Supported Qbittorrent version: `5.0`
 
-[WebUI documentation](<https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)>)
+[WebUI 5.0 documentation](<https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)>)
 
 ## Implemented
 
@@ -19,8 +19,8 @@ Supported Qbittorrent version: `5.0`
 - [x] Get API version
 - [x] Get build info
 - [x] Shutdown application
-- [ ] Get application preferences
-- [ ] Set application preferences
+- [x] Get application preferences
+- [x] Set application preferences
 - [ ] Get default save path
 - [ ] Get cookies
 - [ ] Set cookies
