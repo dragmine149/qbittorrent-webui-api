@@ -80,4 +80,18 @@ impl super::Client {
 
         Ok(())
     }
+
+    pub async fn deafult_save_path(&self) -> Result<String, Error> {
+        let url = self.build_url("/api/v2/app/defaultSavePath").await?;
+
+        let preferances = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<String>()
+            .await?;
+
+        Ok(preferances)
+    }
 }

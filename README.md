@@ -21,7 +21,7 @@ Supported Qbittorrent version: `5.0`
 - [x] Shutdown application
 - [x] Get application preferences
 - [x] Set application preferences
-- [ ] Get default save path
+- [x] Get default save path
 - [ ] Get cookies
 - [ ] Set cookies
 
