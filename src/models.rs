@@ -5,101 +5,101 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[derive(Debug, Deserialize)]
 pub struct TorrentInfo {
-    pub added_on: isize,
-    pub amount_left: isize,
+    pub added_on: i64,
+    pub amount_left: i64,
     pub auto_tmm: bool,
     pub availability: f64,
     pub category: String,
-    pub completed: isize,
-    pub completion_on: isize,
+    pub completed: i64,
+    pub completion_on: i64,
     pub content_path: String,
-    pub dl_limit: isize,
-    pub dlspeed: isize,
-    pub downloaded: isize,
-    pub downloaded_session: isize,
-    pub eta: isize,
+    pub dl_limit: i64,
+    pub dlspeed: i64,
+    pub downloaded: i64,
+    pub downloaded_session: i64,
+    pub eta: i64,
     pub f_l_piece_prio: bool,
     pub force_start: bool,
     pub hash: String,
     pub private: bool, // Documetaion is wrong filed name is "private" not "isPrivate"
-    pub last_activity: isize,
+    pub last_activity: i64,
     pub magnet_uri: String,
     pub max_ratio: f32,
-    pub max_seeding_time: isize,
+    pub max_seeding_time: i64,
     pub name: String,
-    pub num_complete: isize,
-    pub num_incomplete: isize,
-    pub num_leechs: isize,
-    pub priority: isize,
+    pub num_complete: i64,
+    pub num_incomplete: i64,
+    pub num_leechs: i64,
+    pub priority: i64,
     pub progress: f32,
     pub ratio: f32,
     pub ratio_limit: f32,
-    pub reannounce: isize,
+    pub reannounce: i64,
     pub save_path: String,
-    pub seeding_time: isize,
-    pub seeding_time_limit: isize,
-    pub seen_complete: isize,
+    pub seeding_time: i64,
+    pub seeding_time_limit: i64,
+    pub seen_complete: i64,
     pub seq_dl: bool,
-    pub size: isize,
+    pub size: i64,
     pub state: String,
     pub super_seeding: bool,
     pub tags: String,
-    pub time_active: isize,
-    pub total_size: isize,
+    pub time_active: i64,
+    pub total_size: i64,
     pub tracker: String,
-    pub up_limit: isize,
-    pub uploaded: isize,
-    pub uploaded_session: isize,
-    pub upspeed: isize,
+    pub up_limit: i64,
+    pub uploaded: i64,
+    pub uploaded_session: i64,
+    pub upspeed: i64,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct TorrentProperties {
     pub save_path: String,
-    pub creation_date: isize,
-    pub piece_size: isize,
+    pub creation_date: i64,
+    pub piece_size: i64,
     pub comment: String,
-    pub total_wasted: isize,
-    pub total_uploaded: isize,
-    pub total_uploaded_session: isize,
-    pub total_downloaded: isize,
-    pub total_downloaded_session: isize,
-    pub up_limit: isize,
-    pub dl_limit: isize,
-    pub time_elapsed: isize,
-    pub seeding_time: isize,
-    pub nb_connections: isize,
-    pub nb_connections_limit: isize,
+    pub total_wasted: i64,
+    pub total_uploaded: i64,
+    pub total_uploaded_session: i64,
+    pub total_downloaded: i64,
+    pub total_downloaded_session: i64,
+    pub up_limit: i64,
+    pub dl_limit: i64,
+    pub time_elapsed: i64,
+    pub seeding_time: i64,
+    pub nb_connections: i64,
+    pub nb_connections_limit: i64,
     pub share_ratio: f32,
-    pub addition_date: isize,
-    pub completion_date: isize,
+    pub addition_date: i64,
+    pub completion_date: i64,
     pub created_by: String,
-    pub dl_speed_avg: isize,
-    pub dl_speed: isize,
-    pub eta: isize,
-    pub last_seen: isize,
-    pub peers: isize,
-    pub peers_total: isize,
-    pub pieces_have: isize,
-    pub pieces_num: isize,
-    pub reannounce: isize,
-    pub seeds: isize,
-    pub seeds_total: isize,
-    pub total_size: isize,
-    pub up_speed_avg: isize,
-    pub up_speed: isize,
+    pub dl_speed_avg: i64,
+    pub dl_speed: i64,
+    pub eta: i64,
+    pub last_seen: i64,
+    pub peers: i64,
+    pub peers_total: i64,
+    pub pieces_have: i64,
+    pub pieces_num: i64,
+    pub reannounce: i64,
+    pub seeds: i64,
+    pub seeds_total: i64,
+    pub total_size: i64,
+    pub up_speed_avg: i64,
+    pub up_speed: i64,
     pub private: bool,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct TorrentTracker {
     pub url: String,
-    pub status: isize,
-    pub tier: isize,
-    pub num_peers: isize,
-    pub num_seeds: isize,
-    pub num_leeches: isize,
-    pub num_downloaded: isize,
+    pub status: i64,
+    pub tier: i64,
+    pub num_peers: i64,
+    pub num_seeds: i64,
+    pub num_leeches: i64,
+    pub num_downloaded: i64,
     pub msg: String,
 }
 
@@ -110,13 +110,13 @@ pub struct TorrentWebSeed {
 
 #[derive(Debug, Deserialize)]
 pub struct TorrentContent {
-    pub index: usize,
+    pub index: i64,
     pub name: String,
-    pub size: usize,
+    pub size: i64,
     pub progress: f32,
     pub priority: FilePriority,
     pub is_seed: Option<bool>,
-    pub piece_range: Vec<usize>,
+    pub piece_range: Vec<i64>,
     pub availability: f32,
 }
 
@@ -131,9 +131,9 @@ pub enum FilePriority {
 
 #[derive(Debug, Deserialize)]
 pub struct LogItem {
-    pub id: usize,
+    pub id: i64,
     pub message: String,
-    pub timestamp: usize,
+    pub timestamp: i64,
     #[serde(rename = "type")]
     pub log_type: LogType,
 }
@@ -149,21 +149,21 @@ pub enum LogType {
 
 #[derive(Debug, Deserialize)]
 pub struct LogPeers {
-    pub id: usize,
+    pub id: i64,
     pub ip: String,
-    pub timestamp: usize,
+    pub timestamp: i64,
     pub blocked: bool,
     pub reason: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct TransferInfo {
-    pub dl_info_speed: isize,
-    pub dl_info_data: isize,
-    pub up_info_speed: isize,
-    pub up_info_data: isize,
-    pub dl_rate_limit: isize,
-    pub dht_nodes: isize,
+    pub dl_info_speed: i64,
+    pub dl_info_data: i64,
+    pub up_info_speed: i64,
+    pub up_info_data: i64,
+    pub dl_rate_limit: i64,
+    pub dht_nodes: i64,
     pub connection_status: ConnectionStatus,
     // pub queueing: Option<bool>, Cant find this in the API?
     pub last_external_address_v4: String, // This was not in the documentation!
@@ -182,7 +182,7 @@ pub enum ConnectionStatus {
 
 #[derive(Debug, Deserialize)]
 pub struct MainData {
-    pub rid: usize,
+    pub rid: i64,
     pub full_update: Option<bool>,
     pub torrents: Option<HashMap<String, MainDataTorrentInfo>>,
     pub torrents_removed: Option<Vec<String>>,
@@ -203,30 +203,30 @@ pub struct Category {
 
 #[derive(Debug, Deserialize)]
 pub struct ServerStatus {
-    pub alltime_dl: usize,
-    pub alltime_ul: usize,
-    pub average_time_queue: usize,
+    pub alltime_dl: i64,
+    pub alltime_ul: i64,
+    pub average_time_queue: i64,
     pub connection_status: ConnectionStatus,
-    pub dht_nodes: usize,
-    pub dl_info_data: usize,
-    pub dl_info_speed: usize,
-    pub dl_rate_limit: usize,
-    pub free_space_on_disk: usize,
+    pub dht_nodes: i64,
+    pub dl_info_data: i64,
+    pub dl_info_speed: i64,
+    pub dl_rate_limit: i64,
+    pub free_space_on_disk: i64,
     pub global_ratio: String, // is in format of float
     pub last_external_address_v4: String,
     pub last_external_address_v6: String,
-    pub queued_io_jobs: usize,
+    pub queued_io_jobs: i64,
     pub queueing: bool,
     pub read_cache_hits: String,     // Is interger in format of string
     pub read_cache_overload: String, // Is interger in format of string
-    pub refresh_interval: usize,
-    pub total_buffers_size: usize,
-    pub total_peer_connections: usize,
-    pub total_queued_size: usize,
-    pub total_wasted_session: usize,
-    pub up_info_data: usize,
-    pub up_info_speed: usize,
-    pub up_rate_limit: usize,
+    pub refresh_interval: i64,
+    pub total_buffers_size: i64,
+    pub total_peer_connections: i64,
+    pub total_queued_size: i64,
+    pub total_wasted_session: i64,
+    pub up_info_data: i64,
+    pub up_info_speed: i64,
+    pub up_rate_limit: i64,
     pub use_alt_speed_limits: bool,
     pub use_subcategories: bool,
     pub write_cache_overload: String, // Is interger in format of string
@@ -235,57 +235,57 @@ pub struct ServerStatus {
 // same as TorrentInfo just without hash
 #[derive(Debug, Deserialize)]
 pub struct MainDataTorrentInfo {
-    pub added_on: isize,
-    pub amount_left: isize,
+    pub added_on: i64,
+    pub amount_left: i64,
     pub auto_tmm: bool,
     pub availability: f64,
     pub category: String,
-    pub completed: isize,
-    pub completion_on: isize,
+    pub completed: i64,
+    pub completion_on: i64,
     pub content_path: String,
-    pub dl_limit: isize,
-    pub dlspeed: isize,
-    pub downloaded: isize,
-    pub downloaded_session: isize,
-    pub eta: isize,
+    pub dl_limit: i64,
+    pub dlspeed: i64,
+    pub downloaded: i64,
+    pub downloaded_session: i64,
+    pub eta: i64,
     pub f_l_piece_prio: bool,
     pub force_start: bool,
     pub private: bool, // Documetaion is wrong filed name is "private" not "isPrivate"
-    pub last_activity: isize,
+    pub last_activity: i64,
     pub magnet_uri: String,
     pub max_ratio: f32,
-    pub max_seeding_time: isize,
+    pub max_seeding_time: i64,
     pub name: String,
-    pub num_complete: isize,
-    pub num_incomplete: isize,
-    pub num_leechs: isize,
-    pub priority: isize,
+    pub num_complete: i64,
+    pub num_incomplete: i64,
+    pub num_leechs: i64,
+    pub priority: i64,
     pub progress: f32,
     pub ratio: f32,
     pub ratio_limit: f32,
-    pub reannounce: isize,
+    pub reannounce: i64,
     pub save_path: String,
-    pub seeding_time: isize,
-    pub seeding_time_limit: isize,
-    pub seen_complete: isize,
+    pub seeding_time: i64,
+    pub seeding_time_limit: i64,
+    pub seen_complete: i64,
     pub seq_dl: bool,
-    pub size: isize,
+    pub size: i64,
     pub state: String,
     pub super_seeding: bool,
     pub tags: String,
-    pub time_active: isize,
-    pub total_size: isize,
+    pub time_active: i64,
+    pub total_size: i64,
     pub tracker: String,
-    pub up_limit: isize,
-    pub uploaded: isize,
-    pub uploaded_session: isize,
-    pub upspeed: isize,
+    pub up_limit: i64,
+    pub uploaded: i64,
+    pub uploaded_session: i64,
+    pub upspeed: i64,
 }
 
 // The API is incomplit on this and the structer is take from the responses
 #[derive(Debug, Deserialize)]
 pub struct PeersData {
-    pub rid: usize,
+    pub rid: i64,
     pub full_update: Option<bool>,
     pub show_flags: Option<bool>,
     pub peers: Option<HashMap<String, PeerData>>,
@@ -298,18 +298,18 @@ pub struct PeerData {
     pub connection: Option<String>,
     pub country: Option<String>,
     pub country_code: Option<String>,
-    pub dl_speed: Option<usize>,
-    pub downloaded: Option<usize>,
+    pub dl_speed: Option<i64>,
+    pub downloaded: Option<i64>,
     pub files: Option<String>,
     pub flags: Option<String>,
     pub flags_desc: Option<String>,
     pub ip: Option<String>,
     pub peer_id_client: Option<String>,
-    pub port: Option<usize>,
+    pub port: Option<i64>,
     pub progress: Option<f32>,
     pub relevance: Option<f32>,
-    pub up_speed: Option<usize>,
-    pub uploaded: Option<usize>,
+    pub up_speed: Option<i64>,
+    pub uploaded: Option<i64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -330,7 +330,7 @@ pub struct Preferences {
     /// True if torrents should be added in a Paused state
     pub start_paused_enabled: Option<bool>,
     /// TODO
-    pub auto_delete_mode: Option<isize>,
+    pub auto_delete_mode: Option<i64>,
     /// True if disk space should be pre-allocated for all files
     pub preallocate_all: Option<bool>,
     /// True if ".!qB" should be appended to incomplete files
@@ -378,19 +378,19 @@ pub struct Preferences {
     /// True if torrent queuing is enabled
     pub queueing_enabled: Option<bool>,
     /// Maximum number of active simultaneous downloads
-    pub max_active_downloads: Option<isize>,
+    pub max_active_downloads: Option<i64>,
     /// Maximum number of active simultaneous downloads and uploads
-    pub max_active_torrents: Option<isize>,
+    pub max_active_torrents: Option<i64>,
     /// Maximum number of active simultaneous uploads
-    pub max_active_uploads: Option<isize>,
+    pub max_active_uploads: Option<i64>,
     /// If true torrents w/o any activity (stalled ones) will not be counted towards `max_active_*` limits; see dont_count_slow_torrents for more information
     pub dont_count_slow_torrents: Option<bool>,
     /// Download rate in KiB/s for a torrent to be considered "slow"
-    pub slow_torrent_dl_rate_threshold: Option<isize>,
+    pub slow_torrent_dl_rate_threshold: Option<i64>,
     /// Upload rate in KiB/s for a torrent to be considered "slow"
-    pub slow_torrent_ul_rate_threshold: Option<isize>,
+    pub slow_torrent_ul_rate_threshold: Option<i64>,
     /// Seconds a torrent should be inactive before considered "slow"
-    pub slow_torrent_inactive_timer: Option<isize>,
+    pub slow_torrent_inactive_timer: Option<i64>,
     /// True if share ratio limit is enabled
     pub max_ratio_enabled: Option<bool>,
     /// Get the global share ratio limit
@@ -398,25 +398,25 @@ pub struct Preferences {
     /// Action performed when a torrent reaches the maximum share ratio. See list of possible values here below.
     pub max_ratio_act: Option<RatioAct>,
     /// Port for incoming connections
-    pub listen_port: Option<isize>,
+    pub listen_port: Option<i64>,
     /// True if UPnP/NAT-PMP is enabled
     pub upnp: Option<bool>,
     /// True if the port is randomly selected
     pub random_port: Option<bool>,
     /// Global download speed limit in KiB/s; -1 means no limit is applied
-    pub dl_limit: Option<isize>,
+    pub dl_limit: Option<i64>,
     /// Global upload speed limit in KiB/s; -1 means no limit is applied
-    pub up_limit: Option<isize>,
+    pub up_limit: Option<i64>,
     /// Maximum global number of simultaneous connections
-    pub max_connec: Option<isize>,
+    pub max_connec: Option<i64>,
     /// Maximum number of simultaneous connections per torrent
-    pub max_connec_per_torrent: Option<isize>,
+    pub max_connec_per_torrent: Option<i64>,
     /// Maximum number of upload slots
-    pub max_uploads: Option<isize>,
+    pub max_uploads: Option<i64>,
     /// Maximum number of upload slots per torrent
-    pub max_uploads_per_torrent: Option<isize>,
+    pub max_uploads_per_torrent: Option<i64>,
     /// Timeout in seconds for a stopped announce request to trackers
-    pub stop_tracker_timeout: Option<isize>,
+    pub stop_tracker_timeout: Option<i64>,
     /// True if the advanced libtorrent option piece_extent_affinity is enabled
     pub enable_piece_extent_affinity: Option<bool>,
     /// Bittorrent Protocol to use (see list of possible values below)
@@ -428,19 +428,19 @@ pub struct Preferences {
     /// True if [du]l_limit should be applied to peers on the LAN
     pub limit_lan_peers: Option<bool>,
     /// Alternative global download speed limit in KiB/s
-    pub alt_dl_limit: Option<isize>,
+    pub alt_dl_limit: Option<i64>,
     /// Alternative global upload speed limit in KiB/s
-    pub alt_up_limit: Option<isize>,
+    pub alt_up_limit: Option<i64>,
     /// True if alternative limits should be applied according to schedule
     pub scheduler_enabled: Option<bool>,
     /// Scheduler starting hour
-    pub schedule_from_hour: Option<isize>,
+    pub schedule_from_hour: Option<i64>,
     /// Scheduler starting minute
-    pub schedule_from_min: Option<isize>,
+    pub schedule_from_min: Option<i64>,
     /// Scheduler ending hour
-    pub schedule_to_hour: Option<isize>,
+    pub schedule_to_hour: Option<i64>,
     /// Scheduler ending minute
-    pub schedule_to_min: Option<isize>,
+    pub schedule_to_min: Option<i64>,
     /// Scheduler days. See possible values here below
     pub scheduler_days: Option<SchedulerDay>,
     /// True if DHT is enabled
@@ -458,7 +458,7 @@ pub struct Preferences {
     /// Proxy IP address or domain name
     pub proxy_ip: Option<String>,
     /// Proxy port
-    pub proxy_port: Option<isize>,
+    pub proxy_port: Option<i64>,
     /// True if peer and web seed connections should be proxified; this option will have any effect only in qBittorent built against libtorrent version 0.16.X and higher
     pub proxy_peer_connections: Option<bool>,
     /// True proxy requires authentication; doesn't apply to SOCKS4 proxies
@@ -480,7 +480,7 @@ pub struct Preferences {
     /// IP address to use for the WebUI
     pub web_ui_address: Option<String>,
     /// WebUI port
-    pub web_ui_port: Option<isize>,
+    pub web_ui_port: Option<i64>,
     /// True if UPnP is used for the WebUI port
     pub web_ui_upnp: Option<bool>,
     /// WebUI username
@@ -494,11 +494,11 @@ pub struct Preferences {
     /// True if WebUI cookie Secure flag is enabled
     pub web_ui_secure_cookie_enabled: Option<bool>,
     /// Maximum number of authentication failures before WebUI access ban
-    pub web_ui_max_auth_fail_count: Option<isize>,
+    pub web_ui_max_auth_fail_count: Option<i64>,
     /// WebUI access ban duration in seconds
-    pub web_ui_ban_duration: Option<isize>,
+    pub web_ui_ban_duration: Option<i64>,
     /// Seconds until WebUI is automatically signed off
-    pub web_ui_session_timeout: Option<isize>,
+    pub web_ui_session_timeout: Option<i64>,
     /// True if WebUI host header validation is enabled
     pub web_ui_host_header_validation_enabled: Option<bool>,
     /// True if authentication challenge for loopback address (127.0.0.1) should be disabled
@@ -532,9 +532,9 @@ pub struct Preferences {
     /// Your DDNS domain name
     pub dyndns_domain: Option<String>,
     /// RSS refresh interval
-    pub rss_refresh_interval: Option<isize>,
+    pub rss_refresh_interval: Option<i64>,
     /// Max stored articles per RSS feed
-    pub rss_max_articles_per_feed: Option<isize>,
+    pub rss_max_articles_per_feed: Option<i64>,
     /// Enable processing of RSS feeds
     pub rss_processing_enabled: Option<bool>,
     /// Enable auto-downloading of torrents from the RSS feeds
@@ -554,7 +554,7 @@ pub struct Preferences {
     /// True enables max seeding time
     pub max_seeding_time_enabled: Option<bool>,
     /// Number of minutes to seed a torrent
-    pub max_seeding_time: Option<isize>,
+    pub max_seeding_time: Option<i64>,
     /// TODO
     pub announce_ip: Option<String>,
     /// True always announce to all tiers
@@ -562,22 +562,22 @@ pub struct Preferences {
     /// True always announce to all trackers in a tier
     pub announce_to_all_trackers: Option<bool>,
     /// Number of asynchronous I/O threads
-    pub async_io_threads: Option<isize>,
+    pub async_io_threads: Option<i64>,
     /// List of banned IPs
     #[serde(rename = "banned_IPs")]
     pub banned_ips: Option<String>,
     /// Outstanding memory when checking torrents in MiB
-    pub checking_memory_use: Option<isize>,
+    pub checking_memory_use: Option<i64>,
     /// IP Address to bind to. Empty String means All addresses
     pub current_interface_address: Option<String>,
     /// Network Interface used
     pub current_network_interface: Option<String>,
     /// Disk cache used in MiB
-    pub disk_cache: Option<isize>,
+    pub disk_cache: Option<i64>,
     /// Disk cache expiry interval in seconds
-    pub disk_cache_ttl: Option<isize>,
+    pub disk_cache_ttl: Option<i64>,
     /// Port used for embedded tracker
-    pub embedded_tracker_port: Option<isize>,
+    pub embedded_tracker_port: Option<i64>,
     /// True enables coalesce reads & writes
     pub enable_coalesce_read_write: Option<bool>,
     /// True enables embedded tracker
@@ -589,31 +589,31 @@ pub struct Preferences {
     /// True enables sending of upload piece suggestions
     pub enable_upload_suggestions: Option<bool>,
     /// File pool size
-    pub file_pool_size: Option<isize>,
+    pub file_pool_size: Option<i64>,
     /// Maximal outgoing port (0: Disabled)
-    pub outgoing_ports_max: Option<isize>,
+    pub outgoing_ports_max: Option<i64>,
     /// Minimal outgoing port (0: Disabled)
-    pub outgoing_ports_min: Option<isize>,
+    pub outgoing_ports_min: Option<i64>,
     /// True rechecks torrents on completion
     pub recheck_completed_torrents: Option<bool>,
     /// True resolves peer countries
     pub resolve_peer_countries: Option<bool>,
     /// Save resume data interval in min
-    pub save_resume_data_interval: Option<isize>,
+    pub save_resume_data_interval: Option<i64>,
     /// Send buffer low watermark in KiB
-    pub send_buffer_low_watermark: Option<isize>,
+    pub send_buffer_low_watermark: Option<i64>,
     /// Send buffer watermark in KiB
-    pub send_buffer_watermark: Option<isize>,
+    pub send_buffer_watermark: Option<i64>,
     /// Send buffer watermark factor in percent
-    pub send_buffer_watermark_factor: Option<isize>,
+    pub send_buffer_watermark_factor: Option<i64>,
     /// Socket backlog size
-    pub socket_backlog_size: Option<isize>,
+    pub socket_backlog_size: Option<i64>,
     /// Upload choking algorithm used (see list of possible values below)
     pub upload_choking_algorithm: Option<UploadChokingAlgorithm>,
     /// Upload slots behavior used (see list of possible values below)
     pub upload_slots_behavior: Option<UploadSlotsBehavior>,
     /// UPnP lease duration (0: Permanent lease)
-    pub upnp_lease_duration: Option<isize>,
+    pub upnp_lease_duration: Option<i64>,
     /// μTP-TCP mixed mode algorithm (see list of possible values below)
     pub utp_tcp_mixed_mode: Option<UtpTcpMixedMode>,
 }

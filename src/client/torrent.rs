@@ -106,7 +106,7 @@ impl super::Client {
     pub async fn torrent_contents(
         &self,
         hash: &str,
-        indexes: Option<Vec<usize>>,
+        indexes: Option<Vec<i64>>,
     ) -> Result<Vec<TorrentContent>, Error> {
         let mut url = self.build_url("api/v2/torrents/files").await?;
 
@@ -390,7 +390,7 @@ impl super::Client {
     pub async fn torrent_file_priority(
         &self,
         hash: &str,
-        id: usize,
+        id: i64,
         priority: FilePriority,
     ) -> Result<(), Error> {
         let url = self.build_url("api/v2/torrents/filePrio").await?;
@@ -408,7 +408,7 @@ impl super::Client {
     pub async fn torrent_get_download_limit(
         &self,
         hashes: Option<Vec<&str>>,
-    ) -> Result<HashMap<String, usize>, Error> {
+    ) -> Result<HashMap<String, i64>, Error> {
         let mut url = self.build_url("api/v2/torrents/downloadLimit").await?;
 
         let mut query = url.query_pairs_mut();
@@ -424,7 +424,7 @@ impl super::Client {
             .get(url)
             .send()
             .await?
-            .json::<HashMap<String, usize>>()
+            .json::<HashMap<String, i64>>()
             .await?;
 
         Ok(limites)
@@ -433,7 +433,7 @@ impl super::Client {
     pub async fn torrent_set_download_limit(
         &self,
         hashes: Option<Vec<&str>>,
-        limit: usize,
+        limit: i64,
     ) -> Result<(), Error> {
         let url = self.build_url("api/v2/torrents/setDownloadLimit").await?;
 
@@ -454,8 +454,8 @@ impl super::Client {
         &self,
         hashes: Option<Vec<&str>>,
         ratio_limit: f32,
-        seeding_time_limit: isize,
-        inactive_seeding_time_limit: isize,
+        seeding_time_limit: i64,
+        inactive_seeding_time_limit: i64,
     ) -> Result<(), Error> {
         let url = self.build_url("api/v2/torrents/setShareLimits").await?;
 
@@ -480,7 +480,7 @@ impl super::Client {
     pub async fn torrent_get_upload_limit(
         &self,
         hashes: Option<Vec<&str>>,
-    ) -> Result<HashMap<String, usize>, Error> {
+    ) -> Result<HashMap<String, i64>, Error> {
         let mut url = self.build_url("api/v2/torrents/uploadLimit").await?;
 
         let mut query = url.query_pairs_mut();
@@ -496,7 +496,7 @@ impl super::Client {
             .get(url)
             .send()
             .await?
-            .json::<HashMap<String, usize>>()
+            .json::<HashMap<String, i64>>()
             .await?;
 
         Ok(limites)
@@ -505,7 +505,7 @@ impl super::Client {
     pub async fn torrent_set_upload_limit(
         &self,
         hashes: Option<Vec<&str>>,
-        limit: usize,
+        limit: i64,
     ) -> Result<(), Error> {
         let url = self.build_url("api/v2/torrents/setUploadLimit").await?;
 

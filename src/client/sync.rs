@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl super::Client {
-    pub async fn sync_main_data(&self, rid: Option<usize>) -> Result<MainData, Error> {
+    pub async fn sync_main_data(&self, rid: Option<i64>) -> Result<MainData, Error> {
         let mut url = self.build_url("/api/v2/sync/maindata").await?;
 
         let mut query = url.query_pairs_mut();
@@ -26,11 +26,7 @@ impl super::Client {
 
     // The documentation was incomplete, so I constructed this based on the responses from the API.
     // Fields might be missing or broken
-    pub async fn sync_peers_data(
-        &self,
-        hash: &str,
-        rid: Option<usize>,
-    ) -> Result<PeersData, Error> {
+    pub async fn sync_peers_data(&self, hash: &str, rid: Option<i64>) -> Result<PeersData, Error> {
         let mut url = self.build_url("/api/v2/sync/torrentPeers").await?;
 
         let mut query = url.query_pairs_mut();

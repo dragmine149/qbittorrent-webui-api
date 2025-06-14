@@ -35,7 +35,7 @@ impl super::Client {
         Ok(())
     }
 
-    pub async fn transfer_get_global_download_limit(&self) -> Result<usize, Error> {
+    pub async fn transfer_get_global_download_limit(&self) -> Result<i64, Error> {
         let url = self.build_url("api/v2/transfer/downloadLimit").await?;
 
         let limites = self
@@ -43,13 +43,13 @@ impl super::Client {
             .get(url)
             .send()
             .await?
-            .json::<usize>()
+            .json::<i64>()
             .await?;
 
         Ok(limites)
     }
 
-    pub async fn transfer_set_global_download_limit(&self, limit: usize) -> Result<(), Error> {
+    pub async fn transfer_set_global_download_limit(&self, limit: i64) -> Result<(), Error> {
         let url = self.build_url("api/v2/transfer/setDownloadLimit").await?;
 
         let mut form = multipart::Form::new();
@@ -60,7 +60,7 @@ impl super::Client {
         Ok(())
     }
 
-    pub async fn transfer_get_global_upload_limit(&self) -> Result<usize, Error> {
+    pub async fn transfer_get_global_upload_limit(&self) -> Result<i64, Error> {
         let url = self.build_url("api/v2/transfer/uploadLimit").await?;
 
         let limites = self
@@ -68,13 +68,13 @@ impl super::Client {
             .get(url)
             .send()
             .await?
-            .json::<usize>()
+            .json::<i64>()
             .await?;
 
         Ok(limites)
     }
 
-    pub async fn transfer_set_global_upload_limit(&self, limit: usize) -> Result<(), Error> {
+    pub async fn transfer_set_global_upload_limit(&self, limit: i64) -> Result<(), Error> {
         let url = self.build_url("api/v2/transfer/setUploadLimit").await?;
 
         let mut form = multipart::Form::new();
