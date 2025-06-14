@@ -18,7 +18,7 @@ Supported Qbittorrent version: `5.0`
 - [x] Get application version
 - [x] Get API version
 - [x] Get build info
-- [ ] Shutdown application
+- [x] Shutdown application
 - [ ] Get application preferences
 - [ ] Set application preferences
 - [ ] Get default save path

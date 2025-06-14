@@ -42,4 +42,12 @@ impl super::Client {
 
         Ok(build_info)
     }
+
+    pub async fn app_shutdown(&self) -> Result<(), Error> {
+        let url = self.build_url("/api/v2/app/shutdown").await?;
+
+        self.http_client.post(url).send().await?;
+
+        Ok(())
+    }
 }
