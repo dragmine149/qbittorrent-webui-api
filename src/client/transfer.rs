@@ -3,7 +3,10 @@ use reqwest::multipart;
 use crate::{error::Error, models::TransferInfo};
 
 impl super::Api {
-    pub async fn transfer_get_global_transfer_info(&self) -> Result<TransferInfo, Error> {
+    /// Get global transfer info
+    ///
+    /// This method returns info you usually see in qBt status bar.
+    pub async fn global_transfer_info(&self) -> Result<TransferInfo, Error> {
         let url = self._build_url("api/v2/transfer/info").await?;
 
         let info = self
@@ -17,7 +20,10 @@ impl super::Api {
         Ok(info)
     }
 
-    pub async fn transfer_get_alternative_speed_limit(&self) -> Result<u8, Error> {
+    /// Get alternative speed limits state
+    ///
+    /// The response is 1 if alternative speed limits are enabled, 0 otherwise.
+    pub async fn alternative_speed_limit(&self) -> Result<u8, Error> {
         let url = self._build_url("api/v2/transfer/speedLimitsMode").await?;
 
         let is_active = self.http_client.get(url).send().await?.json::<u8>().await?;
@@ -25,7 +31,8 @@ impl super::Api {
         Ok(is_active)
     }
 
-    pub async fn transfer_toggle_alternative_speed_limit(&self) -> Result<(), Error> {
+    /// Toggle alternative speed limits
+    pub async fn toggle_alternative_speed_limit(&self) -> Result<(), Error> {
         let url = self
             ._build_url("api/v2/transfer/toggleSpeedLimitsMode")
             .await?;
@@ -35,7 +42,8 @@ impl super::Api {
         Ok(())
     }
 
-    pub async fn transfer_get_global_download_limit(&self) -> Result<i64, Error> {
+    /// Get global download limit
+    pub async fn global_download_limit(&self) -> Result<u64, Error> {
         let url = self._build_url("api/v2/transfer/downloadLimit").await?;
 
         let limites = self
@@ -43,13 +51,18 @@ impl super::Api {
             .get(url)
             .send()
             .await?
-            .json::<i64>()
+            .json::<u64>()
             .await?;
 
         Ok(limites)
     }
 
-    pub async fn transfer_set_global_download_limit(&self, limit: i64) -> Result<(), Error> {
+    /// Set global download limit
+    ///
+    /// # Arguments
+    ///
+    /// * `limit` - The global download speed limit to set in bytes/second. `0` if no limit.
+    pub async fn set_global_download_limit(&self, limit: u64) -> Result<(), Error> {
         let url = self._build_url("api/v2/transfer/setDownloadLimit").await?;
 
         let mut form = multipart::Form::new();
@@ -60,7 +73,8 @@ impl super::Api {
         Ok(())
     }
 
-    pub async fn transfer_get_global_upload_limit(&self) -> Result<i64, Error> {
+    /// Get global upload limit
+    pub async fn global_upload_limit(&self) -> Result<u64, Error> {
         let url = self._build_url("api/v2/transfer/uploadLimit").await?;
 
         let limites = self
@@ -68,13 +82,18 @@ impl super::Api {
             .get(url)
             .send()
             .await?
-            .json::<i64>()
+            .json::<u64>()
             .await?;
 
         Ok(limites)
     }
 
-    pub async fn transfer_set_global_upload_limit(&self, limit: i64) -> Result<(), Error> {
+    /// Set global upload limit
+    ///
+    /// # Arguments
+    ///
+    /// * `limit` - The global upload speed limit to set in bytes/second. `0` if no limit.
+    pub async fn set_global_upload_limit(&self, limit: u64) -> Result<(), Error> {
         let url = self._build_url("api/v2/transfer/setUploadLimit").await?;
 
         let mut form = multipart::Form::new();
@@ -85,7 +104,12 @@ impl super::Api {
         Ok(())
     }
 
-    pub async fn transfer_peers_ban(&self, peers: Vec<String>) -> Result<(), Error> {
+    /// Ban peers
+    ///
+    /// # Arguments
+    ///
+    /// * `peers` - The peer to ban, or multiple peers. Each peer is a colon-separated `host:port`
+    pub async fn peers_ban(&self, peers: Vec<String>) -> Result<(), Error> {
         let url = self._build_url("api/v2/transfer/banPeers").await?;
 
         let mut form = multipart::Form::new();
