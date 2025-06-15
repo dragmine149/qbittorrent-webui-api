@@ -1,12 +1,21 @@
+/// Torrent List/info parameter object
 #[derive(Debug)]
 pub struct TorrentListParams {
+    /// Filter torrent list by state. Allowed state filters: TorrentState
     pub filter: Option<TorrentState>,
+    /// Get torrents with the given category (empty string means "without category"; no "category" parameter means "any category"). Remember to URL-encode the category name. For example, `My category` becomes `My%20category`
     pub category: Option<String>,
+    /// Get torrents with the given tag (empty string means "without tag"; no "tag" parameter means "any tag". Remember to URL-encode the category name. For example, `My tag` becomes `My%20tag`
     pub tag: Option<String>,
+    /// Sort torrents by given key. They can be sorted using any field of the response's JSON array (which are documented below) as the sort key.
     pub sort: Option<TorrentSort>,
+    /// Enable reverse sorting. Defaults to `false`
     pub reverse: bool,
+    /// Limit the number of torrents returned
     pub limit: Option<i64>,
+    /// Set offset (if less than 0, offset from end)
     pub offset: Option<i64>,
+    /// Filter by hashes. Can contain multiple hashes separated by `|`
     pub hashes: Option<Vec<String>>,
 }
 
@@ -25,6 +34,7 @@ impl TorrentListParams {
     }
 }
 
+/// Posibel Torrent states
 #[derive(Debug)]
 pub enum TorrentState {
     All,
@@ -60,54 +70,101 @@ impl ToString for TorrentState {
     }
 }
 
+/// Torrent sort fields
 #[derive(Debug)]
 pub enum TorrentSort {
+    /// Time when the torrent was added to the client
     AddedOn,
+    /// Amount of data left to download
     AmountLeft,
+    /// Whether this torrent is managed by Automatic Torrent Management
     AutoTmm,
+    /// Percentage of file pieces currently available
     Availability,
+    /// Category of the torrent
     Category,
+    /// Amount of transfer data completed
     Completed,
+    /// Time when the torrent completed
     CompletionOn,
+    /// Torrent content path
     ContentPath,
+    /// Torrent download speed limit.
     DlLimit,
+    /// Torrent download speed
     Dlspeed,
+    /// Amount of data downloaded
     Downloaded,
+    /// Amount of data downloaded this session
     DownloadedSession,
-    ETA,
+    /// Torrent ETA
+    Eta,
+    /// First last piece are prioritized
     FLPiecePrio,
+    /// Force start is enabled for this torrent
     ForceStart,
+    /// Torrent hash
     Hash,
+    /// True if torrent is from a private tracker
     Private,
+    /// Last time when a chunk was downloaded/uploaded
     LastActivity,
+    /// Magnet URI corresponding to this torrent
     MagnetUri,
+    /// Maximum share ratio until torrent is stopped from seeding/uploading
     MaxRatio,
+    /// Maximum seeding time until torrent is stopped from seeding
     MaxSeedingTime,
+    /// Torrent name
     Name,
+    /// Number of seeds in the swarm
     NumComplete,
+    /// Number of leechers in the swarm
     NumIncomplete,
+    /// Number of leechers connected to
     NumLeechs,
+    /// Number of seeds connected to
     NumSeeds,
+    /// Torrent priority
     Priority,
+    /// Torrent progress
     Progress,
+    /// Torrent share ratio.
     Ratio,
     RatioLimit,
+    /// Time until the next tracker reannounce
     Reannounce,
+    /// Path where this torrent's data is stored
     SavePath,
+    /// Torrent elapsed time while complete
     SeedingTime,
+    /// Torrent elapsed time while complete limit
     SeedingTimeLimit,
+    /// Time when this torrent was last seen complete
     SeenComplete,
+    /// True if sequential download is enabled
     SeqDl,
+    /// Total size of files selected for download
     Size,
+    /// Torrent state.
     State,
+    /// Super seeding state
     SuperSeeding,
+    /// Tag list of the torrent
     Tags,
+    /// Total active time
     TimeActive,
+    /// Total size of all file in this torrent. Including unselected ones
     TotalSize,
+    /// The first tracker with working status. Empty string if no tracker is working.
     Tracker,
+    /// Torrent upload speed limit
     UpLimit,
+    /// Amount of data uploaded
     Uploaded,
+    /// Amount of data uploaded this session
     UploadedSession,
+    /// Torrent upload speed
     Upspeed,
 }
 
@@ -126,7 +183,7 @@ impl ToString for TorrentSort {
             Self::Dlspeed => String::from("dlspeed"),
             Self::Downloaded => String::from("downloaded"),
             Self::DownloadedSession => String::from("downloaded_session"),
-            Self::ETA => String::from("eta"),
+            Self::Eta => String::from("eta"),
             Self::FLPiecePrio => String::from("f_l_piece_prio"),
             Self::ForceStart => String::from("force_start"),
             Self::Hash => String::from("hash"),
@@ -165,22 +222,39 @@ impl ToString for TorrentSort {
     }
 }
 
+/// Add torrent parameter object
 #[derive(Debug)]
 pub struct TorrentAddUrls {
+    /// Torrent URLs separated with newlines
     pub urls: Vec<String>,
+    // TODO: add `pub torrents`
+    /// Download folder
     pub savepath: Option<String>,
+    /// Category for the torrent
     pub category: Option<String>,
+    /// Tags for the torrent, split by `,`
     pub tags: Option<Vec<String>>,
+    /// Skip hash checking. Possible values are `true`, `false` (default)
     pub skip_checking: bool,
+    /// Add torrents in the paused state. Possible values are `true`, `false` (default)
     pub paused: bool,
+    /// Create the root folder. Possible values are `"true"`, `"false"`, unset (default)
     pub root_folder: Option<String>,
+    /// Rename torrent
     pub rename: Option<String>,
+    /// Set torrent upload speed limit. Unit in bytes/second
     pub up_limit: Option<i64>,
+    /// Set torrent download speed limit. Unit in bytes/second
     pub dl_limit: Option<i64>,
+    /// Set torrent share ratio limit
     pub ratio_limit: Option<f32>,
+    /// Set torrent seeding time limit. Unit in minutes
     pub seeding_time_limit: Option<i64>,
+    /// Whether Automatic Torrent Management should be used
     pub auto_tmm: bool,
+    /// Enable sequential download. Possible values are `true`, `false` (default)
     pub sequential_download: bool,
+    /// Prioritize download first last piece. Possible values are `true`, `false` (default)
     pub first_last_piece_prio: bool,
 }
 
@@ -206,21 +280,31 @@ impl TorrentAddUrls {
     }
 }
 
+/// List Trackers parameter object
 #[derive(Debug)]
 pub struct TorrentTrackersList {
+    /// The hash of the torrent
     pub hash: String,
+    /// URLs to remove, separated by `|`
     pub urls: Vec<String>,
 }
 
+/// Edit Trackers parameter object
 #[derive(Debug)]
 pub struct TorrentTrackersEdit {
+    /// The hash of the torrent
     pub hash: String,
+    /// The tracker URL you want to edit
     pub orig_url: String,
+    /// The new URL to replace the `origUrl`
     pub new_url: String,
 }
 
+/// Add Peers parameter object
 #[derive(Debug)]
 pub struct TorrentAddPeers {
+    /// The hash of the torrent, or multiple hashes separated by a pipe `|`
     pub hashes: Vec<String>,
+    /// The peer to add, or multiple peers separated by a pipe `|`. Each peer is a colon-separated `host:port`
     pub peers: Vec<String>,
 }
