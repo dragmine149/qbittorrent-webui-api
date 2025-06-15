@@ -5,8 +5,7 @@ use reqwest::multipart;
 use crate::{
     error::Error,
     models::{
-        FilePriority, PiecesState, TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker,
-        TorrentWebSeed,
+        FilePriority, PiecesState, TorrentContent, TorrentInfo, TorrentProperties, Tracker, WebSeed,
     },
     parameters::{TorrentAddUrls, TorrentListParams},
 };
@@ -81,7 +80,7 @@ impl super::Api {
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to get the trackers of.
-    pub async fn trackers(&self, hash: &str) -> Result<Vec<TorrentTracker>, Error> {
+    pub async fn trackers(&self, hash: &str) -> Result<Vec<Tracker>, Error> {
         let mut url = self._build_url("api/v2/torrents/trackers").await?;
         url.set_query(Some(&format!("hash={}", hash)));
 
@@ -90,7 +89,7 @@ impl super::Api {
             .get(url)
             .send()
             .await?
-            .json::<Vec<TorrentTracker>>()
+            .json::<Vec<Tracker>>()
             .await?;
 
         Ok(trackers)
@@ -101,7 +100,7 @@ impl super::Api {
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to get the webseeds of.
-    pub async fn webseeds(&self, hash: &str) -> Result<Vec<TorrentWebSeed>, Error> {
+    pub async fn webseeds(&self, hash: &str) -> Result<Vec<WebSeed>, Error> {
         let mut url = self._build_url("api/v2/torrents/webseeds").await?;
         url.set_query(Some(&format!("hash={}", hash)));
 
@@ -110,7 +109,7 @@ impl super::Api {
             .get(url)
             .send()
             .await?
-            .json::<Vec<TorrentWebSeed>>()
+            .json::<Vec<WebSeed>>()
             .await?;
 
         Ok(webseeds)

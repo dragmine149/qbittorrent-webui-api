@@ -76,7 +76,7 @@ pub struct TorrentProperties {
 
 /// Torrent tracker data object
 #[derive(Debug, Deserialize)]
-pub struct TorrentTracker {
+pub struct Tracker {
     /// Tracker url
     pub url: String,
     /// Tracker status. See the table below for possible values
@@ -97,7 +97,7 @@ pub struct TorrentTracker {
 
 /// Web seed data object
 #[derive(Debug, Deserialize)]
-pub struct TorrentWebSeed {
+pub struct WebSeed {
     /// Web seed URL
     pub url: String,
 }

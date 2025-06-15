@@ -103,14 +103,14 @@ pub struct PeersData {
     /// Flags
     pub show_flags: Option<bool>,
     /// List of peers
-    pub peers: Option<HashMap<String, PeerData>>,
+    pub peers: Option<HashMap<String, Peer>>,
     /// List of removed peers
     pub peers_removed: Option<Vec<String>>,
 }
 
 /// Peer resposne data object.
 #[derive(Debug, Deserialize)]
-pub struct PeerData {
+pub struct Peer {
     /// Client used by the peer. (μTorrent, qBittorrent, ect...)
     pub client: Option<String>,
     /// Used connection

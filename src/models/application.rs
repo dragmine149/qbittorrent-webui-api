@@ -241,7 +241,7 @@ pub struct Preferences {
     /// Scheduler ending minute
     pub schedule_to_min: Option<i64>,
     /// Scheduler days. See possible values here below
-    pub scheduler_days: Option<SchedulerDay>,
+    pub scheduler_days: Option<SchedulerTime>,
     /// True if DHT is enabled
     pub dht: Option<bool>,
     /// True if PeX is enabled
@@ -481,7 +481,7 @@ pub enum BittorrentProtocol {
 /// Scheduler
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
-pub enum SchedulerDay {
+pub enum SchedulerTime {
     /// Every day
     Day = 0,
     /// Every Weekday
