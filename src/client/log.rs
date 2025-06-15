@@ -4,7 +4,13 @@ use crate::{
 };
 
 impl super::Api {
-    pub async fn get_log(
+    /// Get log
+    ///
+    /// # Arguments
+    ///
+    /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
+    /// * `log_types` - List of desierd log types. (default: all)
+    pub async fn log(
         &self,
         last_known_id: Option<i64>,
         log_types: Option<Vec<LogType>>,
@@ -54,7 +60,12 @@ impl super::Api {
         Ok(log)
     }
 
-    pub async fn get_log_peer(&self, last_known_id: Option<i64>) -> Result<Vec<LogPeers>, Error> {
+    /// Get peer log
+    ///
+    /// # Arguments
+    ///
+    /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
+    pub async fn peer_log(&self, last_known_id: Option<i64>) -> Result<Vec<LogPeers>, Error> {
         let mut url = self._build_url("api/v2/log/peers").await?;
         if let Some(id) = last_known_id {
             url.set_query(Some(&format!("last_known_id={}", id)));
