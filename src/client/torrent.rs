@@ -9,7 +9,7 @@ use crate::{
         FilePriority, TorrentContent, TorrentInfo, TorrentProperties, TorrentTracker,
         TorrentWebSeed,
     },
-    parames::{
+    parameters::{
         TorrentAddPeers, TorrentAddUrls, TorrentListParams, TorrentTrackersEdit,
         TorrentTrackersList,
     },
