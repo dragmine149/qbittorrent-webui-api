@@ -3,7 +3,7 @@ use crate::error::Error;
 impl super::Api {
     /// Create a new logedin API instance.
     pub async fn new_logedin(url: &str, username: &str, password: &str) -> Result<Self, Error> {
-        let api = Self::_new(url)?;
+        let api = Self::new(url)?;
 
         api.login(username, password).await?;
 
