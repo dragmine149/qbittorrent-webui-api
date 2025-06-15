@@ -4,7 +4,15 @@ use crate::{
 };
 
 impl super::Api {
-    pub async fn sync_main_data(&self, rid: Option<i64>) -> Result<MainData, Error> {
+    /// Get main data
+    ///
+    /// If the given `rid` is different from the one of last server reply,
+    /// `full_update` will be `true`
+    ///
+    /// # Arguments
+    ///
+    /// * `rid` - Response ID. If not provided, `rid=0` will be assumed.
+    pub async fn main_data(&self, rid: Option<i64>) -> Result<MainData, Error> {
         let mut url = self._build_url("/api/v2/sync/maindata").await?;
 
         let mut query = url.query_pairs_mut();
@@ -24,9 +32,16 @@ impl super::Api {
         Ok(data)
     }
 
-    // The documentation was incomplete, so I constructed this based on the responses from the API.
-    // Fields might be missing or broken
-    pub async fn sync_peers_data(&self, hash: &str, rid: Option<i64>) -> Result<PeersData, Error> {
+    /// Get torrent peers data
+    ///
+    /// Fetches main data changes since the last request. If the given `rid` is different from the one of last server reply,
+    /// `full_update` will be `true`
+    ///
+    /// # Arguments
+    ///
+    /// * `hash` - Torrent hash.
+    /// * `rid` - Response ID. If not provided, `rid=0` will be assumed.
+    pub async fn peers_data(&self, hash: &str, rid: Option<i64>) -> Result<PeersData, Error> {
         let mut url = self._build_url("/api/v2/sync/torrentPeers").await?;
 
         let mut query = url.query_pairs_mut();
