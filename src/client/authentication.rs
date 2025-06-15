@@ -19,9 +19,9 @@ impl Creddentials {
     }
 }
 
-impl super::Client {
+impl super::Api {
     pub async fn login(&self, cred: Creddentials) -> Result<(), Error> {
-        let url = self.build_url("/api/v2/auth/login").await?;
+        let url = self._build_url("/api/v2/auth/login").await?;
         let res = self
             .http_client
             .post(url)
@@ -38,7 +38,7 @@ impl super::Client {
     }
 
     pub async fn logout(&self) -> Result<(), Error> {
-        let url = self.build_url("/api/v2/logout").await?;
+        let url = self._build_url("/api/v2/logout").await?;
 
         self.http_client.post(url).send().await?;
 

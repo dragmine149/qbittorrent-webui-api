@@ -2,7 +2,8 @@ use core::str;
 use std::str::FromStr;
 
 use reqwest::{Client as ReqwestClient, Url};
-use tokio::sync::RwLock;
+
+use crate::error::Error;
 
 mod application;
 mod authentication;
@@ -11,28 +12,29 @@ mod sync;
 mod torrent;
 mod transfer;
 
-use crate::error::Error;
-
 pub use authentication::Creddentials;
 
-pub struct Client {
+/// Represents a client for interacting with a remote API, handling HTTP requests.
+pub struct Api {
     http_client: ReqwestClient,
-    base_url: RwLock<Url>,
+    base_url: tokio::sync::RwLock<Url>,
 }
 
-impl Client {
-    pub async fn new(url: &str) -> Result<Self, Error> {
+impl Api {
+    /// Creates a new `API` instance.
+    pub fn new(url: &str) -> Result<Self, Error> {
         let http_client = ReqwestClient::builder().cookie_store(true).build()?;
 
         let base_url = Url::from_str(url)?;
 
         Ok(Self {
             http_client: http_client,
-            base_url: RwLock::new(base_url),
+            base_url: tokio::sync::RwLock::new(base_url),
         })
     }
 
-    async fn build_url(&self, endpoint: &str) -> Result<Url, Error> {
+    /// Helper for constructing API URLs
+    async fn _build_url(&self, endpoint: &str) -> Result<Url, Error> {
         let base_url = self.base_url.read().await;
         let url = base_url.join(endpoint)?;
 

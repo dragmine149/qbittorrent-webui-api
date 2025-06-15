@@ -3,13 +3,13 @@ use crate::{
     models::{LogItem, LogPeers, LogType},
 };
 
-impl super::Client {
+impl super::Api {
     pub async fn get_log(
         &self,
         last_known_id: Option<i64>,
         log_types: Option<Vec<LogType>>,
     ) -> Result<Vec<LogItem>, Error> {
-        let mut url = self.build_url("api/v2/log/main").await?;
+        let mut url = self._build_url("api/v2/log/main").await?;
 
         let mut query = url.query_pairs_mut();
         if let Some(last_known_id) = last_known_id {
@@ -55,7 +55,7 @@ impl super::Client {
     }
 
     pub async fn get_log_peer(&self, last_known_id: Option<i64>) -> Result<Vec<LogPeers>, Error> {
-        let mut url = self.build_url("api/v2/log/peers").await?;
+        let mut url = self._build_url("api/v2/log/peers").await?;
         if let Some(id) = last_known_id {
             url.set_query(Some(&format!("last_known_id={}", id)));
         }

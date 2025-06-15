@@ -15,12 +15,12 @@ use crate::{
     },
 };
 
-impl super::Client {
+impl super::Api {
     pub async fn torrent_list(
         &self,
         parames: TorrentListParams,
     ) -> Result<Vec<TorrentInfo>, Error> {
-        let mut url = self.build_url("api/v2/torrents/info").await?;
+        let mut url = self._build_url("api/v2/torrents/info").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("reverse", &parames.reverse.to_string());
@@ -59,7 +59,7 @@ impl super::Client {
     }
 
     pub async fn torrent_properties(&self, hash: &str) -> Result<TorrentProperties, Error> {
-        let mut url = self.build_url("api/v2/torrents/properties").await?;
+        let mut url = self._build_url("api/v2/torrents/properties").await?;
         url.set_query(Some(&format!("hash={}", hash)));
 
         let torrent = self
@@ -74,7 +74,7 @@ impl super::Client {
     }
 
     pub async fn torrent_trackers(&self, hash: &str) -> Result<Vec<TorrentTracker>, Error> {
-        let mut url = self.build_url("api/v2/torrents/trackers").await?;
+        let mut url = self._build_url("api/v2/torrents/trackers").await?;
         url.set_query(Some(&format!("hash={}", hash)));
 
         let trackers = self
@@ -89,7 +89,7 @@ impl super::Client {
     }
 
     pub async fn torrent_webseeds(&self, hash: &str) -> Result<Vec<TorrentWebSeed>, Error> {
-        let mut url = self.build_url("api/v2/torrents/webseeds").await?;
+        let mut url = self._build_url("api/v2/torrents/webseeds").await?;
         url.set_query(Some(&format!("hash={}", hash)));
 
         let webseeds = self
@@ -108,7 +108,7 @@ impl super::Client {
         hash: &str,
         indexes: Option<Vec<i64>>,
     ) -> Result<Vec<TorrentContent>, Error> {
-        let mut url = self.build_url("api/v2/torrents/files").await?;
+        let mut url = self._build_url("api/v2/torrents/files").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hash", &hash);
@@ -136,7 +136,7 @@ impl super::Client {
     }
 
     pub async fn torrent_pieces_states(&self, hash: &str) -> Result<Vec<u8>, Error> {
-        let mut url = self.build_url("api/v2/torrents/pieceStates").await?;
+        let mut url = self._build_url("api/v2/torrents/pieceStates").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hash", &hash);
@@ -154,7 +154,7 @@ impl super::Client {
     }
 
     pub async fn torrent_pieces_hashes(&self, hash: &str) -> Result<Vec<String>, Error> {
-        let mut url = self.build_url("api/v2/torrents/pieceHashes").await?;
+        let mut url = self._build_url("api/v2/torrents/pieceHashes").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hash", &hash);
@@ -172,7 +172,7 @@ impl super::Client {
     }
 
     pub async fn torrent_stop(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self.build_url("api/v2/torrents/stop").await?;
+        let mut url = self._build_url("api/v2/torrents/stop").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hashes", &hashes.join("|"));
@@ -184,7 +184,7 @@ impl super::Client {
     }
 
     pub async fn torrent_start(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self.build_url("api/v2/torrents/start").await?;
+        let mut url = self._build_url("api/v2/torrents/start").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hashes", &hashes.join("|"));
@@ -196,7 +196,7 @@ impl super::Client {
     }
 
     pub async fn torrent_delete(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
-        let mut url = self.build_url("api/v2/torrents/delete").await?;
+        let mut url = self._build_url("api/v2/torrents/delete").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hashes", &hashes.join("|"));
@@ -209,7 +209,7 @@ impl super::Client {
     }
 
     pub async fn torrent_recheck(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self.build_url("api/v2/torrents/recheck").await?;
+        let mut url = self._build_url("api/v2/torrents/recheck").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hashes", &hashes.join("|"));
@@ -221,7 +221,7 @@ impl super::Client {
     }
 
     pub async fn torrent_reannounce(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self.build_url("api/v2/torrents/reannounce").await?;
+        let mut url = self._build_url("api/v2/torrents/reannounce").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hashes", &hashes.join("|"));
@@ -233,7 +233,7 @@ impl super::Client {
     }
 
     pub async fn torrent_add(&self, params: TorrentAddUrls) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/add").await?;
+        let url = self._build_url("api/v2/torrents/add").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("urls", params.urls.join("\n"));
@@ -279,7 +279,7 @@ impl super::Client {
     }
 
     pub async fn torrent_trackers_add(&self, params: TorrentTrackersList) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/addTrackers").await?;
+        let url = self._build_url("api/v2/torrents/addTrackers").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hash", params.hash);
@@ -291,7 +291,7 @@ impl super::Client {
     }
 
     pub async fn torrent_trackers_edit(&self, params: TorrentTrackersEdit) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/editTracker").await?;
+        let url = self._build_url("api/v2/torrents/editTracker").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hash", params.hash);
@@ -304,7 +304,7 @@ impl super::Client {
     }
 
     pub async fn torrent_trackers_delete(&self, params: TorrentTrackersList) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/removeTrackers").await?;
+        let url = self._build_url("api/v2/torrents/removeTrackers").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hash", params.hash);
@@ -316,7 +316,7 @@ impl super::Client {
     }
 
     pub async fn torrent_peers_add(&self, params: TorrentAddPeers) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/addPeers").await?;
+        let url = self._build_url("api/v2/torrents/addPeers").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hashes", params.hashes.join("|"));
@@ -328,7 +328,7 @@ impl super::Client {
     }
 
     pub async fn torrent_increase_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/increasePrio").await?;
+        let url = self._build_url("api/v2/torrents/increasePrio").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -343,7 +343,7 @@ impl super::Client {
     }
 
     pub async fn torrent_decrease_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/decreasePrio").await?;
+        let url = self._build_url("api/v2/torrents/decreasePrio").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -358,7 +358,7 @@ impl super::Client {
     }
 
     pub async fn torrent_max_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/topPrio").await?;
+        let url = self._build_url("api/v2/torrents/topPrio").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -373,7 +373,7 @@ impl super::Client {
     }
 
     pub async fn torrent_min_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/bottomPrio").await?;
+        let url = self._build_url("api/v2/torrents/bottomPrio").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -393,7 +393,7 @@ impl super::Client {
         id: i64,
         priority: FilePriority,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/filePrio").await?;
+        let url = self._build_url("api/v2/torrents/filePrio").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
@@ -409,7 +409,7 @@ impl super::Client {
         &self,
         hashes: Option<Vec<&str>>,
     ) -> Result<HashMap<String, i64>, Error> {
-        let mut url = self.build_url("api/v2/torrents/downloadLimit").await?;
+        let mut url = self._build_url("api/v2/torrents/downloadLimit").await?;
 
         let mut query = url.query_pairs_mut();
         if let Some(hashes) = hashes {
@@ -435,7 +435,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         limit: i64,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setDownloadLimit").await?;
+        let url = self._build_url("api/v2/torrents/setDownloadLimit").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -457,7 +457,7 @@ impl super::Client {
         seeding_time_limit: i64,
         inactive_seeding_time_limit: i64,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setShareLimits").await?;
+        let url = self._build_url("api/v2/torrents/setShareLimits").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -481,7 +481,7 @@ impl super::Client {
         &self,
         hashes: Option<Vec<&str>>,
     ) -> Result<HashMap<String, i64>, Error> {
-        let mut url = self.build_url("api/v2/torrents/uploadLimit").await?;
+        let mut url = self._build_url("api/v2/torrents/uploadLimit").await?;
 
         let mut query = url.query_pairs_mut();
         if let Some(hashes) = hashes {
@@ -507,7 +507,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         limit: i64,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setUploadLimit").await?;
+        let url = self._build_url("api/v2/torrents/setUploadLimit").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -527,7 +527,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         location: &str,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setLocation").await?;
+        let url = self._build_url("api/v2/torrents/setLocation").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -543,7 +543,7 @@ impl super::Client {
     }
 
     pub async fn torrent_set_name(&self, hash: &str, name: &str) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setLocation").await?;
+        let url = self._build_url("api/v2/torrents/setLocation").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
@@ -559,7 +559,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         category: &str,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setCategory").await?;
+        let url = self._build_url("api/v2/torrents/setCategory").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -575,7 +575,7 @@ impl super::Client {
     }
 
     pub async fn torrent_categories(&self) -> Result<Vec<String>, Error> {
-        let url = self.build_url("api/v2/torrents/categories").await?;
+        let url = self._build_url("api/v2/torrents/categories").await?;
 
         let categories = self
             .http_client
@@ -593,7 +593,7 @@ impl super::Client {
         category: &str,
         save_path: &str,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/createCategory").await?;
+        let url = self._build_url("api/v2/torrents/createCategory").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("category", category.to_string());
@@ -609,7 +609,7 @@ impl super::Client {
         category: &str,
         save_path: &str,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/editCategory").await?;
+        let url = self._build_url("api/v2/torrents/editCategory").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("category", category.to_string());
@@ -621,7 +621,7 @@ impl super::Client {
     }
 
     pub async fn torrent_remove_categories(&self, categories: Vec<&str>) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/removeCategories").await?;
+        let url = self._build_url("api/v2/torrents/removeCategories").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("categories", categories.join("\n"));
@@ -636,7 +636,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         tags: Vec<&str>,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/addTags").await?;
+        let url = self._build_url("api/v2/torrents/addTags").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -656,7 +656,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         tags: Vec<&str>,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/removeTags").await?;
+        let url = self._build_url("api/v2/torrents/removeTags").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -672,7 +672,7 @@ impl super::Client {
     }
 
     pub async fn torrent_tags(&self) -> Result<Vec<String>, Error> {
-        let url = self.build_url("api/v2/torrents/tags").await?;
+        let url = self._build_url("api/v2/torrents/tags").await?;
 
         let tags = self
             .http_client
@@ -686,7 +686,7 @@ impl super::Client {
     }
 
     pub async fn torrent_create_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/createTags").await?;
+        let url = self._build_url("api/v2/torrents/createTags").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("tags", tags.join(","));
@@ -697,7 +697,7 @@ impl super::Client {
     }
 
     pub async fn torrent_delete_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/deleteTags").await?;
+        let url = self._build_url("api/v2/torrents/deleteTags").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("tags", tags.join(","));
@@ -712,7 +712,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         enable: bool,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setAutoManagement").await?;
+        let url = self._build_url("api/v2/torrents/setAutoManagement").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -732,7 +732,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
     ) -> Result<(), Error> {
         let url = self
-            .build_url("api/v2/torrents/toggleSequentialDownload")
+            ._build_url("api/v2/torrents/toggleSequentialDownload")
             .await?;
 
         let mut form = multipart::Form::new();
@@ -752,7 +752,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
     ) -> Result<(), Error> {
         let url = self
-            .build_url("api/v2/torrents/toggleFirstLastPiecePrio")
+            ._build_url("api/v2/torrents/toggleFirstLastPiecePrio")
             .await?;
 
         let mut form = multipart::Form::new();
@@ -772,7 +772,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         enable: bool,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setForceStart").await?;
+        let url = self._build_url("api/v2/torrents/setForceStart").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -792,7 +792,7 @@ impl super::Client {
         hashes: Option<Vec<&str>>,
         enable: bool,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/setSuperSeeding").await?;
+        let url = self._build_url("api/v2/torrents/setSuperSeeding").await?;
 
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -813,7 +813,7 @@ impl super::Client {
         old_path: &str,
         new_path: &str,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/renameFile").await?;
+        let url = self._build_url("api/v2/torrents/renameFile").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
@@ -831,7 +831,7 @@ impl super::Client {
         old_path: &str,
         new_path: &str,
     ) -> Result<(), Error> {
-        let url = self.build_url("api/v2/torrents/renameFolder").await?;
+        let url = self._build_url("api/v2/torrents/renameFolder").await?;
 
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());

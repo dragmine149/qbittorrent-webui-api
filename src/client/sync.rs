@@ -3,9 +3,9 @@ use crate::{
     models::{MainData, PeersData},
 };
 
-impl super::Client {
+impl super::Api {
     pub async fn sync_main_data(&self, rid: Option<i64>) -> Result<MainData, Error> {
-        let mut url = self.build_url("/api/v2/sync/maindata").await?;
+        let mut url = self._build_url("/api/v2/sync/maindata").await?;
 
         let mut query = url.query_pairs_mut();
         if let Some(rid) = rid {
@@ -27,7 +27,7 @@ impl super::Client {
     // The documentation was incomplete, so I constructed this based on the responses from the API.
     // Fields might be missing or broken
     pub async fn sync_peers_data(&self, hash: &str, rid: Option<i64>) -> Result<PeersData, Error> {
-        let mut url = self.build_url("/api/v2/sync/torrentPeers").await?;
+        let mut url = self._build_url("/api/v2/sync/torrentPeers").await?;
 
         let mut query = url.query_pairs_mut();
         query.append_pair("hash", &hash.to_string());
