@@ -6,7 +6,10 @@ use crate::{
 };
 
 impl super::Api {
-    pub async fn app_qbit_version(&self) -> Result<String, Error> {
+    /// Get Qbittorrent application version
+    ///
+    /// The response is a string withe the application version, e.g. `v5.1.0`
+    pub async fn version(&self) -> Result<String, Error> {
         let url = self._build_url("/api/v2/app/version").await?;
 
         let version = self
@@ -20,7 +23,10 @@ impl super::Api {
         Ok(version)
     }
 
-    pub async fn app_webapi_version(&self) -> Result<String, Error> {
+    /// Get WebAPI version
+    ///
+    /// The response is a string with the WebAPI version, e.g. `2.11.4`
+    pub async fn webapi_version(&self) -> Result<String, Error> {
         let url = self._build_url("/api/v2/app/webapiVersion").await?;
 
         let version = self
@@ -34,7 +40,8 @@ impl super::Api {
         Ok(version)
     }
 
-    pub async fn app_build_info(&self) -> Result<BuildInfo, Error> {
+    /// Get build info
+    pub async fn build_info(&self) -> Result<BuildInfo, Error> {
         let url = self._build_url("/api/v2/app/buildInfo").await?;
 
         let build_info = self
@@ -48,7 +55,8 @@ impl super::Api {
         Ok(build_info)
     }
 
-    pub async fn app_shutdown(&self) -> Result<(), Error> {
+    /// Shutdown Qbittorent application
+    pub async fn shutdown(&self) -> Result<(), Error> {
         let url = self._build_url("/api/v2/app/shutdown").await?;
 
         self.http_client.post(url).send().await?;
@@ -56,7 +64,10 @@ impl super::Api {
         Ok(())
     }
 
-    pub async fn app_preferances(&self) -> Result<Preferences, Error> {
+    /// Get application preferences
+    ///
+    /// Retuns struct with several fields representing the application's settings.
+    pub async fn preferances(&self) -> Result<Preferences, Error> {
         let url = self._build_url("/api/v2/app/preferences").await?;
 
         let preferances = self
@@ -70,7 +81,8 @@ impl super::Api {
         Ok(preferances)
     }
 
-    pub async fn app_set_preferances(&self, preferences: Preferences) -> Result<(), Error> {
+    /// Set application preferences
+    pub async fn set_preferances(&self, preferences: Preferences) -> Result<(), Error> {
         let url = self._build_url("/api/v2/app/setPreferences").await?;
 
         let mut form = multipart::Form::new();
@@ -81,6 +93,7 @@ impl super::Api {
         Ok(())
     }
 
+    /// Get default save path
     pub async fn deafult_save_path(&self) -> Result<String, Error> {
         let url = self._build_url("/api/v2/app/defaultSavePath").await?;
 
