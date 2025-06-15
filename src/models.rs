@@ -3,141 +3,262 @@ use std::collections::HashMap;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
+/// Torrent info resposne object
 #[derive(Debug, Deserialize)]
 pub struct TorrentInfo {
+    /// Time (Unix Epoch) when the torrent was added to the client
     pub added_on: i64,
+    /// Amount of data left to download (bytes)
     pub amount_left: i64,
+    /// Whether this torrent is managed by Automatic Torrent Management
     pub auto_tmm: bool,
+    /// Percentage of file pieces currently available
     pub availability: f64,
+    /// Category of the torrent
     pub category: String,
+    /// Amount of transfer data completed (bytes)
     pub completed: i64,
+    /// Time (Unix Epoch) when the torrent completed
     pub completion_on: i64,
+    /// Absolute path of torrent content (root path for multifile torrents, absolute file path for singlefile torrents)
     pub content_path: String,
+    /// Torrent download speed limit (bytes/s). -1 if unlimited.
     pub dl_limit: i64,
+    /// Torrent download speed (bytes/s)
     pub dlspeed: i64,
+    /// Amount of data downloaded
     pub downloaded: i64,
+    /// Amount of data downloaded this session
     pub downloaded_session: i64,
+    /// Torrent ETA (seconds)
     pub eta: i64,
+    /// True if first last piece are prioritized
     pub f_l_piece_prio: bool,
+    /// True if force start is enabled for this torrent
     pub force_start: bool,
-    pub hash: String,
-    pub private: bool, // Documetaion is wrong filed name is "private" not "isPrivate"
+    /// Torrent hash
+    pub hash: Option<String>,
+    /// True if torrent is from a private tracker (added in 5.0.0)
+    ///
+    /// NOTE: Documetaion is wrong filed name is "private" not "isPrivate"
+    pub private: bool,
+    /// Last time (Unix Epoch) when a chunk was downloaded/uploaded
     pub last_activity: i64,
+    /// Magnet URI corresponding to this torrent
     pub magnet_uri: String,
+    /// Maximum share ratio until torrent is stopped from seeding/uploading
     pub max_ratio: f32,
+    /// Maximum seeding time (seconds) until torrent is stopped from seeding
     pub max_seeding_time: i64,
+    /// Torrent name
     pub name: String,
+    /// Number of seeds in the swarm
     pub num_complete: i64,
+    /// Number of leechers in the swarm
     pub num_incomplete: i64,
+    /// Number of leechers connected to
     pub num_leechs: i64,
+    /// Number of seeds connected to
+    pub num_seeds: i64,
+    /// Torrent priority. Returns -1 if queuing is disabled or torrent is in seed mode
     pub priority: i64,
+    /// Torrent progress (percentage/100)
     pub progress: f32,
+    /// Torrent share ratio. Max ratio value: 9999.
     pub ratio: f32,
+    /// TODO (what is different from max_ratio?)
     pub ratio_limit: f32,
+    /// Time until the next tracker reannounce
     pub reannounce: i64,
+    /// Path where this torrent's data is stored
     pub save_path: String,
+    /// Torrent elapsed time while complete (seconds)
     pub seeding_time: i64,
+    /// TODO (what is different from max_seeding_time?) seeding_time_limit is a per torrent setting, when Automatic Torrent Management is disabled, furthermore then max_seeding_time is set to seeding_time_limit for this torrent. If Automatic Torrent Management is enabled, the value is -2. And if max_seeding_time is unset it have a default value -1.
     pub seeding_time_limit: i64,
+    /// Time (Unix Epoch) when this torrent was last seen complete
     pub seen_complete: i64,
+    /// True if sequential download is enabled
     pub seq_dl: bool,
+    /// Total size (bytes) of files selected for download
     pub size: i64,
+    /// Torrent state. See table here below for the possible values
     pub state: String,
+    /// True if super seeding is enabled
     pub super_seeding: bool,
+    /// Comma-concatenated tag list of the torrent
     pub tags: String,
+    /// Total active time (seconds)
     pub time_active: i64,
+    /// Total size (bytes) of all file in this torrent (including unselected ones)
     pub total_size: i64,
+    /// The first tracker with working status. Returns empty string if no tracker is working.
     pub tracker: String,
+    /// Torrent upload speed limit (bytes/s). -1 if unlimited.
     pub up_limit: i64,
+    /// Amount of data uploaded
     pub uploaded: i64,
+    /// Amount of data uploaded this session
     pub uploaded_session: i64,
+    /// Torrent upload speed (bytes/s)
     pub upspeed: i64,
 }
 
+/// Generic torrent properties
 #[derive(Debug, Deserialize)]
 pub struct TorrentProperties {
+    /// Torrent save path
     pub save_path: String,
+    /// Torrent creation date (Unix timestamp)
     pub creation_date: i64,
+    /// Torrent piece size (bytes)
     pub piece_size: i64,
+    /// Torrent comment
     pub comment: String,
+    /// Total data wasted for torrent (bytes)
     pub total_wasted: i64,
+    /// Total data uploaded for torrent (bytes)
     pub total_uploaded: i64,
+    /// Total data uploaded this session (bytes)
     pub total_uploaded_session: i64,
+    /// Total data downloaded for torrent (bytes)
     pub total_downloaded: i64,
+    /// Total data downloaded this session (bytes)
     pub total_downloaded_session: i64,
+    /// Torrent upload limit (bytes/s)
     pub up_limit: i64,
+    /// Torrent download limit (bytes/s)
     pub dl_limit: i64,
+    /// Torrent elapsed time (seconds)
     pub time_elapsed: i64,
+    /// Torrent elapsed time while complete (seconds)
     pub seeding_time: i64,
+    /// Torrent connection count
     pub nb_connections: i64,
+    /// Torrent connection count limit
     pub nb_connections_limit: i64,
+    /// Torrent share ratio
     pub share_ratio: f32,
+    /// When this torrent was added (unix timestamp)
     pub addition_date: i64,
+    /// Torrent completion date (unix timestamp)
     pub completion_date: i64,
+    /// Torrent creator
     pub created_by: String,
+    /// Torrent average download speed (bytes/second)
     pub dl_speed_avg: i64,
+    /// Torrent download speed (bytes/second)
     pub dl_speed: i64,
+    /// Torrent ETA (seconds)
     pub eta: i64,
+    /// Last seen complete date (unix timestamp)
     pub last_seen: i64,
+    /// Number of peers connected to
     pub peers: i64,
+    /// Number of peers in the swarm
     pub peers_total: i64,
+    /// Number of pieces owned
     pub pieces_have: i64,
+    /// Number of pieces of the torrent
     pub pieces_num: i64,
+    /// Number of seconds until the next announce
     pub reannounce: i64,
+    /// Number of seeds connected to
     pub seeds: i64,
+    /// Number of seeds in the swarm
     pub seeds_total: i64,
+    /// Torrent total size (bytes)
     pub total_size: i64,
+    /// Torrent average upload speed (bytes/second)
     pub up_speed_avg: i64,
+    /// Torrent upload speed (bytes/second)
     pub up_speed: i64,
+    /// True if torrent is from a private tracker
     pub private: bool,
 }
 
+/// Torrent tracker data object
 #[derive(Debug, Deserialize)]
 pub struct TorrentTracker {
+    /// Tracker url
     pub url: String,
+    /// Tracker status. See the table below for possible values
     pub status: i64,
+    /// Tracker priority tier. Lower tier trackers are tried before higher tiers. Tier numbers are valid when `>= 0`, `< 0` is used as placeholder when `tier` does not exist for special entries (such as DHT).
     pub tier: i64,
+    /// Number of peers for current torrent, as reported by the tracker
     pub num_peers: i64,
+    /// Number of seeds for current torrent, asreported by the tracker
     pub num_seeds: i64,
+    /// Number of leeches for current torrent, as reported by the tracker
     pub num_leeches: i64,
+    /// Number of completed downloads for current torrent, as reported by the tracker
     pub num_downloaded: i64,
+    /// Tracker message (there is no way of knowing what this message is - it's up to tracker admins)
     pub msg: String,
 }
 
+/// Web seed data object
 #[derive(Debug, Deserialize)]
 pub struct TorrentWebSeed {
+    /// Web seed URL
     pub url: String,
 }
 
+/// Torrent file/content data object
 #[derive(Debug, Deserialize)]
 pub struct TorrentContent {
+    /// File index
     pub index: i64,
+    /// File name (including relative path)
     pub name: String,
+    /// File size (bytes)
     pub size: i64,
-    pub progress: f32,
+    /// File progress (percentage/100)
+    pub progress: f64,
+    /// File priority.
     pub priority: FilePriority,
+    /// True if file is seeding/complete
     pub is_seed: Option<bool>,
+    /// The first number is the starting piece index and the second number is the ending piece index (inclusive)
     pub piece_range: Vec<i64>,
-    pub availability: f32,
+    /// Percentage of file pieces currently available (percentage/100)
+    pub availability: f64,
 }
 
+/// File priority enum
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum FilePriority {
+    /// Do not download
     DoNotDownload = 0,
+    /// Normal priority
     Normal = 1,
+    /// High priority
     High = 6,
+    /// Maximal priority
     Maximal = 7,
 }
 
+/// Log item data object
 #[derive(Debug, Deserialize)]
 pub struct LogItem {
+    /// ID of the message
     pub id: i64,
+    /// Text of the message
     pub message: String,
+    /// Seconds since epoch
+    ///
+    /// (Note: switched from milliseconds to seconds in v4.5.0)
     pub timestamp: i64,
+    /// Type of the message
     #[serde(rename = "type")]
     pub log_type: LogType,
 }
 
+/// Log types
+///
+/// Log levels used by the loger
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum LogType {
@@ -147,29 +268,57 @@ pub enum LogType {
     Critical = 8,
 }
 
+/// Peer log item data object
 #[derive(Debug, Deserialize)]
 pub struct LogPeers {
+    /// ID of the peer
     pub id: i64,
+    /// IP of the peer
     pub ip: String,
+    /// Seconds since epoch
     pub timestamp: i64,
+    /// Whether or not the peer was blocked
     pub blocked: bool,
+    /// Reason of the block
     pub reason: String,
 }
 
+/// Transfer info data object
+///
+/// This is the data that whuld usually se in the Qbit status bar.
 #[derive(Debug, Deserialize)]
 pub struct TransferInfo {
+    /// Global download rate (bytes/s)
     pub dl_info_speed: i64,
+    /// Data downloaded this session (bytes)
     pub dl_info_data: i64,
+    /// Global upload rate (bytes/s)
     pub up_info_speed: i64,
+    /// Data uploaded this session (bytes)
     pub up_info_data: i64,
+    /// Download rate limit (bytes/s)
     pub dl_rate_limit: i64,
+    /// Upload rate limit (bytes/s)
     pub dht_nodes: i64,
+    /// DHT nodes connected to
     pub connection_status: ConnectionStatus,
-    // pub queueing: Option<bool>, Cant find this in the API?
-    pub last_external_address_v4: String, // This was not in the documentation!
-    pub last_external_address_v6: String, // This was not in the documentation!
+    /// True if torrent queueing is enabled
+    pub queueing: Option<bool>,
+    /// True if alternative speed limits are enabled
+    pub use_alt_speed_limits: Option<bool>,
+    /// Transfer list refresh interval (milliseconds)
+    pub refresh_interval: Option<bool>,
+    /// Last external IPv4 address
+    ///
+    /// This filed has not been documented in the API!
+    pub last_external_address_v4: String,
+    /// Last external IPv4 address
+    ///
+    /// This filed has not been documented in the API!
+    pub last_external_address_v6: String,
 }
 
+/// Connection status of the Qbit application
 #[derive(Debug, Deserialize)]
 pub enum ConnectionStatus {
     #[serde(rename = "connected")]
@@ -180,147 +329,161 @@ pub enum ConnectionStatus {
     Disconnected,
 }
 
+/// Main response data object
 #[derive(Debug, Deserialize)]
 pub struct MainData {
+    /// Response ID
     pub rid: i64,
+    /// Whether the response contains all the data or partial data
     pub full_update: Option<bool>,
-    pub torrents: Option<HashMap<String, MainDataTorrentInfo>>,
+    /// List of Torrents
+    ///
+    /// Property: torrent hash, value: TorrentInfo
+    pub torrents: Option<HashMap<String, TorrentInfo>>,
+    /// List of hashes of torrents removed since last request
     pub torrents_removed: Option<Vec<String>>,
+    /// Info for categories added since last request
     pub categories: Option<HashMap<String, Category>>,
+    /// List of categories removed since last request
     pub categories_removed: Option<Vec<String>>,
+    /// List of tags added since last request
     pub tags: Option<Vec<String>>,
+    /// List of tags removed since last request
     pub tags_removed: Option<Vec<String>>,
-    pub server_state: Option<ServerStatus>,
+    /// Global transfer info
+    pub server_state: Option<ServerState>,
+    /// List of trackers
     pub trackers: Option<HashMap<String, Vec<String>>>,
 }
 
+/// Category response data object
 #[derive(Debug, Deserialize)]
 pub struct Category {
+    /// Category name
     pub name: String,
+    /// Category save path
     #[serde(rename = "savePath")]
     pub save_path: String,
 }
 
+/// Server state resposne data object.
 #[derive(Debug, Deserialize)]
-pub struct ServerStatus {
+pub struct ServerState {
+    /// Alltime download
     pub alltime_dl: i64,
+    /// Alltime upload
     pub alltime_ul: i64,
     pub average_time_queue: i64,
+    /// Conection status
     pub connection_status: ConnectionStatus,
+    /// DHT nodes
     pub dht_nodes: i64,
+    /// Download data
     pub dl_info_data: i64,
+    /// Download speed
     pub dl_info_speed: i64,
+    /// Download rate limit
     pub dl_rate_limit: i64,
+    /// Free disk space
     pub free_space_on_disk: i64,
-    pub global_ratio: String, // is in format of float
+    /// Global ratio
+    pub global_ratio: String, // Is float in format of string
+    /// Last external IPv4 address
     pub last_external_address_v4: String,
+    /// Last external IPv4 address
     pub last_external_address_v6: String,
+    /// Queued IO jobs
     pub queued_io_jobs: i64,
     pub queueing: bool,
     pub read_cache_hits: String,     // Is interger in format of string
     pub read_cache_overload: String, // Is interger in format of string
+    /// Refresh Interval
     pub refresh_interval: i64,
+    /// Total buffer size
     pub total_buffers_size: i64,
+    /// Total peer conections
     pub total_peer_connections: i64,
+    /// Total queued size
     pub total_queued_size: i64,
     pub total_wasted_session: i64,
+    /// Upload data
     pub up_info_data: i64,
+    /// Upload speed
     pub up_info_speed: i64,
+    /// Upload rate limit
     pub up_rate_limit: i64,
+    /// Alt speed enabeld
     pub use_alt_speed_limits: bool,
+    /// Use subcategories
     pub use_subcategories: bool,
     pub write_cache_overload: String, // Is interger in format of string
 }
 
-// same as TorrentInfo just without hash
-#[derive(Debug, Deserialize)]
-pub struct MainDataTorrentInfo {
-    pub added_on: i64,
-    pub amount_left: i64,
-    pub auto_tmm: bool,
-    pub availability: f64,
-    pub category: String,
-    pub completed: i64,
-    pub completion_on: i64,
-    pub content_path: String,
-    pub dl_limit: i64,
-    pub dlspeed: i64,
-    pub downloaded: i64,
-    pub downloaded_session: i64,
-    pub eta: i64,
-    pub f_l_piece_prio: bool,
-    pub force_start: bool,
-    pub private: bool, // Documetaion is wrong filed name is "private" not "isPrivate"
-    pub last_activity: i64,
-    pub magnet_uri: String,
-    pub max_ratio: f32,
-    pub max_seeding_time: i64,
-    pub name: String,
-    pub num_complete: i64,
-    pub num_incomplete: i64,
-    pub num_leechs: i64,
-    pub priority: i64,
-    pub progress: f32,
-    pub ratio: f32,
-    pub ratio_limit: f32,
-    pub reannounce: i64,
-    pub save_path: String,
-    pub seeding_time: i64,
-    pub seeding_time_limit: i64,
-    pub seen_complete: i64,
-    pub seq_dl: bool,
-    pub size: i64,
-    pub state: String,
-    pub super_seeding: bool,
-    pub tags: String,
-    pub time_active: i64,
-    pub total_size: i64,
-    pub tracker: String,
-    pub up_limit: i64,
-    pub uploaded: i64,
-    pub uploaded_session: i64,
-    pub upspeed: i64,
-}
-
-// The API is incomplit on this and the structer is take from the responses
+/// Peers resposne data object.
 #[derive(Debug, Deserialize)]
 pub struct PeersData {
+    /// Response ID
     pub rid: i64,
     pub full_update: Option<bool>,
+    /// Flags
     pub show_flags: Option<bool>,
+    /// List of peers
     pub peers: Option<HashMap<String, PeerData>>,
+    /// List of removed peers
     pub peers_removed: Option<Vec<String>>,
 }
 
+/// Peer resposne data object.
 #[derive(Debug, Deserialize)]
 pub struct PeerData {
+    /// Client used by the peer. (μTorrent, qBittorrent, ect...)
     pub client: Option<String>,
+    /// Used connection
     pub connection: Option<String>,
+    /// Location
     pub country: Option<String>,
+    /// country code
     pub country_code: Option<String>,
+    /// Download speed
     pub dl_speed: Option<i64>,
+    /// Total downlaoded
     pub downloaded: Option<i64>,
+    /// Files/contents
     pub files: Option<String>,
+    /// Flags
     pub flags: Option<String>,
+    /// Flags description
     pub flags_desc: Option<String>,
+    /// Connection IP
     pub ip: Option<String>,
+    /// Client id
     pub peer_id_client: Option<String>,
+    /// Connection port
     pub port: Option<i64>,
     pub progress: Option<f32>,
     pub relevance: Option<f32>,
+    /// Upload speed
     pub up_speed: Option<i64>,
+    /// Total uploaded
     pub uploaded: Option<i64>,
 }
 
+/// Build info resposne data object.
 #[derive(Debug, Deserialize)]
 pub struct BuildInfo {
+    /// QT version
     pub qt: String,
+    /// libtorrent version
     pub libtorrent: String,
+    /// Boost version
     pub boost: String,
+    /// OpenSSL version
     pub openssl: String,
+    /// Application bitness (e.g. 64-bit)
     pub bitness: u8,
 }
 
+/// Preferences resposne data object.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Preferences {
     /// Currently selected language (e.g. en_GB for English)
@@ -618,6 +781,7 @@ pub struct Preferences {
     pub utp_tcp_mixed_mode: Option<UtpTcpMixedMode>,
 }
 
+/// Scan dir types
 #[derive(Debug)]
 pub enum ScanDir {
     MonitoredFolder,
@@ -661,6 +825,7 @@ impl Serialize for ScanDir {
     }
 }
 
+/// Ratio actions
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum RatioAct {
@@ -668,6 +833,7 @@ pub enum RatioAct {
     RemoveTorrent = 1,
 }
 
+/// Bittorrent protocols
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum BittorrentProtocol {
@@ -676,21 +842,33 @@ pub enum BittorrentProtocol {
     MicroTransportProtocol = 2,
 }
 
+/// Scheduler
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum SchedulerDay {
+    /// Every day
     Day = 0,
+    /// Every Weekday
     Weekday = 1,
+    /// Every Weekend
     Weekend = 2,
+    /// Every Monday
     Monday = 3,
+    /// Every Tuesday
     Tuesday = 4,
+    /// Every Wednesday
     Wednesday = 5,
+    /// Every Thursday
     Thursday = 6,
+    /// Every Friday
     Friday = 7,
+    /// Every Saturday
     Saturday = 8,
+    /// Every Sunday
     Sunday = 9,
 }
 
+/// Encryption states
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum Encryption {
@@ -699,6 +877,7 @@ pub enum Encryption {
     ForceOff = 2,
 }
 
+/// Proxy types states
 #[derive(Debug)]
 pub enum ProxyType {
     Disabled,
@@ -754,6 +933,7 @@ impl Serialize for ProxyType {
     }
 }
 
+/// Dyndns servcice types
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum DyndnsService {
@@ -761,6 +941,7 @@ pub enum DyndnsService {
     Noip = 1,
 }
 
+/// Upload choking algorithm
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum UploadChokingAlgorithm {
@@ -769,6 +950,7 @@ pub enum UploadChokingAlgorithm {
     AntiLeech = 2,
 }
 
+/// Upload slots behavior
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum UploadSlotsBehavior {
@@ -776,6 +958,7 @@ pub enum UploadSlotsBehavior {
     UploadRate = 1,
 }
 
+/// Mix mode UTP / TCP
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum UtpTcpMixedMode {
