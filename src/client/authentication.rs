@@ -1,31 +1,22 @@
 use crate::error::Error;
 
-#[derive(Debug)]
-pub struct Creddentials {
-    username: String,
-    password: String,
-}
-
-impl Creddentials {
-    pub fn new<T: ToString>(username: T, password: T) -> Self {
-        Self {
-            username: username.to_string(),
-            password: password.to_string(),
-        }
-    }
-
-    pub fn quary_string(&self) -> String {
-        return format!("username={}&password={}", self.username, self.password);
-    }
-}
-
 impl super::Api {
-    pub async fn login(&self, cred: Creddentials) -> Result<(), Error> {
+    /// Create a new logedin API instance.
+    pub async fn new_logedin(url: &str, username: &str, password: &str) -> Result<Self, Error> {
+        let api = Self::_new(url)?;
+
+        api.login(username, password).await?;
+
+        Ok(api)
+    }
+
+    /// Login client
+    pub async fn login(&self, username: &str, password: &str) -> Result<(), Error> {
         let url = self._build_url("/api/v2/auth/login").await?;
         let res = self
             .http_client
             .post(url)
-            .body(cred.quary_string())
+            .body(format!("username={}&password={}", username, password))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("refer", self.base_url.read().await.to_string())
             .send()
@@ -37,6 +28,7 @@ impl super::Api {
         }
     }
 
+    /// Logout the client instance
     pub async fn logout(&self) -> Result<(), Error> {
         let url = self._build_url("/api/v2/logout").await?;
 
