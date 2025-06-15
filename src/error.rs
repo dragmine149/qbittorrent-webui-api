@@ -1,3 +1,7 @@
+/// Error that can occur.
+///
+/// This enum encapsulates various types of errors, including authentication failures,
+/// HTTP request errors, URL parsing errors, and JSON serialization/deserialization errors.
 #[derive(Debug)]
 pub enum Error {
     AuthFailed,
