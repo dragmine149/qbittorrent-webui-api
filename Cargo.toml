@@ -2,6 +2,11 @@
 name = "qbit"
 version = "0.1.0"
 edition = "2024"
+description = "A wrapper for qBittorrent Web API"
+keywords = ["qbit", "qbittorrent", "api", "torrent", "torrents", "bittorrent"]
+categories = ["api-bindings"]
+repository = "https://github.com/Mattress237/qbittorrent-webui-api"
+readme = "README.md"
 
 [dependencies]
 reqwest = { version = "0.12.19", features = ["json", "cookies", "multipart"] }
