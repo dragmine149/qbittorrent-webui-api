@@ -1,28 +1,21 @@
 use crate::error::Error;
 
 impl super::Api {
-    /// Create a new logedin API instance.
-    pub async fn new_logedin(url: &str, username: &str, password: &str) -> Result<Self, Error> {
-        let api = Self::new(url)?;
+    /// Create a new API instance and login to the service.
+    pub async fn login(url: &str, username: &str, password: &str) -> Result<Self, Error> {
+        let api = Self::_new(url)?;
 
-        api.login(username, password).await?;
-
-        Ok(api)
-    }
-
-    /// Login client
-    pub async fn login(&self, username: &str, password: &str) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/auth/login").await?;
-        let res = self
+        let url = api._build_url("/api/v2/auth/login").await?;
+        let res = api
             .http_client
             .post(url)
             .body(format!("username={}&password={}", username, password))
             .header("Content-Type", "application/x-www-form-urlencoded")
-            .header("refer", self.base_url.read().await.to_string())
+            .header("refer", api.base_url.read().await.to_string())
             .send()
             .await?;
         if res.status().is_success() {
-            Ok(())
+            Ok(api)
         } else {
             Err(Error::AuthFailed)
         }

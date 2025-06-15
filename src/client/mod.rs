@@ -20,7 +20,7 @@ pub struct Api {
 
 impl Api {
     /// Creates a new `API` instance.
-    pub fn new(url: &str) -> Result<Self, Error> {
+    fn _new(url: &str) -> Result<Self, Error> {
         let http_client = ReqwestClient::builder().cookie_store(true).build()?;
 
         let base_url = Url::from_str(url)?;
