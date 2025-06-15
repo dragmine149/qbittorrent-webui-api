@@ -220,11 +220,11 @@ pub struct Preferences {
     pub enable_piece_extent_affinity: Option<bool>,
     /// Bittorrent Protocol to use (see list of possible values below)
     pub bittorrent_protocol: Option<BittorrentProtocol>,
-    /// True if [du]l_limit should be applied to uTP connections; this option is only available in qBittorent built against libtorrent version 0.16.X and higher
+    /// True if `dl_limit` should be applied to uTP connections; this option is only available in qBittorent built against libtorrent version `0.16.X` and higher
     pub limit_utp_rate: Option<bool>,
-    /// True if [du]l_limit should be applied to estimated TCP overhead (service data: e.g. packet headers)
+    /// True if `dl_limit` should be applied to estimated TCP overhead (service data: e.g. packet headers)
     pub limit_tcp_overhead: Option<bool>,
-    /// True if [du]l_limit should be applied to peers on the LAN
+    /// True if `dl_limit` should be applied to peers on the LAN
     pub limit_lan_peers: Option<bool>,
     /// Alternative global download speed limit in KiB/s
     pub alt_dl_limit: Option<i64>,
