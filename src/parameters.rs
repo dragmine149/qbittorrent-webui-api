@@ -279,32 +279,3 @@ impl TorrentAddUrls {
         }
     }
 }
-
-/// List Trackers parameter object
-#[derive(Debug)]
-pub struct TorrentTrackersList {
-    /// The hash of the torrent
-    pub hash: String,
-    /// URLs to remove, separated by `|`
-    pub urls: Vec<String>,
-}
-
-/// Edit Trackers parameter object
-#[derive(Debug)]
-pub struct TorrentTrackersEdit {
-    /// The hash of the torrent
-    pub hash: String,
-    /// The tracker URL you want to edit
-    pub orig_url: String,
-    /// The new URL to replace the `origUrl`
-    pub new_url: String,
-}
-
-/// Add Peers parameter object
-#[derive(Debug)]
-pub struct TorrentAddPeers {
-    /// The hash of the torrent, or multiple hashes separated by a pipe `|`
-    pub hashes: Vec<String>,
-    /// The peer to add, or multiple peers separated by a pipe `|`. Each peer is a colon-separated `host:port`
-    pub peers: Vec<String>,
-}

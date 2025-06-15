@@ -965,3 +965,12 @@ pub enum UtpTcpMixedMode {
     PreferTcp = 0,
     PeerProportional = 1,
 }
+
+/// Pices state
+#[derive(Debug, Deserialize_repr)]
+#[repr(u8)]
+pub enum PiecesState {
+    NotDownloaded = 0,
+    Downloading = 1,
+    Downloaded = 2,
+}
