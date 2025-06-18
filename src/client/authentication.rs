@@ -14,11 +14,18 @@ impl super::Api {
             .header("refer", api.base_url.read().await.to_string())
             .send()
             .await?;
-        if res.status().is_success() {
-            Ok(api)
-        } else {
-            Err(Error::AuthFailed)
+
+        if !res.status().is_success() {
+            return Err(Error::AuthFailed);
         }
+
+        // Checks if the result from the API is one of a success.
+        let login = res.text().await?;
+        if login.to_lowercase() == "fails." {
+            return Err(Error::AuthFailed);
+        }
+
+        Ok(api)
     }
 
     /// Logout the client instance
