@@ -158,7 +158,7 @@ impl super::Api {
     ///
     /// # Arguments
     ///
-    /// * `hash` - The hash of the torrent you want to get the pice states of.
+    /// * `hash` - The hash of the torrent you want to get the piece states of.
     pub async fn pieces_states(&self, hash: &str) -> Result<Vec<PiecesState>, Error> {
         let mut url = self._build_url("api/v2/torrents/pieceStates").await?;
 
@@ -937,7 +937,7 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to set automatic torrent management of.
     /// If `None` all torrents are selected.
     /// * `enable`
-    pub async fn set_automatic_torrent_managment(
+    pub async fn set_automatic_torrent_management(
         &self,
         hashes: Option<Vec<&str>>,
         enable: bool,

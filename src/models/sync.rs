@@ -41,7 +41,7 @@ pub struct Category {
     pub save_path: String,
 }
 
-/// Server state resposne data object.
+/// Server state response data object.
 #[derive(Debug, Deserialize)]
 pub struct ServerState {
     /// Alltime download
@@ -49,7 +49,7 @@ pub struct ServerState {
     /// Alltime upload
     pub alltime_ul: i64,
     pub average_time_queue: i64,
-    /// Conection status
+    /// Connection status
     pub connection_status: ConnectionStatus,
     /// DHT nodes
     pub dht_nodes: i64,
@@ -70,13 +70,13 @@ pub struct ServerState {
     /// Queued IO jobs
     pub queued_io_jobs: i64,
     pub queueing: bool,
-    pub read_cache_hits: String,     // Is interger in format of string
-    pub read_cache_overload: String, // Is interger in format of string
+    pub read_cache_hits: String,     // Is integer in format of string
+    pub read_cache_overload: String, // Is integer in format of string
     /// Refresh Interval
     pub refresh_interval: i64,
     /// Total buffer size
     pub total_buffers_size: i64,
-    /// Total peer conections
+    /// Total peer connections
     pub total_peer_connections: i64,
     /// Total queued size
     pub total_queued_size: i64,
@@ -91,10 +91,10 @@ pub struct ServerState {
     pub use_alt_speed_limits: bool,
     /// Use subcategories
     pub use_subcategories: bool,
-    pub write_cache_overload: String, // Is interger in format of string
+    pub write_cache_overload: String, // Is integer in format of string
 }
 
-/// Peers resposne data object.
+/// Peers response data object.
 #[derive(Debug, Deserialize)]
 pub struct PeersData {
     /// Response ID
@@ -108,10 +108,10 @@ pub struct PeersData {
     pub peers_removed: Option<Vec<String>>,
 }
 
-/// Peer resposne data object.
+/// Peer response data object.
 #[derive(Debug, Deserialize)]
 pub struct Peer {
-    /// Client used by the peer. (μTorrent, qBittorrent, ect...)
+    /// Client used by the peer. (μTorrent, qBittorrent, etc...)
     pub client: Option<String>,
     /// Used connection
     pub connection: Option<String>,
@@ -121,7 +121,7 @@ pub struct Peer {
     pub country_code: Option<String>,
     /// Download speed
     pub dl_speed: Option<i64>,
-    /// Total downlaoded
+    /// Total downloaded
     pub downloaded: Option<i64>,
     /// Files/contents
     pub files: Option<String>,
