@@ -40,7 +40,7 @@ pub struct TorrentInfo {
     pub hash: Option<String>,
     /// True if torrent is from a private tracker (added in 5.0.0)
     ///
-    /// NOTE: Documetaion is wrong filed name is "private" not "isPrivate"
+    /// NOTE: Documetaion is wrong field name is "private" not "isPrivate"
     pub private: bool,
     /// Last time (Unix Epoch) when a chunk was downloaded/uploaded
     pub last_activity: i64,

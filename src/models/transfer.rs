@@ -29,10 +29,10 @@ pub struct TransferInfo {
     pub refresh_interval: Option<bool>,
     /// Last external IPv4 address
     ///
-    /// This filed has not been documented in the API!
+    /// This field has not been documented in the API!
     pub last_external_address_v4: String,
     /// Last external IPv4 address
     ///
-    /// This filed has not been documented in the API!
+    /// This field has not been documented in the API!
     pub last_external_address_v6: String,
 }
