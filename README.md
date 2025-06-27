@@ -22,8 +22,8 @@ Supported Qbittorrent version: `5.0`
 - [x] Get application preferences
 - [x] Set application preferences
 - [x] Get default save path
-- [ ] Get cookies
-- [ ] Set cookies
+- [x] Get cookies
+- [x] Set cookies
 
 ### Log
 

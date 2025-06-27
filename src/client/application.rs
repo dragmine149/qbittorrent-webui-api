@@ -2,7 +2,7 @@ use reqwest::multipart;
 
 use crate::{
     error::Error,
-    models::{BuildInfo, Preferences},
+    models::{BuildInfo, Cookie, Preferences},
 };
 
 impl super::Api {
@@ -106,5 +106,42 @@ impl super::Api {
             .await?;
 
         Ok(preferances)
+    }
+
+    /// Get cookies
+    ///
+    /// Retrieves cookies used for downloading .torrent files and RSS feeds.
+    pub async fn cookies(&self) -> Result<Vec<Cookie>, Error> {
+        let url = self._build_url("/api/v2/app/cookies").await?;
+
+        let cookies = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<Cookie>>()
+            .await?;
+
+        Ok(cookies)
+    }
+
+    /// Set cookies
+    ///
+    /// Sets the cookies used for downloading .torrent files and RSS feeds.
+    ///
+    /// This will overwrite all the cookies.
+    ///
+    /// # Arguments
+    ///
+    /// * `cookies` - A list of cookies to be set.
+    pub async fn set_cookies(&self, cookies: Vec<Cookie>) -> Result<(), Error> {
+        let url = self._build_url("/api/v2/app/setCookies").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("cookies", serde_json::to_string(&cookies)?);
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
     }
 }

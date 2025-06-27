@@ -601,3 +601,17 @@ pub enum UtpTcpMixedMode {
     PreferTcp = 0,
     PeerProportional = 1,
 }
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Cookie {
+    /// The name of the cookie.
+    pub name: String,
+    /// The domain associated with the cookie.
+    pub domain: String,
+    /// The path associated with the cookie.
+    pub path: String,
+    /// The value stored in the cookie.
+    pub value: String,
+    /// The expiration date of the cookie, represented as seconds since the Unix epoch.
+    #[serde(rename = "expirationDate")]
+    pub expiration: i64,
+}
