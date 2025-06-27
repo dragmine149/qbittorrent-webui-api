@@ -8,7 +8,7 @@ impl super::Api {
     /// * `username` - The username for authentication.
     /// * `password` - The password for authentication.
     pub async fn new_login(url: &str, username: &str, password: &str) -> Result<Self, Error> {
-        let api = Self::_new(url)?;
+        let api = Self::new(url)?;
 
         api.login(username, password).await?;
 
