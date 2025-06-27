@@ -117,8 +117,8 @@ Supported Qbittorrent version: `5.0`
 - [x] Get search status
 - [x] Get search results
 - [x] Delete search
-- [ ] Get search plugins
-- [ ] Install search plugin
-- [ ] Uninstall search plugin
-- [ ] Enable search plugin
-- [ ] Update search plugins
+- [x] Get search plugins
+- [x] Install search plugin
+- [x] Uninstall search plugin
+- [x] Enable search plugin
+- [x] Update search plugins

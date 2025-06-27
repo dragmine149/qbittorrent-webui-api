@@ -50,3 +50,29 @@ pub struct SearchResultItem {
     #[serde(rename = "siteUrl")]
     pub site_url: String,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct SearchPlugin {
+    /// Whether the plugin is enabled.
+    pub enabled: bool,
+    /// Full name of the plugin.
+    #[serde(rename = "fullName")]
+    pub full_name: String,
+    /// Short name of the plugin.
+    pub name: String,
+    /// List of supported categories.
+    #[serde(rename = "supportedCategories")]
+    pub categories: Vec<SearchCategory>,
+    /// URL of the torrent site
+    pub url: String,
+    /// Installed version of the plugin
+    pub version: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SearchCategory {
+    /// Identifier for the category (e.g., "all", "books", "tv").
+    pub id: String,
+    /// Human-readable name of the category.
+    pub name: String,
+}

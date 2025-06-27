@@ -2,7 +2,7 @@ use reqwest::multipart;
 
 use crate::{
     error::Error,
-    models::{Search, SearchResult},
+    models::{Search, SearchPlugin, SearchResult},
 };
 
 impl super::Api {
@@ -80,7 +80,7 @@ impl super::Api {
     ///
     /// This function retrieves search results for a given search job.
     ///
-    /// # Parameters
+    /// # Arguments
     ///
     /// * `id` - The unique identifier of the search job.
     /// * `limit` - The maximum number of results to return. A value of `0` indicates no limit.
@@ -123,6 +123,76 @@ impl super::Api {
         form = form.text("id", id.to_string());
 
         self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    /// Get search plugins
+    pub async fn search_plugins(&self) -> Result<Vec<SearchPlugin>, Error> {
+        let url = self._build_url("api/v2/search/plugins").await?;
+
+        let plugins = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<SearchPlugin>>()
+            .await?;
+
+        Ok(plugins)
+    }
+
+    /// Install search plugin
+    ///
+    /// # Arguments
+    /// * `sources` - List of Url and file path of the plugin to install.
+    pub async fn search_install_plugin(&self, sources: Vec<&str>) -> Result<(), Error> {
+        let url = self._build_url("/api/v2/search/installPlugin").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("sources", sources.join("|"));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    /// Uninstall search plugin
+    ///
+    /// # Arguments
+    /// * `names` - List of names for torrents to uninstall.
+    pub async fn search_uninstall_plugin(&self, names: Vec<&str>) -> Result<(), Error> {
+        let url = self._build_url("/api/v2/search/uninstallPlugin").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("names", names.join("|"));
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    /// Enable search plugin
+    ///
+    /// # Arguments
+    /// * `names` - List of names for torrents to enable.
+    pub async fn search_enable_plugin(&self, names: Vec<&str>, enable: bool) -> Result<(), Error> {
+        let url = self._build_url("/api/v2/search/enablePlugin").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("names", names.join("|"));
+        form = form.text("enable", enable.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
+
+    /// Update search plugins
+    pub async fn search_update_plugin(&self) -> Result<(), Error> {
+        let url = self._build_url("/api/v2/search/updatePlugins").await?;
+
+        self.http_client.post(url).send().await?;
 
         Ok(())
     }
