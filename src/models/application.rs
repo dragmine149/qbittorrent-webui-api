@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-/// Torrent info resposne object
+/// Torrent info response object
 #[derive(Debug, Deserialize)]
 pub struct TorrentInfo {
     /// Time (Unix Epoch) when the torrent was added to the client
@@ -40,7 +40,7 @@ pub struct TorrentInfo {
     pub hash: Option<String>,
     /// True if torrent is from a private tracker (added in 5.0.0)
     ///
-    /// NOTE: Documetaion is wrong filed name is "private" not "isPrivate"
+    /// NOTE: Documetaion is wrong field name is "private" not "isPrivate"
     pub private: bool,
     /// Last time (Unix Epoch) when a chunk was downloaded/uploaded
     pub last_activity: i64,
@@ -104,7 +104,7 @@ pub struct TorrentInfo {
     pub upspeed: i64,
 }
 
-/// Build info resposne data object.
+/// Build info response data object.
 #[derive(Debug, Deserialize)]
 pub struct BuildInfo {
     /// QT version
@@ -119,7 +119,7 @@ pub struct BuildInfo {
     pub bitness: u8,
 }
 
-/// Preferences resposne data object.
+/// Preferences response data object.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Preferences {
     /// Currently selected language (e.g. en_GB for English)

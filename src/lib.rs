@@ -3,7 +3,7 @@ mod error;
 
 /// Data object models.
 pub mod models;
-/// Parameter bjects.
+/// Parameter objects.
 pub mod parameters;
 
 pub use client::Api;

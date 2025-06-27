@@ -66,11 +66,11 @@ impl super::Api {
 
     /// Get application preferences
     ///
-    /// Retuns struct with several fields representing the application's settings.
-    pub async fn preferances(&self) -> Result<Preferences, Error> {
+    /// Returns struct with several fields representing the application's settings.
+    pub async fn preferences(&self) -> Result<Preferences, Error> {
         let url = self._build_url("/api/v2/app/preferences").await?;
 
-        let preferances = self
+        let preferences = self
             .http_client
             .get(url)
             .send()
@@ -78,11 +78,11 @@ impl super::Api {
             .json::<Preferences>()
             .await?;
 
-        Ok(preferances)
+        Ok(preferences)
     }
 
     /// Set application preferences
-    pub async fn set_preferances(&self, preferences: Preferences) -> Result<(), Error> {
+    pub async fn set_preferences(&self, preferences: Preferences) -> Result<(), Error> {
         let url = self._build_url("/api/v2/app/setPreferences").await?;
 
         let mut form = multipart::Form::new();
@@ -94,10 +94,10 @@ impl super::Api {
     }
 
     /// Get default save path
-    pub async fn deafult_save_path(&self) -> Result<String, Error> {
+    pub async fn default_save_path(&self) -> Result<String, Error> {
         let url = self._build_url("/api/v2/app/defaultSavePath").await?;
 
-        let preferances = self
+        let preferences = self
             .http_client
             .get(url)
             .send()
@@ -105,7 +105,7 @@ impl super::Api {
             .json::<String>()
             .await?;
 
-        Ok(preferances)
+        Ok(preferences)
     }
 
     /// Get cookies

@@ -20,7 +20,7 @@ pub struct TorrentListParams {
 }
 
 impl TorrentListParams {
-    pub fn deafult() -> Self {
+    pub fn default() -> Self {
         Self {
             filter: None,
             category: None,
@@ -259,7 +259,7 @@ pub struct TorrentAddUrls {
 }
 
 impl TorrentAddUrls {
-    pub fn deafult(urls: Vec<String>) -> Self {
+    pub fn default(urls: Vec<String>) -> Self {
         Self {
             urls,
             savepath: None,

@@ -19,7 +19,7 @@ pub struct LogItem {
 
 /// Log types
 ///
-/// Log levels used by the loger
+/// Log levels used by the logger
 #[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum LogType {
