@@ -112,13 +112,13 @@ Supported Qbittorrent version: `5.0`
 
 ### Search
 
-- [ ] Start search
-- [ ] Stop search
-- [ ] Get search status
-- [ ] Get search results
-- [ ] Delete search
-- [ ] Get search plugins
-- [ ] Install search plugin
-- [ ] Uninstall search plugin
-- [ ] Enable search plugin
-- [ ] Update search plugins
+- [x] Start search
+- [x] Stop search
+- [x] Get search status
+- [x] Get search results
+- [x] Delete search
+- [x] Get search plugins
+- [x] Install search plugin
+- [x] Uninstall search plugin
+- [x] Enable search plugin
+- [x] Update search plugins

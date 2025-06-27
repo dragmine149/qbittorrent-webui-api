@@ -9,6 +9,7 @@ mod application;
 mod authentication;
 mod log;
 mod rss;
+mod search;
 mod sync;
 mod torrent;
 mod transfer;

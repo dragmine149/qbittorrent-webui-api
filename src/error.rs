@@ -5,6 +5,7 @@
 #[derive(Debug)]
 pub enum Error {
     AuthFailed,
+    InvalidResponse(String),
     HttpRequestError(reqwest::Error),
     UrlParseError(url::ParseError),
     SerdJsonError(serde_json::Error),
