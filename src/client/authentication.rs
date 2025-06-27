@@ -2,16 +2,32 @@ use crate::error::Error;
 
 impl super::Api {
     /// Create a new API instance and login to the service.
-    pub async fn login(url: &str, username: &str, password: &str) -> Result<Self, Error> {
+    ///
+    /// # Arguments
+    /// * `url` - The base URL of the API service.
+    /// * `username` - The username for authentication.
+    /// * `password` - The password for authentication.
+    pub async fn new_login(url: &str, username: &str, password: &str) -> Result<Self, Error> {
         let api = Self::_new(url)?;
 
-        let url = api._build_url("/api/v2/auth/login").await?;
-        let res = api
+        api.login(username, password).await?;
+
+        Ok(api)
+    }
+
+    /// Login to the service.
+    ///
+    /// # Arguments
+    /// * `username` - The username for authentication.
+    /// * `password` - The password for authentication.
+    pub async fn login(&self, username: &str, password: &str) -> Result<(), Error> {
+        let url = self._build_url("/api/v2/auth/login").await?;
+        let res = self
             .http_client
             .post(url)
             .body(format!("username={}&password={}", username, password))
             .header("Content-Type", "application/x-www-form-urlencoded")
-            .header("refer", api.base_url.read().await.to_string())
+            .header("refer", self.base_url.read().await.to_string())
             .send()
             .await?;
 
@@ -25,7 +41,7 @@ impl super::Api {
             return Err(Error::AuthFailed);
         }
 
-        Ok(api)
+        Ok(())
     }
 
     /// Logout the client instance
