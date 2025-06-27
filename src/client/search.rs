@@ -1,6 +1,9 @@
 use reqwest::multipart;
 
-use crate::{error::Error, models::Search};
+use crate::{
+    error::Error,
+    models::{Search, SearchResult},
+};
 
 impl super::Api {
     /// Start search
@@ -68,6 +71,42 @@ impl super::Api {
             .send()
             .await?
             .json::<Vec<Search>>()
+            .await?;
+
+        Ok(searches)
+    }
+
+    /// Get search results
+    ///
+    /// This function retrieves search results for a given search job.
+    ///
+    /// # Parameters
+    ///
+    /// * `id` - The unique identifier of the search job.
+    /// * `limit` - The maximum number of results to return. A value of `0` indicates no limit.
+    /// * `offset` - The starting point for results. If negative, counts backwards (e.g., `-2` retrieves the 2 most recent results).
+    pub async fn search_results(
+        &self,
+        id: u64,
+        limit: u64,
+        offset: Option<i64>,
+    ) -> Result<SearchResult, Error> {
+        let mut url = self._build_url("api/v2/search/results").await?;
+
+        let mut query = url.query_pairs_mut();
+        query.append_pair("id", &id.to_string());
+        query.append_pair("limit", &limit.to_string());
+        if let Some(offset) = offset {
+            query.append_pair("offset", &offset.to_string());
+        }
+        drop(query);
+
+        let searches = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<SearchResult>()
             .await?;
 
         Ok(searches)

@@ -4,9 +4,9 @@ use serde::Deserialize;
 pub struct Search {
     /// ID of the search job
     pub id: u64,
-    /// Current status of the search job
+    /// Current status of the search job, indicating whether it is still running or has stopped.
     pub status: SearchStatus,
-    /// Total number of results. If the status is Running this number may contineu to increase
+    /// Total number of results found. This number may continue to increase if the status is `Running`.
     pub total: u64,
 }
 
@@ -14,4 +14,39 @@ pub struct Search {
 pub enum SearchStatus {
     Running,
     Stopped,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SearchResult {
+    /// List of `SearchResultItem`.
+    pub results: Vec<SearchResultItem>,
+    /// Current status of the search job, indicating whether it is still running or has stopped.
+    pub status: SearchStatus,
+    /// Total number of results found. This number may continue to increase if the status is `Running`.
+    pub total: u64,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SearchResultItem {
+    /// URL pointing to the torrent's description page on the source site.
+    #[serde(rename = "descrLink")]
+    pub descr_link: String,
+    /// Name of the file associated with the torrent.
+    #[serde(rename = "fileName")]
+    pub file_name: String,
+    /// Size of the file in bytes.
+    #[serde(rename = "fileSize")]
+    pub file_size: i64,
+    /// URL for downloading the torrent, either as a `.torrent` file or a magnet link.
+    #[serde(rename = "fileUrl")]
+    pub file_url: String,
+    /// Number of leechers currently downloading the torrent.
+    #[serde(rename = "nbLeechers")]
+    pub leechers: u64,
+    /// Number of seeders currently uploading the torrent.
+    #[serde(rename = "nbSeeders")]
+    pub seeders: u64,
+    /// URL of the torrent site where the file is hosted.
+    #[serde(rename = "siteUrl")]
+    pub site_url: String,
 }
