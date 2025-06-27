@@ -1,11 +1,12 @@
 [package]
 name = "qbit"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2024"
 description = "A wrapper for qBittorrent Web API"
-keywords = ["qbit", "qbittorrent", "api", "torrent", "bittorrent"]
+keywords = ["qbit", "qbittorrent", "api", "torrent"]
 categories = ["api-bindings"]
 repository = "https://github.com/Mattress237/qbittorrent-webui-api"
+documentation = "https://docs.rs/qbit"
 readme = "README.md"
 authors = ["Mattress <mattress@mattress.no>"]
 license = "MIT"
