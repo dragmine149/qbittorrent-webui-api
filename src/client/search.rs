@@ -111,4 +111,19 @@ impl super::Api {
 
         Ok(searches)
     }
+
+    /// Delete search
+    ///
+    /// # Arguments
+    /// * `id` - The unique identifier of the search job.
+    pub async fn search_delete(&self, id: u64) -> Result<(), Error> {
+        let url = self._build_url("/api/v2/search/delete").await?;
+
+        let mut form = multipart::Form::new();
+        form = form.text("id", id.to_string());
+
+        self.http_client.post(url).multipart(form).send().await?;
+
+        Ok(())
+    }
 }
