@@ -1,6 +1,6 @@
 use reqwest::multipart;
 
-use crate::error::Error;
+use crate::{error::Error, models::Search};
 
 impl super::Api {
     /// Start search
@@ -46,5 +46,30 @@ impl super::Api {
         self.http_client.post(url).multipart(form).send().await?;
 
         Ok(())
+    }
+
+    /// Get search status
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - ID of the search job. If `None`, all search jobs are returned
+    pub async fn search_status(&self, id: Option<u64>) -> Result<Vec<Search>, Error> {
+        let mut url = self._build_url("api/v2/search/status").await?;
+
+        let mut query = url.query_pairs_mut();
+        if let Some(id) = id {
+            query.append_pair("id", &id.to_string());
+        }
+        drop(query);
+
+        let searches = self
+            .http_client
+            .get(url)
+            .send()
+            .await?
+            .json::<Vec<Search>>()
+            .await?;
+
+        Ok(searches)
     }
 }

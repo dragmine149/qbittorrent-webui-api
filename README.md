@@ -112,9 +112,9 @@ Supported Qbittorrent version: `5.0`
 
 ### Search
 
-- [ ] Start search
-- [ ] Stop search
-- [ ] Get search status
+- [x] Start search
+- [x] Stop search
+- [x] Get search status
 - [ ] Get search results
 - [ ] Delete search
 - [ ] Get search plugins
