@@ -26,3 +26,23 @@ pub enum ConnectionStatus {
     #[serde(rename = "disconnected")]
     Disconnected,
 }
+
+pub struct Credentials {
+    username: String,
+    password: String,
+}
+
+impl Credentials {
+    pub fn new(username: impl Into<String>, password: impl Into<String>) -> Self {
+        Self {
+            username: username.into(),
+            password: password.into(),
+        }
+    }
+}
+
+impl ToString for Credentials {
+    fn to_string(&self) -> String {
+        format!("username={}&password={}", self.username, self.password)
+    }
+}

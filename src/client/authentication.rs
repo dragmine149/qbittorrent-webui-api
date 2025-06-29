@@ -1,31 +1,45 @@
-use crate::error::Error;
+use crate::{error::Error, models::Credentials};
 
 impl super::Api {
     /// Create a new API instance and login to the service.
     ///
     /// # Arguments
     /// * `url` - The base URL of the API service.
-    /// * `username` - The username for authentication.
-    /// * `password` - The password for authentication.
-    pub async fn new_login(url: &str, username: &str, password: &str) -> Result<Self, Error> {
+    /// * `credentials` - The credentials required for authentication.
+    pub async fn new_login(url: &str, credentials: Credentials) -> Result<Self, Error> {
         let api = Self::new(url)?;
 
-        api.login(username, password).await?;
+        api.login(credentials).await?;
 
         Ok(api)
+    }
+
+    /// Create a new API instance and login to the service with username and password.
+    ///
+    /// # Arguments
+    /// * `url` - The base URL of the API service.
+    /// * `username` - The username for authentication.
+    /// * `password` - The password for authentication.
+    pub async fn new_login_with_username_password(
+        url: &str,
+        username: impl Into<String>,
+        password: impl Into<String>,
+    ) -> Result<Self, Error> {
+        let credentials = Credentials::new(username, password);
+
+        Self::new_login(url, credentials).await
     }
 
     /// Login to the service.
     ///
     /// # Arguments
-    /// * `username` - The username for authentication.
-    /// * `password` - The password for authentication.
-    pub async fn login(&self, username: &str, password: &str) -> Result<(), Error> {
+    /// * `credentials` - The credentials required for authentication.
+    pub async fn login(&self, credentials: Credentials) -> Result<(), Error> {
         let url = self._build_url("/api/v2/auth/login").await?;
         let res = self
             .http_client
             .post(url)
-            .body(format!("username={}&password={}", username, password))
+            .body(credentials.to_string())
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("refer", self.base_url.read().await.to_string())
             .send()
