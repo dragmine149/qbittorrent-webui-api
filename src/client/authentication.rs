@@ -1,45 +1,43 @@
-use crate::{error::Error, models::Credentials};
+use crate::error::Error;
 
 impl super::Api {
     /// Create a new API instance and login to the service.
     ///
     /// # Arguments
     /// * `url` - The base URL of the API service.
-    /// * `credentials` - The credentials required for authentication.
-    pub async fn new_login(url: &str, credentials: Credentials) -> Result<Self, Error> {
-        let api = Self::new(url)?;
-
-        api.login(credentials).await?;
-
-        Ok(api)
-    }
-
-    /// Create a new API instance and login to the service with username and password.
-    ///
-    /// # Arguments
-    /// * `url` - The base URL of the API service.
     /// * `username` - The username for authentication.
     /// * `password` - The password for authentication.
-    pub async fn new_login_with_username_password(
+    pub async fn new_login(
         url: &str,
         username: impl Into<String>,
         password: impl Into<String>,
     ) -> Result<Self, Error> {
-        let credentials = Credentials::new(username, password);
+        let api = Self::new(url)?;
 
-        Self::new_login(url, credentials).await
+        api.login(username, password).await?;
+
+        Ok(api)
     }
 
     /// Login to the service.
     ///
     /// # Arguments
-    /// * `credentials` - The credentials required for authentication.
-    pub async fn login(&self, credentials: Credentials) -> Result<(), Error> {
+    /// * `username` - The username for authentication.
+    /// * `password` - The password for authentication.
+    pub async fn login(
+        &self,
+        username: impl Into<String>,
+        password: impl Into<String>,
+    ) -> Result<(), Error> {
         let url = self._build_url("/api/v2/auth/login").await?;
         let res = self
             .http_client
             .post(url)
-            .body(credentials.to_string())
+            .body(format!(
+                "username={}&password={}",
+                username.into(),
+                password.into()
+            ))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("refer", self.base_url.read().await.to_string())
             .send()
@@ -58,11 +56,32 @@ impl super::Api {
         Ok(())
     }
 
+    /// Login to the service.
+    ///
+    /// # Arguments
+    /// * `url` - The base URL of the API service.
+    /// * `sid` - The session ID cookie for authentication.
+    pub async fn new_from_cookie(url: &str, sid: impl Into<String>) -> Result<Self, Error> {
+        let api = Self::new(url)?;
+
+        api.set_sid_cookie(sid).await?;
+
+        let test_result = api.version().await;
+
+        if test_result.is_err() {
+            return Err(Error::AuthFailed);
+        }
+
+        Ok(api)
+    }
+
     /// Logout the client instance
     pub async fn logout(&self) -> Result<(), Error> {
         let url = self._build_url("/api/v2/logout").await?;
 
         self.http_client.post(url).send().await?;
+
+        self.cookie_store.lock().unwrap().clear();
 
         Ok(())
     }

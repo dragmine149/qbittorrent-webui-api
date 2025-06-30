@@ -27,6 +27,7 @@ pub enum ConnectionStatus {
     Disconnected,
 }
 
+#[derive(Clone)]
 pub struct Credentials {
     username: String,
     password: String,
