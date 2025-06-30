@@ -77,11 +77,9 @@ impl super::Api {
 
     /// Logout the client instance
     pub async fn logout(&self) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/logout").await?;
+        let url = self._build_url("/api/v2/auth/logout").await?;
 
         self.http_client.post(url).send().await?;
-
-        self.cookie_store.lock().unwrap().clear();
 
         Ok(())
     }
