@@ -12,13 +12,7 @@ impl super::Api {
     pub async fn version(&self) -> Result<String, Error> {
         let url = self._build_url("/api/v2/app/version").await?;
 
-        let version = self
-            .http_client
-            .get(url)
-            .send()
-            .await?
-            .json::<String>()
-            .await?;
+        let version = self.http_client.get(url).send().await?.text().await?;
 
         Ok(version)
     }
@@ -29,13 +23,7 @@ impl super::Api {
     pub async fn webapi_version(&self) -> Result<String, Error> {
         let url = self._build_url("/api/v2/app/webapiVersion").await?;
 
-        let version = self
-            .http_client
-            .get(url)
-            .send()
-            .await?
-            .json::<String>()
-            .await?;
+        let version = self.http_client.get(url).send().await?.text().await?;
 
         Ok(version)
     }
@@ -97,13 +85,7 @@ impl super::Api {
     pub async fn default_save_path(&self) -> Result<String, Error> {
         let url = self._build_url("/api/v2/app/defaultSavePath").await?;
 
-        let preferences = self
-            .http_client
-            .get(url)
-            .send()
-            .await?
-            .json::<String>()
-            .await?;
+        let preferences = self.http_client.get(url).send().await?.text().await?;
 
         Ok(preferences)
     }
