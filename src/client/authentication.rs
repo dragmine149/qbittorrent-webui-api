@@ -4,10 +4,12 @@ use crate::{Credentials, LoginState, error::Error};
 
 impl super::Api {
     /// Create a new API instance and login to the service.
+    /// 
+    /// This method allows you to create a new API instance and login using the provided credentials.s
     ///
     /// # Arguments
     /// * `url` - The base URL of the API service.
-    /// * `credentials` -
+    /// * `credentials` - The credentials to use for authentication.
     pub async fn new_login(url: &str, credentials: Credentials) -> Result<Self, Error> {
         let mut api = Self::new(url)?;
 
@@ -37,11 +39,13 @@ impl super::Api {
     }
 
     /// Login to the service.
+    /// 
+    /// This method allows you to login using the credentials stored in the API state.
+    /// If the user is already logged in, it will check the validity of the session.
     ///
     /// # Arguments
-    /// * `credentials` -
-    /// * `force` -
-    ///
+    /// * `credentials` - The credentials to use for authentication.
+    /// * `force` - If true, forces a login even if already logged in.
     pub async fn login(&mut self, force: bool) -> Result<(), Error> {
         // check if already login (aka cookie set)
         if self.state.read().await.as_cookie().is_some() && !force {
@@ -119,6 +123,8 @@ impl super::Api {
     }
 
     /// Login to the service.
+    /// 
+    /// This method allows you to create a new API instance and login using an existing SID cookie.
     ///
     /// # Arguments
     /// * `url` - The base URL of the API service.
@@ -138,6 +144,8 @@ impl super::Api {
     }
 
     /// Logout the client instance
+    /// 
+    /// This will clear the current session and remove the SID cookie.
     pub async fn logout(&self) -> Result<(), Error> {
         self._post("/api/v2/auth/logout").await?.send().await?;
 
