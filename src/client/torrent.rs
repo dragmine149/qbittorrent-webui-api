@@ -1126,7 +1126,7 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to toggle sequential download for.
     /// If `None` all torrents are selected.
     /// 
-    pub async fn sequential_download(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
+    pub async fn toggle_sequential_download(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
