@@ -26,7 +26,7 @@ impl super::Api {
         form = form.text("category", category.to_string());
 
         let json: serde_json::Value = self
-            ._post("/api/v2/search/start")
+            ._post("search/start")
             .await?
             .multipart(form)
             .send()
@@ -48,7 +48,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("id", id.to_string());
 
-        self._post("/api/v2/search/stop")
+        self._post("search/stop")
             .await?
             .multipart(form)
             .send()
@@ -69,7 +69,7 @@ impl super::Api {
         }
 
         let searches = self
-            ._get("api/v2/search/status")
+            ._get("search/status")
             .await?
             .query(&query)
             .send()
@@ -103,7 +103,7 @@ impl super::Api {
         }
 
         let searches = self
-            ._get("api/v2/search/results")
+            ._get("search/results")
             .await?
             .query(&query)
             .send()
@@ -122,7 +122,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("id", id.to_string());
 
-        self._post("/api/v2/search/delete")
+        self._post("search/delete")
             .await?
             .multipart(form)
             .send()
@@ -134,7 +134,7 @@ impl super::Api {
     /// Get search plugins
     pub async fn search_plugins(&self) -> Result<Vec<SearchPlugin>, Error> {
         let plugins = self
-            ._get("api/v2/search/plugins")
+            ._get("search/plugins")
             .await?
             .send()
             .await?
@@ -152,7 +152,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("sources", sources.join("|"));
 
-        self._post("/api/v2/search/installPlugin")
+        self._post("search/installPlugin")
             .await?
             .multipart(form)
             .send()
@@ -169,7 +169,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("names", names.join("|"));
 
-        self._post("/api/v2/search/uninstallPlugin")
+        self._post("search/uninstallPlugin")
             .await?
             .multipart(form)
             .send()
@@ -187,7 +187,7 @@ impl super::Api {
         form = form.text("names", names.join("|"));
         form = form.text("enable", enable.to_string());
 
-        self._post("/api/v2/search/enablePlugin")
+        self._post("search/enablePlugin")
             .await?
             .multipart(form)
             .send()
@@ -198,10 +198,7 @@ impl super::Api {
 
     /// Update search plugins
     pub async fn search_update_plugin(&self) -> Result<(), Error> {
-        self._post("/api/v2/search/updatePlugins")
-            .await?
-            .send()
-            .await?;
+        self._post("search/updatePlugins").await?.send().await?;
 
         Ok(())
     }

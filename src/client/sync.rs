@@ -19,7 +19,7 @@ impl super::Api {
         }
 
         let data = self
-            ._get("/api/v2/sync/maindata")
+            ._get("sync/maindata")
             .await?
             .query(&query)
             .send()
@@ -47,7 +47,7 @@ impl super::Api {
         }
 
         let data = self
-            ._get("/api/v2/sync/torrentPeers")
+            ._get("sync/torrentPeers")
             .await?
             .query(&query)
             .send()

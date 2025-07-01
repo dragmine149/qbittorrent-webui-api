@@ -8,7 +8,7 @@ impl super::Api {
     /// This method returns info you usually see in qBt status bar.
     pub async fn global_transfer_info(&self) -> Result<TransferInfo, Error> {
         let info = self
-            ._get("api/v2/transfer/info")
+            ._get("transfer/info")
             .await?
             .send()
             .await?
@@ -23,7 +23,7 @@ impl super::Api {
     /// The response is 1 if alternative speed limits are enabled, 0 otherwise.
     pub async fn alternative_speed_limit(&self) -> Result<u8, Error> {
         let is_active = self
-            ._get("api/v2/transfer/speedLimitsMode")
+            ._get("transfer/speedLimitsMode")
             .await?
             .send()
             .await?
@@ -35,7 +35,7 @@ impl super::Api {
 
     /// Toggle alternative speed limits
     pub async fn toggle_alternative_speed_limit(&self) -> Result<(), Error> {
-        self._post("api/v2/transfer/toggleSpeedLimitsMode")
+        self._post("transfer/toggleSpeedLimitsMode")
             .await?
             .send()
             .await?;
@@ -46,7 +46,7 @@ impl super::Api {
     /// Get global download limit
     pub async fn global_download_limit(&self) -> Result<u64, Error> {
         let limites = self
-            ._get("api/v2/transfer/downloadLimit")
+            ._get("transfer/downloadLimit")
             .await?
             .send()
             .await?
@@ -65,7 +65,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("limit", limit.to_string());
 
-        self._post("api/v2/transfer/setDownloadLimit")
+        self._post("transfer/setDownloadLimit")
             .await?
             .multipart(form)
             .send()
@@ -77,7 +77,7 @@ impl super::Api {
     /// Get global upload limit
     pub async fn global_upload_limit(&self) -> Result<u64, Error> {
         let limites = self
-            ._get("api/v2/transfer/uploadLimit")
+            ._get("transfer/uploadLimit")
             .await?
             .send()
             .await?
@@ -96,7 +96,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("limit", limit.to_string());
 
-        self._post("api/v2/transfer/setUploadLimit")
+        self._post("transfer/setUploadLimit")
             .await?
             .multipart(form)
             .send()
@@ -114,7 +114,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("peers", peers.join("|"));
 
-        self._post("api/v2/transfer/banPeers")
+        self._post("transfer/banPeers")
             .await?
             .multipart(form)
             .send()

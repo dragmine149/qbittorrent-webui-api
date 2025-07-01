@@ -1,8 +1,7 @@
 use core::str;
-use std::str::FromStr;
 
 use reqwest::{
-    Client as ReqwestClient, RequestBuilder, Url,
+    Client as ReqwestClient, RequestBuilder,
     header::{self, HeaderMap},
 };
 
@@ -20,26 +19,24 @@ mod transfer;
 /// Represents a client for interacting with a remote API, handling HTTP requests.
 pub struct Api {
     http_client: ReqwestClient,
-    base_url: tokio::sync::RwLock<Url>,
+    base_url: tokio::sync::RwLock<String>,
     state: tokio::sync::RwLock<LoginState>,
 }
 
 impl Api {
     /// Creates a new `API` instance.
-    pub fn new(url: &str) -> Result<Self, Error> {
-        let base_url = Url::from_str(url)?;
-
+    pub fn new(url: impl Into<String>) -> Result<Self, Error> {
         Ok(Self {
             http_client: ReqwestClient::new(),
-            base_url: tokio::sync::RwLock::new(base_url),
+            base_url: tokio::sync::RwLock::new(url.into()),
             state: tokio::sync::RwLock::new(LoginState::Unknown),
         })
     }
 
     /// Helper for constructing API URLs
-    async fn _build_url(&self, endpoint: &str) -> Result<Url, Error> {
+    async fn _build_url(&self, endpoint: &str) -> Result<String, Error> {
         let base_url = self.base_url.read().await;
-        let url = base_url.join(endpoint)?;
+        let url = format!("{}/api/v2/{}", base_url, endpoint);
 
         Ok(url)
     }

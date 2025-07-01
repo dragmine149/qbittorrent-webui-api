@@ -42,7 +42,7 @@ impl super::Api {
         }
 
         let torrents = self
-            ._get("api/v2/torrents/info")
+            ._get("torrents/info")
             .await?
             .query(&query)
             .send()
@@ -63,7 +63,7 @@ impl super::Api {
         query.push(("hash", hash));
 
         let torrent = self
-            ._get("api/v2/torrents/properties")
+            ._get("torrents/properties")
             .await?
             .query(&query)
             .send()
@@ -84,7 +84,7 @@ impl super::Api {
         query.push(("hash", hash));
 
         let trackers = self
-            ._get("api/v2/torrents/trackers")
+            ._get("torrents/trackers")
             .await?
             .query(&query)
             .send()
@@ -105,7 +105,7 @@ impl super::Api {
         query.push(("hash", hash));
 
         let webseeds = self
-            ._get("api/v2/torrents/webseeds")
+            ._get("torrents/webseeds")
             .await?
             .query(&query)
             .send()
@@ -142,7 +142,7 @@ impl super::Api {
         }
 
         let webseeds = self
-            ._get("api/v2/torrents/files")
+            ._get("torrents/files")
             .await?
             .query(&query)
             .send()
@@ -163,7 +163,7 @@ impl super::Api {
         query.push(("hash", hash));
 
         let pieces = self
-            ._get("api/v2/torrents/pieceStates")
+            ._get("torrents/pieceStates")
             .await?
             .query(&query)
             .send()
@@ -184,7 +184,7 @@ impl super::Api {
         query.push(("hash", hash));
 
         let pieces = self
-            ._get("api/v2/torrents/pieceHashes")
+            ._get("torrents/pieceHashes")
             .await?
             .query(&query)
             .send()
@@ -204,7 +204,7 @@ impl super::Api {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
 
-        self._get("api/v2/torrents/stop")
+        self._get("torrents/stop")
             .await?
             .query(&query)
             .send()
@@ -222,7 +222,7 @@ impl super::Api {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
 
-        self._get("api/v2/torrents/start")
+        self._get("torrents/start")
             .await?
             .query(&query)
             .send()
@@ -243,7 +243,7 @@ impl super::Api {
         query.push(("hashes", hashes.join("|")));
         query.push(("deleteFiles", delete_files.to_string()));
 
-        self._get("api/v2/torrents/delete")
+        self._get("torrents/delete")
             .await?
             .query(&query)
             .send()
@@ -261,7 +261,7 @@ impl super::Api {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
 
-        self._get("api/v2/torrents/recheck")
+        self._get("torrents/recheck")
             .await?
             .query(&query)
             .send()
@@ -279,7 +279,7 @@ impl super::Api {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
 
-        self._get("api/v2/torrents/reannounce")
+        self._get("torrents/reannounce")
             .await?
             .query(&query)
             .send()
@@ -332,7 +332,7 @@ impl super::Api {
             form = form.text("seedingTimeLimit", seeding_time_limit.to_string());
         }
 
-        self._post("api/v2/torrents/add")
+        self._post("torrents/add")
             .await?
             .multipart(form)
             .send()
@@ -352,7 +352,7 @@ impl super::Api {
         form = form.text("hash", hash.to_string());
         form = form.text("urls", urls.join("%0A"));
 
-        self._post("api/v2/torrents/addTrackers")
+        self._post("torrents/addTrackers")
             .await?
             .multipart(form)
             .send()
@@ -379,7 +379,7 @@ impl super::Api {
         form = form.text("origUrl", orig_url.to_string());
         form = form.text("newUrl", new_url.to_string());
 
-        self._post("api/v2/torrents/editTracker")
+        self._post("torrents/editTracker")
             .await?
             .multipart(form)
             .send()
@@ -403,7 +403,7 @@ impl super::Api {
         form = form.text("hash", hash.to_string());
         form = form.text("urls", urls.join("|"));
 
-        self._post("api/v2/torrents/removeTrackers")
+        self._post("torrents/removeTrackers")
             .await?
             .multipart(form)
             .send()
@@ -423,7 +423,7 @@ impl super::Api {
         form = form.text("hashes", hashes.join("|"));
         form = form.text("peers", peers.join("|"));
 
-        self._post("api/v2/torrents/addPeers")
+        self._post("torrents/addPeers")
             .await?
             .multipart(form)
             .send()
@@ -446,7 +446,7 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self._post("api/v2/torrents/increasePrio")
+        self._post("torrents/increasePrio")
             .await?
             .multipart(form)
             .send()
@@ -469,7 +469,7 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self._post("api/v2/torrents/decreasePrio")
+        self._post("torrents/decreasePrio")
             .await?
             .multipart(form)
             .send()
@@ -492,7 +492,7 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self._post("api/v2/torrents/topPrio")
+        self._post("torrents/topPrio")
             .await?
             .multipart(form)
             .send()
@@ -515,7 +515,7 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self._post("api/v2/torrents/bottomPrio")
+        self._post("torrents/bottomPrio")
             .await?
             .multipart(form)
             .send()
@@ -549,7 +549,7 @@ impl super::Api {
         );
         form = form.text("priority", serde_json::to_string(&priority)?);
 
-        self._post("api/v2/torrents/filePrio")
+        self._post("torrents/filePrio")
             .await?
             .multipart(form)
             .send()
@@ -576,7 +576,7 @@ impl super::Api {
         }
 
         let limites = self
-            ._get("api/v2/torrents/downloadLimit")
+            ._get("torrents/downloadLimit")
             .await?
             .query(&query)
             .send()
@@ -607,7 +607,7 @@ impl super::Api {
         }
         form = form.text("limit", limit.to_string());
 
-        self._post("api/v2/torrents/setDownloadLimit")
+        self._post("torrents/setDownloadLimit")
             .await?
             .multipart(form)
             .send()
@@ -649,7 +649,7 @@ impl super::Api {
             inactive_seeding_time_limit.to_string(),
         );
 
-        self._post("api/v2/torrents/setShareLimits")
+        self._post("torrents/setShareLimits")
             .await?
             .multipart(form)
             .send()
@@ -676,7 +676,7 @@ impl super::Api {
         }
 
         let limites = self
-            ._get("api/v2/torrents/uploadLimit")
+            ._get("torrents/uploadLimit")
             .await?
             .query(&query)
             .send()
@@ -707,7 +707,7 @@ impl super::Api {
         }
         form = form.text("limit", limit.to_string());
 
-        self._post("api/v2/torrents/setUploadLimit")
+        self._post("torrents/setUploadLimit")
             .await?
             .multipart(form)
             .send()
@@ -736,7 +736,7 @@ impl super::Api {
         }
         form = form.text("location", location.to_string());
 
-        self._post("api/v2/torrents/setLocation")
+        self._post("torrents/setLocation")
             .await?
             .multipart(form)
             .send()
@@ -756,7 +756,7 @@ impl super::Api {
         form = form.text("hash", hash.to_string());
         form = form.text("name", name.to_string());
 
-        self._post("api/v2/torrents/setLocation")
+        self._post("torrents/setLocation")
             .await?
             .multipart(form)
             .send()
@@ -785,7 +785,7 @@ impl super::Api {
         }
         form = form.text("category", category.to_string());
 
-        self._post("api/v2/torrents/setCategory")
+        self._post("torrents/setCategory")
             .await?
             .multipart(form)
             .send()
@@ -797,7 +797,7 @@ impl super::Api {
     /// Get all categories
     pub async fn categories(&self) -> Result<Vec<String>, Error> {
         let categories = self
-            ._get("api/v2/torrents/categories")
+            ._get("torrents/categories")
             .await?
             .send()
             .await?
@@ -818,7 +818,7 @@ impl super::Api {
         form = form.text("category", category.to_string());
         form = form.text("savePath", save_path.to_string());
 
-        self._post("api/v2/torrents/createCategory")
+        self._post("torrents/createCategory")
             .await?
             .multipart(form)
             .send()
@@ -838,7 +838,7 @@ impl super::Api {
         form = form.text("category", category.to_string());
         form = form.text("savePath", save_path.to_string());
 
-        self._post("api/v2/torrents/editCategory")
+        self._post("torrents/editCategory")
             .await?
             .multipart(form)
             .send()
@@ -856,7 +856,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("categories", categories.join("\n"));
 
-        self._post("api/v2/torrents/removeCategories")
+        self._post("torrents/removeCategories")
             .await?
             .multipart(form)
             .send()
@@ -881,7 +881,7 @@ impl super::Api {
         }
         form = form.text("tags", tags.join(","));
 
-        self._post("api/v2/torrents/addTags")
+        self._post("torrents/addTags")
             .await?
             .multipart(form)
             .send()
@@ -910,7 +910,7 @@ impl super::Api {
         }
         form = form.text("tags", tags.join(","));
 
-        self._post("api/v2/torrents/removeTags")
+        self._post("torrents/removeTags")
             .await?
             .multipart(form)
             .send()
@@ -922,7 +922,7 @@ impl super::Api {
     /// Get all tags
     pub async fn tags(&self) -> Result<Vec<String>, Error> {
         let tags = self
-            ._get("api/v2/torrents/tags")
+            ._get("torrents/tags")
             .await?
             .send()
             .await?
@@ -941,7 +941,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("tags", tags.join(","));
 
-        self._post("api/v2/torrents/createTags")
+        self._post("torrents/createTags")
             .await?
             .multipart(form)
             .send()
@@ -959,7 +959,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("tags", tags.join(","));
 
-        self._post("api/v2/torrents/deleteTags")
+        self._post("torrents/deleteTags")
             .await?
             .multipart(form)
             .send()
@@ -988,7 +988,7 @@ impl super::Api {
         }
         form = form.text("enable", enable.to_string());
 
-        self._post("api/v2/torrents/setAutoManagement")
+        self._post("torrents/setAutoManagement")
             .await?
             .multipart(form)
             .send()
@@ -1011,7 +1011,7 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self._post("api/v2/torrents/toggleSequentialDownload")
+        self._post("torrents/toggleSequentialDownload")
             .await?
             .multipart(form)
             .send()
@@ -1034,7 +1034,7 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self._post("api/v2/torrents/toggleFirstLastPiecePrio")
+        self._post("torrents/toggleFirstLastPiecePrio")
             .await?
             .multipart(form)
             .send()
@@ -1063,7 +1063,7 @@ impl super::Api {
         }
         form = form.text("value", enable.to_string());
 
-        self._post("api/v2/torrents/setForceStart")
+        self._post("torrents/setForceStart")
             .await?
             .multipart(form)
             .send()
@@ -1092,7 +1092,7 @@ impl super::Api {
         }
         form = form.text("value", enable.to_string());
 
-        self._post("api/v2/torrents/setSuperSeeding")
+        self._post("torrents/setSuperSeeding")
             .await?
             .multipart(form)
             .send()
@@ -1119,7 +1119,7 @@ impl super::Api {
         form = form.text("oldPath", old_path.to_string());
         form = form.text("newPath", new_path.to_string());
 
-        self._post("api/v2/torrents/renameFile")
+        self._post("torrents/renameFile")
             .await?
             .multipart(form)
             .send()
@@ -1146,7 +1146,7 @@ impl super::Api {
         form = form.text("oldPath", old_path.to_string());
         form = form.text("newPath", new_path.to_string());
 
-        self._post("api/v2/torrents/renameFolder")
+        self._post("torrents/renameFolder")
             .await?
             .multipart(form)
             .send()

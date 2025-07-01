@@ -17,7 +17,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("path", path.to_string());
 
-        self._post("api/v2/rss/addFolder")
+        self._post("rss/addFolder")
             .await?
             .multipart(form)
             .send()
@@ -40,7 +40,7 @@ impl super::Api {
             form = form.text("path", "".to_string());
         }
 
-        self._post("api/v2/rss/addFeed")
+        self._post("rss/addFeed")
             .await?
             .multipart(form)
             .send()
@@ -59,7 +59,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("path", path.to_string());
 
-        self._post("api/v2/rss/removeItem")
+        self._post("rss/removeItem")
             .await?
             .multipart(form)
             .send()
@@ -80,7 +80,7 @@ impl super::Api {
         form = form.text("itemPath", item_path.to_string());
         form = form.text("destPath", dest_path.to_string());
 
-        self._post("api/v2/rss/moveItem")
+        self._post("rss/moveItem")
             .await?
             .multipart(form)
             .send()
@@ -107,7 +107,7 @@ impl super::Api {
         query.push(("withData", with_data));
 
         let feed = self
-            ._get("api/v2/rss/items")
+            ._get("rss/items")
             .await?
             .query(&query)
             .send()
@@ -133,7 +133,7 @@ impl super::Api {
             form = form.text("articleId", article_id.to_string());
         }
 
-        self._post("api/v2/rss/markAsRead")
+        self._post("rss/markAsRead")
             .await?
             .multipart(form)
             .send()
@@ -152,7 +152,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("itemPath", item_path.to_string());
 
-        self._post("api/v2/rss/refreshItem")
+        self._post("rss/refreshItem")
             .await?
             .multipart(form)
             .send()
@@ -171,7 +171,7 @@ impl super::Api {
         form = form.text("ruleName", name.to_string());
         form = form.text("ruleDef", serde_json::to_string(&def)?);
 
-        self._post("api/v2/rss/setRule")
+        self._post("rss/setRule")
             .await?
             .multipart(form)
             .send()
@@ -190,7 +190,7 @@ impl super::Api {
         form = form.text("ruleName", name.to_string());
         form = form.text("newRuleName", new_name.to_string());
 
-        self._post("api/v2/rss/renameRule")
+        self._post("rss/renameRule")
             .await?
             .multipart(form)
             .send()
@@ -207,7 +207,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("ruleName", name.to_string());
 
-        self._post("api/v2/rss/removeRule")
+        self._post("rss/removeRule")
             .await?
             .multipart(form)
             .send()
@@ -218,11 +218,9 @@ impl super::Api {
 
     /// Get all RSS rules
     pub async fn rss_rules(&self) -> Result<HashMap<String, RssRule>, Error> {
-        let url = self._build_url("api/v2/rss/rules").await?;
-
         let rules = self
-            .http_client
-            .get(url)
+            ._get("rss/rules")
+            .await?
             .send()
             .await?
             .json::<HashMap<String, RssRule>>()
@@ -243,7 +241,7 @@ impl super::Api {
         query.push(("ruleName", name));
 
         let articles = self
-            ._get("api/v2/rss/matchingArticles")
+            ._get("rss/matchingArticles")
             .await?
             .query(&query)
             .send()

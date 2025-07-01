@@ -47,7 +47,7 @@ impl super::Api {
         }
 
         let log = self
-            ._get("api/v2/log/main")
+            ._get("log/main")
             .await?
             .query(&query)
             .send()
@@ -70,7 +70,7 @@ impl super::Api {
         }
 
         let log = self
-            ._get("api/v2/log/peers")
+            ._get("log/peers")
             .await?
             .query(&query)
             .send()
