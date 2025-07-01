@@ -38,17 +38,17 @@ impl super::Api {
                 }
             }
         }
-        if !normal {
-            query.push(("normal", false.to_string()));
+        if normal {
+            query.push(("normal", true.to_string()));
         }
-        if !info {
-            query.push(("info", false.to_string()));
+        if info {
+            query.push(("info", true.to_string()));
         }
-        if !warning {
-            query.push(("warning", false.to_string()));
+        if warning {
+            query.push(("warning", true.to_string()));
         }
-        if !critical {
-            query.push(("critical", false.to_string()));
+        if critical {
+            query.push(("critical", true.to_string()));
         }
 
         let log = self
