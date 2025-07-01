@@ -13,17 +13,15 @@ impl super::Api {
     ///
     /// * `rid` - Response ID. If not provided, `rid=0` will be assumed.
     pub async fn main_data(&self, rid: Option<i64>) -> Result<MainData, Error> {
-        let mut url = self._build_url("/api/v2/sync/maindata").await?;
-
-        let mut query = url.query_pairs_mut();
+        let mut query = vec![];
         if let Some(rid) = rid {
-            query.append_pair("rid", &rid.to_string());
+            query.push(("rid", rid));
         }
-        drop(query);
 
         let data = self
-            .http_client
-            .get(url)
+            ._get("/api/v2/sync/maindata")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<MainData>()
@@ -42,18 +40,16 @@ impl super::Api {
     /// * `hash` - Torrent hash.
     /// * `rid` - Response ID. If not provided, `rid=0` will be assumed.
     pub async fn peers_data(&self, hash: &str, rid: Option<i64>) -> Result<PeersData, Error> {
-        let mut url = self._build_url("/api/v2/sync/torrentPeers").await?;
-
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hash", &hash.to_string());
+        let mut query = vec![];
+        query.push(("hash", hash.to_string()));
         if let Some(rid) = rid {
-            query.append_pair("rid", &rid.to_string());
+            query.push(("rid", rid.to_string()));
         }
-        drop(query);
 
         let data = self
-            .http_client
-            .get(url)
+            ._get("/api/v2/sync/torrentPeers")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<PeersData>()

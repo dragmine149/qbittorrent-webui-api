@@ -15,11 +15,9 @@ impl super::Api {
         last_known_id: Option<i64>,
         log_types: Option<Vec<LogType>>,
     ) -> Result<Vec<LogItem>, Error> {
-        let mut url = self._build_url("api/v2/log/main").await?;
-
-        let mut query = url.query_pairs_mut();
+        let mut query = vec![];
         if let Some(last_known_id) = last_known_id {
-            query.append_pair("last_known_id", &last_known_id.to_string());
+            query.push(("last_known_id", last_known_id.to_string()));
         }
         let mut normal = false;
         let mut info = false;
@@ -36,22 +34,22 @@ impl super::Api {
             }
         }
         if !normal {
-            query.append_pair("normal", &false.to_string());
+            query.push(("normal", false.to_string()));
         }
         if !info {
-            query.append_pair("info", &false.to_string());
+            query.push(("info", false.to_string()));
         }
         if !warning {
-            query.append_pair("warning", &false.to_string());
+            query.push(("warning", false.to_string()));
         }
         if !critical {
-            query.append_pair("critical", &false.to_string());
+            query.push(("critical", false.to_string()));
         }
-        drop(query);
 
         let log = self
-            .http_client
-            .get(url)
+            ._get("api/v2/log/main")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<LogItem>>()
@@ -66,14 +64,15 @@ impl super::Api {
     ///
     /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
     pub async fn peer_log(&self, last_known_id: Option<i64>) -> Result<Vec<LogPeers>, Error> {
-        let mut url = self._build_url("api/v2/log/peers").await?;
+        let mut query = vec![];
         if let Some(id) = last_known_id {
-            url.set_query(Some(&format!("last_known_id={}", id)));
+            query.push(("last_known_id", id));
         }
 
         let log = self
-            .http_client
-            .get(url)
+            ._get("api/v2/log/peers")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<LogPeers>>()

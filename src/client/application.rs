@@ -10,9 +10,13 @@ impl super::Api {
     ///
     /// The response is a string withe the application version, e.g. `v5.1.0`
     pub async fn version(&self) -> Result<String, Error> {
-        let url = self._build_url("/api/v2/app/version").await?;
-
-        let version = self.http_client.get(url).send().await?.text().await?;
+        let version = self
+            ._get("/api/v2/app/version")
+            .await?
+            .send()
+            .await?
+            .text()
+            .await?;
 
         Ok(version)
     }
@@ -21,20 +25,22 @@ impl super::Api {
     ///
     /// The response is a string with the WebAPI version, e.g. `2.11.4`
     pub async fn webapi_version(&self) -> Result<String, Error> {
-        let url = self._build_url("/api/v2/app/webapiVersion").await?;
-
-        let version = self.http_client.get(url).send().await?.text().await?;
+        let version = self
+            ._get("/api/v2/app/webapiVersion")
+            .await?
+            .send()
+            .await?
+            .text()
+            .await?;
 
         Ok(version)
     }
 
     /// Get build info
     pub async fn build_info(&self) -> Result<BuildInfo, Error> {
-        let url = self._build_url("/api/v2/app/buildInfo").await?;
-
         let build_info = self
-            .http_client
-            .get(url)
+            ._get("/api/v2/app/buildInfo")
+            .await?
             .send()
             .await?
             .json::<BuildInfo>()
@@ -45,9 +51,7 @@ impl super::Api {
 
     /// Shutdown Qbittorent application
     pub async fn shutdown(&self) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/app/shutdown").await?;
-
-        self.http_client.post(url).send().await?;
+        self._post("/api/v2/app/shutdown").await?.send().await?;
 
         Ok(())
     }
@@ -56,36 +60,40 @@ impl super::Api {
     ///
     /// Returns struct with several fields representing the application's settings.
     pub async fn preferences(&self) -> Result<Preferences, Error> {
-        let url = self._build_url("/api/v2/app/preferences").await?;
-
-        let preferences = self
-            .http_client
-            .get(url)
+        let build_info = self
+            ._get("/api/v2/app/preferences")
+            .await?
             .send()
             .await?
             .json::<Preferences>()
             .await?;
 
-        Ok(preferences)
+        Ok(build_info)
     }
 
     /// Set application preferences
     pub async fn set_preferences(&self, preferences: Preferences) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/app/setPreferences").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("json", serde_json::to_string(&preferences)?);
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("/api/v2/app/setPreferences")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
 
     /// Get default save path
     pub async fn default_save_path(&self) -> Result<String, Error> {
-        let url = self._build_url("/api/v2/app/defaultSavePath").await?;
-
-        let preferences = self.http_client.get(url).send().await?.text().await?;
+        let preferences = self
+            ._get("/api/v2/app/defaultSavePath")
+            .await?
+            .send()
+            .await?
+            .text()
+            .await?;
 
         Ok(preferences)
     }
@@ -94,11 +102,9 @@ impl super::Api {
     ///
     /// Retrieves cookies used for downloading .torrent files and RSS feeds.
     pub async fn cookies(&self) -> Result<Vec<Cookie>, Error> {
-        let url = self._build_url("/api/v2/app/cookies").await?;
-
         let cookies = self
-            .http_client
-            .get(url)
+            ._get("/api/v2/app/cookies")
+            .await?
             .send()
             .await?
             .json::<Vec<Cookie>>()
@@ -117,12 +123,14 @@ impl super::Api {
     ///
     /// * `cookies` - A list of cookies to be set.
     pub async fn set_cookies(&self, cookies: Vec<Cookie>) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/app/setCookies").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("cookies", serde_json::to_string(&cookies)?);
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("/api/v2/app/setCookies")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }

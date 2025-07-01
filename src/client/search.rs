@@ -20,15 +20,19 @@ impl super::Api {
         plugins: &str,
         category: &str,
     ) -> Result<u64, Error> {
-        let url = self._build_url("/api/v2/search/start").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("pattern", pattern.to_string());
         form = form.text("plugins", plugins.to_string());
         form = form.text("category", category.to_string());
 
-        let response = self.http_client.post(url).multipart(form).send().await?;
-        let json: serde_json::Value = response.json().await?;
+        let json: serde_json::Value = self
+            ._post("/api/v2/search/start")
+            .await?
+            .multipart(form)
+            .send()
+            .await?
+            .json()
+            .await?;
         let id = json["id"].as_u64().ok_or_else(|| {
             Error::InvalidResponse("Missing or invalid 'id' in response".to_string())
         })?;
@@ -41,12 +45,14 @@ impl super::Api {
     /// # Arguments
     /// * `id` - ID of the search job
     pub async fn search_stop(&self, id: u64) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/search/stop").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("id", id.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("/api/v2/search/stop")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -57,17 +63,15 @@ impl super::Api {
     ///
     /// * `id` - ID of the search job. If `None`, all search jobs are returned
     pub async fn search_status(&self, id: Option<u64>) -> Result<Vec<Search>, Error> {
-        let mut url = self._build_url("api/v2/search/status").await?;
-
-        let mut query = url.query_pairs_mut();
+        let mut query = vec![];
         if let Some(id) = id {
-            query.append_pair("id", &id.to_string());
+            query.push(("id", id));
         }
-        drop(query);
 
         let searches = self
-            .http_client
-            .get(url)
+            ._get("api/v2/search/status")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<Search>>()
@@ -91,19 +95,17 @@ impl super::Api {
         limit: u64,
         offset: Option<i64>,
     ) -> Result<SearchResult, Error> {
-        let mut url = self._build_url("api/v2/search/results").await?;
-
-        let mut query = url.query_pairs_mut();
-        query.append_pair("id", &id.to_string());
-        query.append_pair("limit", &limit.to_string());
+        let mut query = vec![];
+        query.push(("id", id.to_string()));
+        query.push(("limit", limit.to_string()));
         if let Some(offset) = offset {
-            query.append_pair("offset", &offset.to_string());
+            query.push(("offset", offset.to_string()));
         }
-        drop(query);
 
         let searches = self
-            .http_client
-            .get(url)
+            ._get("api/v2/search/results")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<SearchResult>()
@@ -117,23 +119,23 @@ impl super::Api {
     /// # Arguments
     /// * `id` - The unique identifier of the search job.
     pub async fn search_delete(&self, id: u64) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/search/delete").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("id", id.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("/api/v2/search/delete")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
 
     /// Get search plugins
     pub async fn search_plugins(&self) -> Result<Vec<SearchPlugin>, Error> {
-        let url = self._build_url("api/v2/search/plugins").await?;
-
         let plugins = self
-            .http_client
-            .get(url)
+            ._get("api/v2/search/plugins")
+            .await?
             .send()
             .await?
             .json::<Vec<SearchPlugin>>()
@@ -147,12 +149,14 @@ impl super::Api {
     /// # Arguments
     /// * `sources` - List of Url and file path of the plugin to install.
     pub async fn search_install_plugin(&self, sources: Vec<&str>) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/search/installPlugin").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("sources", sources.join("|"));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("/api/v2/search/installPlugin")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -162,12 +166,14 @@ impl super::Api {
     /// # Arguments
     /// * `names` - List of names for torrents to uninstall.
     pub async fn search_uninstall_plugin(&self, names: Vec<&str>) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/search/uninstallPlugin").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("names", names.join("|"));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("/api/v2/search/uninstallPlugin")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -177,22 +183,25 @@ impl super::Api {
     /// # Arguments
     /// * `names` - List of names for torrents to enable.
     pub async fn search_enable_plugin(&self, names: Vec<&str>, enable: bool) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/search/enablePlugin").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("names", names.join("|"));
         form = form.text("enable", enable.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("/api/v2/search/enablePlugin")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
 
     /// Update search plugins
     pub async fn search_update_plugin(&self) -> Result<(), Error> {
-        let url = self._build_url("/api/v2/search/updatePlugins").await?;
-
-        self.http_client.post(url).send().await?;
+        self._post("/api/v2/search/updatePlugins")
+            .await?
+            .send()
+            .await?;
 
         Ok(())
     }

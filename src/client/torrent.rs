@@ -17,36 +17,34 @@ impl super::Api {
     ///
     /// * `parames` - Parameter object
     pub async fn torrents(&self, parames: TorrentListParams) -> Result<Vec<TorrentInfo>, Error> {
-        let mut url = self._build_url("api/v2/torrents/info").await?;
-
-        let mut query = url.query_pairs_mut();
-        query.append_pair("reverse", &parames.reverse.to_string());
+        let mut query = vec![];
+        query.push(("reverse", parames.reverse.to_string()));
         if let Some(filter) = parames.filter {
-            query.append_pair("filter", &filter.to_string());
+            query.push(("filter", filter.to_string()));
         }
         if let Some(category) = parames.category {
-            query.append_pair("category", &category);
+            query.push(("category", category));
         }
         if let Some(tag) = parames.tag {
-            query.append_pair("tag", &tag);
+            query.push(("tag", tag));
         }
         if let Some(sort) = parames.sort {
-            query.append_pair("sort", &sort.to_string());
+            query.push(("sort", sort.to_string()));
         }
         if let Some(limit) = parames.limit {
-            query.append_pair("limit", &limit.to_string());
+            query.push(("limit", limit.to_string()));
         }
         if let Some(offset) = parames.offset {
-            query.append_pair("offset", &offset.to_string());
+            query.push(("offset", offset.to_string()));
         }
         if let Some(hashes) = parames.hashes {
-            query.append_pair("hashes", &hashes.join("|"));
+            query.push(("hashes", hashes.join("|")));
         }
-        drop(query);
 
         let torrents = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/info")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<TorrentInfo>>()
@@ -61,12 +59,13 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the generic properties of.
     pub async fn torrent(&self, hash: &str) -> Result<TorrentProperties, Error> {
-        let mut url = self._build_url("api/v2/torrents/properties").await?;
-        url.set_query(Some(&format!("hash={}", hash)));
+        let mut query = vec![];
+        query.push(("hash", hash));
 
         let torrent = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/properties")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<TorrentProperties>()
@@ -81,12 +80,13 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the trackers of.
     pub async fn trackers(&self, hash: &str) -> Result<Vec<Tracker>, Error> {
-        let mut url = self._build_url("api/v2/torrents/trackers").await?;
-        url.set_query(Some(&format!("hash={}", hash)));
+        let mut query = vec![];
+        query.push(("hash", hash));
 
         let trackers = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/trackers")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<Tracker>>()
@@ -101,12 +101,13 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the webseeds of.
     pub async fn webseeds(&self, hash: &str) -> Result<Vec<WebSeed>, Error> {
-        let mut url = self._build_url("api/v2/torrents/webseeds").await?;
-        url.set_query(Some(&format!("hash={}", hash)));
+        let mut query = vec![];
+        query.push(("hash", hash));
 
         let webseeds = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/webseeds")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<WebSeed>>()
@@ -127,25 +128,23 @@ impl super::Api {
         hash: &str,
         indexes: Option<Vec<i64>>,
     ) -> Result<Vec<TorrentContent>, Error> {
-        let mut url = self._build_url("api/v2/torrents/files").await?;
-
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hash", &hash);
+        let mut query = vec![];
+        query.push(("hash", hash.to_string()));
         if let Some(indexes) = indexes {
-            query.append_pair(
+            query.push((
                 "filter",
-                &indexes
+                indexes
                     .iter()
                     .map(|&x| x.to_string())
                     .collect::<Vec<String>>()
                     .join("|"),
-            );
+            ));
         }
-        drop(query);
 
         let webseeds = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/files")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<TorrentContent>>()
@@ -160,15 +159,13 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the piece states of.
     pub async fn pieces_states(&self, hash: &str) -> Result<Vec<PiecesState>, Error> {
-        let mut url = self._build_url("api/v2/torrents/pieceStates").await?;
-
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hash", &hash);
-        drop(query);
+        let mut query = vec![];
+        query.push(("hash", hash));
 
         let pieces = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/pieceStates")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<PiecesState>>()
@@ -183,15 +180,13 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the pieces hashes of.
     pub async fn pieces_hashes(&self, hash: &str) -> Result<Vec<String>, Error> {
-        let mut url = self._build_url("api/v2/torrents/pieceHashes").await?;
-
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hash", &hash);
-        drop(query);
+        let mut query = vec![];
+        query.push(("hash", hash));
 
         let pieces = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/pieceHashes")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<Vec<String>>()
@@ -206,13 +201,14 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to stop.
     pub async fn stop(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self._build_url("api/v2/torrents/stop").await?;
+        let mut query = vec![];
+        query.push(("hashes", hashes.join("|")));
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hashes", &hashes.join("|"));
-        drop(query);
-
-        self.http_client.get(url).send().await?;
+        self._get("api/v2/torrents/stop")
+            .await?
+            .query(&query)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -223,13 +219,14 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to start.
     pub async fn start(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self._build_url("api/v2/torrents/start").await?;
+        let mut query = vec![];
+        query.push(("hashes", hashes.join("|")));
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hashes", &hashes.join("|"));
-        drop(query);
-
-        self.http_client.get(url).send().await?;
+        self._get("api/v2/torrents/start")
+            .await?
+            .query(&query)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -242,14 +239,15 @@ impl super::Api {
     /// * `delete_files` - If set to `true`, the downloaded data will also be deleted,
     /// otherwise has no effect.
     pub async fn delete(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
-        let mut url = self._build_url("api/v2/torrents/delete").await?;
+        let mut query = vec![];
+        query.push(("hashes", hashes.join("|")));
+        query.push(("deleteFiles", delete_files.to_string()));
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hashes", &hashes.join("|"));
-        query.append_pair("deleteFiles", &delete_files.to_string());
-        drop(query);
-
-        self.http_client.get(url).send().await?;
+        self._get("api/v2/torrents/delete")
+            .await?
+            .query(&query)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -260,13 +258,14 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to recheck.
     pub async fn recheck(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self._build_url("api/v2/torrents/recheck").await?;
+        let mut query = vec![];
+        query.push(("hashes", hashes.join("|")));
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hashes", &hashes.join("|"));
-        drop(query);
-
-        self.http_client.get(url).send().await?;
+        self._get("api/v2/torrents/recheck")
+            .await?
+            .query(&query)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -277,13 +276,14 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to reannounce.
     pub async fn reannounce(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self._build_url("api/v2/torrents/reannounce").await?;
+        let mut query = vec![];
+        query.push(("hashes", hashes.join("|")));
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hashes", &hashes.join("|"));
-        drop(query);
-
-        self.http_client.get(url).send().await?;
+        self._get("api/v2/torrents/reannounce")
+            .await?
+            .query(&query)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -294,8 +294,6 @@ impl super::Api {
     ///
     /// * `params` - Torrent parameters
     pub async fn add_torrent(&self, params: TorrentAddUrls) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/add").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("urls", params.urls.join("\n"));
         form = form.text("skip_checking", params.skip_checking.to_string());
@@ -334,7 +332,11 @@ impl super::Api {
             form = form.text("seedingTimeLimit", seeding_time_limit.to_string());
         }
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/add")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -346,13 +348,15 @@ impl super::Api {
     /// * `hash` - Torrent hash.
     /// * `urls` - Trackers urls to add.
     pub async fn add_trackers_to_torrent(&self, hash: &str, urls: Vec<&str>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/addTrackers").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
         form = form.text("urls", urls.join("%0A"));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/addTrackers")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -370,14 +374,16 @@ impl super::Api {
         orig_url: &str,
         new_url: &str,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/editTracker").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
         form = form.text("origUrl", orig_url.to_string());
         form = form.text("newUrl", new_url.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/editTracker")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -393,13 +399,15 @@ impl super::Api {
         hash: &str,
         urls: Vec<&str>,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/removeTrackers").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
         form = form.text("urls", urls.join("|"));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/removeTrackers")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -411,13 +419,15 @@ impl super::Api {
     /// * `hashes` - Torrent hash.
     /// * `peers` - The peer to add. Each peer is a colon-separated `host:port`.
     pub async fn add_peers(&self, hashes: Vec<&str>, peers: Vec<&str>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/addPeers").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("hashes", hashes.join("|"));
         form = form.text("peers", peers.join("|"));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/addPeers")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -429,8 +439,6 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to increase the priority of.
     /// If `None` all torrents are selected.
     pub async fn increase_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/increasePrio").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -438,7 +446,11 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/increasePrio")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -450,8 +462,6 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to decrease the priority of.
     /// If `None` all torrents are selected.
     pub async fn decrease_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/decreasePrio").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -459,7 +469,11 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/decreasePrio")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -471,8 +485,6 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to max the priority of.
     /// If `None` all torrents are selected.
     pub async fn max_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/topPrio").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -480,7 +492,11 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/topPrio")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -492,8 +508,6 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to min the priority of.
     /// If `None` all torrents are selected.
     pub async fn min_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/bottomPrio").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -501,7 +515,11 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/bottomPrio")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -519,8 +537,6 @@ impl super::Api {
         file_ids: Vec<u64>,
         priority: FilePriority,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/filePrio").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
         form = form.text(
@@ -533,7 +549,11 @@ impl super::Api {
         );
         form = form.text("priority", serde_json::to_string(&priority)?);
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/filePrio")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -548,19 +568,17 @@ impl super::Api {
         &self,
         hashes: Option<Vec<&str>>,
     ) -> Result<HashMap<String, u64>, Error> {
-        let mut url = self._build_url("api/v2/torrents/downloadLimit").await?;
-
-        let mut query = url.query_pairs_mut();
+        let mut query = vec![];
         if let Some(hashes) = hashes {
-            query.append_pair("hashes", &hashes.join("|"));
+            query.push(("hashes", hashes.join("|")));
         } else {
-            query.append_pair("hashes", "all");
+            query.push(("hashes", "all".to_string()));
         }
-        drop(query);
 
         let limites = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/downloadLimit")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<HashMap<String, u64>>()
@@ -581,8 +599,6 @@ impl super::Api {
         hashes: Option<Vec<&str>>,
         limit: u64,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setDownloadLimit").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -591,7 +607,11 @@ impl super::Api {
         }
         form = form.text("limit", limit.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setDownloadLimit")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -616,8 +636,6 @@ impl super::Api {
         seeding_time_limit: i64,
         inactive_seeding_time_limit: i64,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setShareLimits").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -631,7 +649,11 @@ impl super::Api {
             inactive_seeding_time_limit.to_string(),
         );
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setShareLimits")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -646,19 +668,17 @@ impl super::Api {
         &self,
         hashes: Option<Vec<&str>>,
     ) -> Result<HashMap<String, i64>, Error> {
-        let mut url = self._build_url("api/v2/torrents/uploadLimit").await?;
-
-        let mut query = url.query_pairs_mut();
+        let mut query = vec![];
         if let Some(hashes) = hashes {
-            query.append_pair("hashes", &hashes.join("|"));
+            query.push(("hashes", hashes.join("|")));
         } else {
-            query.append_pair("hashes", "all");
+            query.push(("hashes", "all".to_string()));
         }
-        drop(query);
 
         let limites = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/uploadLimit")
+            .await?
+            .query(&query)
             .send()
             .await?
             .json::<HashMap<String, i64>>()
@@ -679,8 +699,6 @@ impl super::Api {
         hashes: Option<Vec<&str>>,
         limit: u64,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setUploadLimit").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -689,7 +707,11 @@ impl super::Api {
         }
         form = form.text("limit", limit.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setUploadLimit")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -706,8 +728,6 @@ impl super::Api {
         hashes: Option<Vec<&str>>,
         location: &str,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setLocation").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -716,7 +736,11 @@ impl super::Api {
         }
         form = form.text("location", location.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setLocation")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -728,13 +752,15 @@ impl super::Api {
     /// * `hash` - The hash of the torrent you want to set the name of.
     /// * `name` - Location to download the torrent to.
     pub async fn set_name(&self, hash: &str, name: &str) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setLocation").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
         form = form.text("name", name.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setLocation")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -751,8 +777,6 @@ impl super::Api {
         hashes: Option<Vec<&str>>,
         category: &str,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setCategory").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -761,18 +785,20 @@ impl super::Api {
         }
         form = form.text("category", category.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setCategory")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
 
     /// Get all categories
     pub async fn categories(&self) -> Result<Vec<String>, Error> {
-        let url = self._build_url("api/v2/torrents/categories").await?;
-
         let categories = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/categories")
+            .await?
             .send()
             .await?
             .json::<Vec<String>>()
@@ -788,13 +814,15 @@ impl super::Api {
     /// * `category` - Name for the category to create.
     /// * `save_path` - Path to download torrents for the category.
     pub async fn create_category(&self, category: &str, save_path: &str) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/createCategory").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("category", category.to_string());
         form = form.text("savePath", save_path.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/createCategory")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -806,13 +834,15 @@ impl super::Api {
     /// * `category` - Name for the category to edit.
     /// * `save_path` - Path to download torrents for the category.
     pub async fn edit_category(&self, category: &str, save_path: &str) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/editCategory").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("category", category.to_string());
         form = form.text("savePath", save_path.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/editCategory")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -823,12 +853,14 @@ impl super::Api {
     ///
     /// * `categories` - List of category names to remove.
     pub async fn remove_categories(&self, categories: Vec<&str>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/removeCategories").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("categories", categories.join("\n"));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/removeCategories")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -841,8 +873,6 @@ impl super::Api {
     /// If `None` all torrents are selected.
     /// * `tags` - List of names for the tags you want to set.
     pub async fn add_tags(&self, hashes: Option<Vec<&str>>, tags: Vec<&str>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/addTags").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -851,7 +881,11 @@ impl super::Api {
         }
         form = form.text("tags", tags.join(","));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/addTags")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -868,8 +902,6 @@ impl super::Api {
         hashes: Option<Vec<&str>>,
         tags: Vec<&str>,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/removeTags").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -878,18 +910,20 @@ impl super::Api {
         }
         form = form.text("tags", tags.join(","));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/removeTags")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
 
     /// Get all tags
     pub async fn tags(&self) -> Result<Vec<String>, Error> {
-        let url = self._build_url("api/v2/torrents/tags").await?;
-
         let tags = self
-            .http_client
-            .get(url)
+            ._get("api/v2/torrents/tags")
+            .await?
             .send()
             .await?
             .json::<Vec<String>>()
@@ -904,12 +938,14 @@ impl super::Api {
     ///
     /// * `tags` - List of tags to create.
     pub async fn create_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/createTags").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("tags", tags.join(","));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/createTags")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -920,12 +956,14 @@ impl super::Api {
     ///
     /// * `tags` - List of tags to delete.
     pub async fn torrent_delete_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/deleteTags").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("tags", tags.join(","));
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/deleteTags")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -942,8 +980,6 @@ impl super::Api {
         hashes: Option<Vec<&str>>,
         enable: bool,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setAutoManagement").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -952,7 +988,11 @@ impl super::Api {
         }
         form = form.text("enable", enable.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setAutoManagement")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -964,10 +1004,6 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to toggle sequential download for.
     /// If `None` all torrents are selected.
     pub async fn sequential_download(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self
-            ._build_url("api/v2/torrents/toggleSequentialDownload")
-            .await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -975,7 +1011,11 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/toggleSequentialDownload")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -987,10 +1027,6 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to toggle first/last piece priority for.
     /// If `None` all torrents are selected.
     pub async fn toggle_first_last_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
-        let url = self
-            ._build_url("api/v2/torrents/toggleFirstLastPiecePrio")
-            .await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -998,7 +1034,11 @@ impl super::Api {
             form = form.text("hashes", "all".to_string());
         }
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/toggleFirstLastPiecePrio")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -1015,8 +1055,6 @@ impl super::Api {
         hashes: Option<Vec<&str>>,
         enable: bool,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setForceStart").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -1025,7 +1063,11 @@ impl super::Api {
         }
         form = form.text("value", enable.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setForceStart")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -1042,8 +1084,6 @@ impl super::Api {
         hashes: Option<Vec<&str>>,
         enable: bool,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/setSuperSeeding").await?;
-
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
             form = form.text("hashes", hashes.join("|"));
@@ -1052,7 +1092,11 @@ impl super::Api {
         }
         form = form.text("value", enable.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/setSuperSeeding")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -1070,14 +1114,16 @@ impl super::Api {
         old_path: &str,
         new_path: &str,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/renameFile").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
         form = form.text("oldPath", old_path.to_string());
         form = form.text("newPath", new_path.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/renameFile")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
@@ -1095,14 +1141,16 @@ impl super::Api {
         old_path: &str,
         new_path: &str,
     ) -> Result<(), Error> {
-        let url = self._build_url("api/v2/torrents/renameFolder").await?;
-
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
         form = form.text("oldPath", old_path.to_string());
         form = form.text("newPath", new_path.to_string());
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self._post("api/v2/torrents/renameFolder")
+            .await?
+            .multipart(form)
+            .send()
+            .await?;
 
         Ok(())
     }
