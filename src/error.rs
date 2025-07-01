@@ -9,7 +9,6 @@ pub enum Error {
     HttpRequestError(reqwest::Error),
     UrlParseError(url::ParseError),
     SerdJsonError(serde_json::Error),
-    CookieError(cookie_store::CookieError),
 }
 
 impl From<reqwest::Error> for Error {
@@ -27,11 +26,5 @@ impl From<url::ParseError> for Error {
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
         Self::SerdJsonError(err)
-    }
-}
-
-impl From<cookie_store::CookieError> for Error {
-    fn from(err: cookie_store::CookieError) -> Self {
-        Self::CookieError(err)
     }
 }
