@@ -13,9 +13,12 @@ use crate::{
 impl super::Api {
     /// Get torrent list
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-list)
+    /// 
     /// # Arguments
     ///
     /// * `parames` - Parameter object
+    /// 
     pub async fn torrents(&self, parames: TorrentListParams) -> Result<Vec<TorrentInfo>, Error> {
         let mut query = vec![];
         query.push(("reverse", parames.reverse.to_string()));
@@ -55,9 +58,12 @@ impl super::Api {
 
     /// Get torrent generic properties
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-generic-properties)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to get the generic properties of.
+    /// 
     pub async fn torrent(&self, hash: &str) -> Result<TorrentProperties, Error> {
         let mut query = vec![];
         query.push(("hash", hash));
@@ -76,9 +82,12 @@ impl super::Api {
 
     /// Get torrent trackers
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-trackers)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to get the trackers of.
+    /// 
     pub async fn trackers(&self, hash: &str) -> Result<Vec<Tracker>, Error> {
         let mut query = vec![];
         query.push(("hash", hash));
@@ -97,9 +106,12 @@ impl super::Api {
 
     /// Get torrent web seeds
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-web-seeds)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to get the webseeds of.
+    /// 
     pub async fn webseeds(&self, hash: &str) -> Result<Vec<WebSeed>, Error> {
         let mut query = vec![];
         query.push(("hash", hash));
@@ -118,11 +130,14 @@ impl super::Api {
 
     /// Get torrent contents
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-contents)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to get the files of.
     /// * `indexes` - The indexes of the files you want to retrieve. If `None`
     /// all files will be selected.
+    /// 
     pub async fn files(
         &self,
         hash: &str,
@@ -155,9 +170,12 @@ impl super::Api {
 
     /// Get torrent pieces' states
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-pieces-states)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to get the piece states of.
+    /// 
     pub async fn pieces_states(&self, hash: &str) -> Result<Vec<PiecesState>, Error> {
         let mut query = vec![];
         query.push(("hash", hash));
@@ -176,9 +194,12 @@ impl super::Api {
 
     /// Get torrent pieces' hashes
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-pieces-hashes)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to get the pieces hashes of.
+    /// 
     pub async fn pieces_hashes(&self, hash: &str) -> Result<Vec<String>, Error> {
         let mut query = vec![];
         query.push(("hash", hash));
@@ -197,9 +218,12 @@ impl super::Api {
 
     /// Pause torrents
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#pause-torrents)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - Hashes list of torrents to stop.
+    /// 
     pub async fn stop(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
@@ -215,9 +239,12 @@ impl super::Api {
 
     /// Resume torrents
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#resume-torrents)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - Hashes list of torrents to start.
+    /// 
     pub async fn start(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
@@ -233,11 +260,14 @@ impl super::Api {
 
     /// Delete torrents
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#delete-torrents)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - Hashes list of torrents to delete.
     /// * `delete_files` - If set to `true`, the downloaded data will also be deleted,
     /// otherwise has no effect.
+    /// 
     pub async fn delete(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
@@ -254,9 +284,12 @@ impl super::Api {
 
     /// Recheck torrents
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#recheck-torrents)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - Hashes list of torrents to recheck.
+    /// 
     pub async fn recheck(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
@@ -272,9 +305,12 @@ impl super::Api {
 
     /// Reannounce torrents
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#reannounce-torrents)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - Hashes list of torrents to reannounce.
+    /// 
     pub async fn reannounce(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let mut query = vec![];
         query.push(("hashes", hashes.join("|")));
@@ -290,9 +326,12 @@ impl super::Api {
 
     /// Add new torrent
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#add-new-torrent)
+    ///
     /// # Arguments
     ///
     /// * `params` - Torrent parameters
+    /// 
     pub async fn add_torrent(&self, params: TorrentAddUrls) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("urls", params.urls.join("\n"));
@@ -343,10 +382,13 @@ impl super::Api {
 
     /// Add trackers to torrent
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#add-trackers-to-torrent)
+    ///
     /// # Arguments
     ///
     /// * `hash` - Torrent hash.
     /// * `urls` - Trackers urls to add.
+    /// 
     pub async fn add_trackers_to_torrent(&self, hash: &str, urls: Vec<&str>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
@@ -363,11 +405,14 @@ impl super::Api {
 
     /// Edit trackers
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#edit-trackers)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent.
     /// * `orig_url` - The tracker URL you want to edit.
-    /// * `new_url` - The new URL to replace the `origUrl`.
+    /// * `new_url` - The new URL to replace the `orig_url`.
+    /// 
     pub async fn edit_tracker_for_torrent(
         &self,
         hash: &str,
@@ -390,10 +435,13 @@ impl super::Api {
 
     /// Remove trackers from torrent
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#remove-trackers)
+    ///
     /// # Arguments
     ///
     /// * `hash` - Torrent hash.
     /// * `urls` - Trackers urls to remove.
+    /// 
     pub async fn remove_trackers_from_torrent(
         &self,
         hash: &str,
@@ -414,10 +462,13 @@ impl super::Api {
 
     /// Remove trackers from torrent
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#add-peers)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - Torrent hash.
     /// * `peers` - The peer to add. Each peer is a colon-separated `host:port`.
+    /// 
     pub async fn add_peers(&self, hashes: Vec<&str>, peers: Vec<&str>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("hashes", hashes.join("|"));
@@ -434,10 +485,13 @@ impl super::Api {
 
     /// Increase torrent priority
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#increase-torrent-priority)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to increase the priority of.
     /// If `None` all torrents are selected.
+    /// 
     pub async fn increase_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -457,10 +511,13 @@ impl super::Api {
 
     /// Decrease torrent priority
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#decrease-torrent-priority)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to decrease the priority of.
     /// If `None` all torrents are selected.
+    /// 
     pub async fn decrease_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -480,10 +537,13 @@ impl super::Api {
 
     /// Maximal torrent priority
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#maximal-torrent-priority)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to max the priority of.
     /// If `None` all torrents are selected.
+    /// 
     pub async fn max_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -503,10 +563,13 @@ impl super::Api {
 
     /// Minimal torrent priority
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#minimal-torrent-priority)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to min the priority of.
     /// If `None` all torrents are selected.
+    /// 
     pub async fn min_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -526,11 +589,14 @@ impl super::Api {
 
     /// Set file priority
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-file-priority)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent.
     /// * `file_ids` - File ids.
     /// * `priority` - File priority to set.
+    /// 
     pub async fn set_file_priority(
         &self,
         hash: &str,
@@ -560,10 +626,13 @@ impl super::Api {
 
     /// Get torrent download limit
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-download-limit)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to get the download limit of.
     /// If `None` all torrents are selected.
+    /// 
     pub async fn download_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -589,11 +658,14 @@ impl super::Api {
 
     /// Set torrent download limit
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-download-limit)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set the download limit of.
     /// If `None` all torrents are selected.
     /// * `limit` - Download limit
+    /// 
     pub async fn set_download_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -618,6 +690,8 @@ impl super::Api {
 
     /// Set torrent share limit
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set the share limit of.
@@ -629,6 +703,7 @@ impl super::Api {
     /// * `inactive_seeding_time_limit` - The maximum amount of time (minutes) the
     /// torrent is allowed to seed while being inactive. `-2` means the global limit
     /// should be used, `-1` means no limit.
+    /// 
     pub async fn set_share_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -660,10 +735,13 @@ impl super::Api {
 
     /// Get torrent upload limit
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-upload-limit)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want the upload limit of.
     /// If `None` all torrents are selected.
+    /// 
     pub async fn upload_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -689,11 +767,14 @@ impl super::Api {
 
     /// Set torrent upload limit
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-upload-limit)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set the upload limit of.
     /// If `None` all torrents are selected.
     /// * `limit` - Upload limit
+    /// 
     pub async fn set_upload_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -718,11 +799,14 @@ impl super::Api {
 
     /// Set torrent location
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-location)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set the location of.
     /// If `None` all torrents are selected.
     /// * `location` - Location to download the torrent to.
+    /// 
     pub async fn set_location(
         &self,
         hashes: Option<Vec<&str>>,
@@ -747,10 +831,13 @@ impl super::Api {
 
     /// Set torrent name
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-name)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent you want to set the name of.
     /// * `name` - Location to download the torrent to.
+    /// 
     pub async fn set_name(&self, hash: &str, name: &str) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("hash", hash.to_string());
@@ -767,11 +854,14 @@ impl super::Api {
 
     /// Set torrent category
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-category)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set the category of.
     /// If `None` all torrents are selected.
     /// * `category` - Name of the category you want to set.
+    /// 
     pub async fn set_category(
         &self,
         hashes: Option<Vec<&str>>,
@@ -795,6 +885,9 @@ impl super::Api {
     }
 
     /// Get all categories
+    ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-all-categories)
+    /// 
     pub async fn categories(&self) -> Result<Vec<String>, Error> {
         let categories = self
             ._get("torrents/categories")
@@ -809,10 +902,13 @@ impl super::Api {
 
     /// Add new category
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#add-new-category)
+    ///
     /// # Arguments
     ///
     /// * `category` - Name for the category to create.
     /// * `save_path` - Path to download torrents for the category.
+    /// 
     pub async fn create_category(&self, category: &str, save_path: &str) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("category", category.to_string());
@@ -829,10 +925,13 @@ impl super::Api {
 
     /// Edit category
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#edit-category)
+    ///
     /// # Arguments
     ///
     /// * `category` - Name for the category to edit.
     /// * `save_path` - Path to download torrents for the category.
+    /// 
     pub async fn edit_category(&self, category: &str, save_path: &str) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("category", category.to_string());
@@ -849,9 +948,12 @@ impl super::Api {
 
     /// Remove categories
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#remove-categories)
+    ///
     /// # Arguments
     ///
     /// * `categories` - List of category names to remove.
+    /// 
     pub async fn remove_categories(&self, categories: Vec<&str>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("categories", categories.join("\n"));
@@ -867,11 +969,14 @@ impl super::Api {
 
     /// Add torrent tags
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#add-torrent-tags)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set the tags of.
     /// If `None` all torrents are selected.
     /// * `tags` - List of names for the tags you want to set.
+    /// 
     pub async fn add_tags(&self, hashes: Option<Vec<&str>>, tags: Vec<&str>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -892,11 +997,14 @@ impl super::Api {
 
     /// Remove torrent tags
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#remove-torrent-tags)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to remove the tags of.
     /// If `None` all torrents are selected.
     /// * `tags` - List of names for the tags you want to remove.
+    /// 
     pub async fn remove_tags(
         &self,
         hashes: Option<Vec<&str>>,
@@ -920,6 +1028,9 @@ impl super::Api {
     }
 
     /// Get all tags
+    ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-all-tags)
+    /// 
     pub async fn tags(&self) -> Result<Vec<String>, Error> {
         let tags = self
             ._get("torrents/tags")
@@ -934,9 +1045,12 @@ impl super::Api {
 
     /// Create tags
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#create-tags)
+    ///
     /// # Arguments
     ///
     /// * `tags` - List of tags to create.
+    /// 
     pub async fn create_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("tags", tags.join(","));
@@ -952,9 +1066,12 @@ impl super::Api {
 
     /// Delete tags
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#delete-tags)
+    ///
     /// # Arguments
     ///
     /// * `tags` - List of tags to delete.
+    /// 
     pub async fn torrent_delete_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("tags", tags.join(","));
@@ -970,11 +1087,14 @@ impl super::Api {
 
     /// Set automatic torrent management
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-automatic-torrent-management)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set automatic torrent management of.
     /// If `None` all torrents are selected.
     /// * `enable`
+    /// 
     pub async fn set_automatic_torrent_management(
         &self,
         hashes: Option<Vec<&str>>,
@@ -999,10 +1119,13 @@ impl super::Api {
 
     /// Toggle sequential download
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#toggle-sequential-download)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to toggle sequential download for.
     /// If `None` all torrents are selected.
+    /// 
     pub async fn sequential_download(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -1022,10 +1145,13 @@ impl super::Api {
 
     /// Toggle first/last piece priority
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-firstlast-piece-priority)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to toggle first/last piece priority for.
     /// If `None` all torrents are selected.
+    /// 
     pub async fn toggle_first_last_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         if let Some(hashes) = hashes {
@@ -1045,11 +1171,14 @@ impl super::Api {
 
     /// Set force start
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-force-start)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set force start of.
     /// If `None` all torrents are selected.
     /// * `enable`
+    /// 
     pub async fn set_force_start(
         &self,
         hashes: Option<Vec<&str>>,
@@ -1074,11 +1203,14 @@ impl super::Api {
 
     /// Set super seeding
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-super-seeding)
+    ///
     /// # Arguments
     ///
     /// * `hashes` - The hashes of the torrents you want to set super seeding of.
     /// If `None` all torrents are selected.
     /// * `enable`
+    /// 
     pub async fn set_super_seeding(
         &self,
         hashes: Option<Vec<&str>>,
@@ -1103,11 +1235,14 @@ impl super::Api {
 
     /// Rename file
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#rename-file)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent
     /// * `oldPath` - The old path of the torrent
     /// * `newPath` - The new path to use for the file
+    /// 
     pub async fn rename_file(
         &self,
         hash: &str,
@@ -1130,11 +1265,14 @@ impl super::Api {
 
     /// Rename folder
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#rename-folder)
+    ///
     /// # Arguments
     ///
     /// * `hash` - The hash of the torrent
     /// * `oldPath` - The old path of the torrent
     /// * `newPath` - The new path to use for the file
+    /// 
     pub async fn torrent_rename_folder(
         &self,
         hash: &str,

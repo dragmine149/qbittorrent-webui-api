@@ -8,10 +8,13 @@ impl super::Api {
     ///
     /// If the given `rid` is different from the one of last server reply,
     /// `full_update` will be `true`
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-main-data)
     ///
     /// # Arguments
     ///
     /// * `rid` - Response ID. If not provided, `rid=0` will be assumed.
+    /// 
     pub async fn main_data(&self, rid: Option<i64>) -> Result<MainData, Error> {
         let mut query = vec![];
         if let Some(rid) = rid {
@@ -35,10 +38,13 @@ impl super::Api {
     /// Fetches main data changes since the last request. If the given `rid` is different from the one of last server reply,
     /// `full_update` will be `true`
     ///
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-peers-data)
+    /// 
     /// # Arguments
     ///
     /// * `hash` - Torrent hash.
     /// * `rid` - Response ID. If not provided, `rid=0` will be assumed.
+    /// 
     pub async fn peers_data(&self, hash: &str, rid: Option<i64>) -> Result<PeersData, Error> {
         let mut query = vec![];
         query.push(("hash", hash.to_string()));

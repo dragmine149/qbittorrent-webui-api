@@ -10,6 +10,7 @@ impl super::Api {
     /// # Arguments
     /// * `url` - The base URL of the API service.
     /// * `credentials` - The credentials to use for authentication.
+    /// 
     pub async fn new_login(url: &str, credentials: Credentials) -> Result<Self, Error> {
         let mut api = Self::new(url)?;
 
@@ -28,6 +29,7 @@ impl super::Api {
     /// * `url` - The base URL of the API service.
     /// * `username` - The username for authentication.
     /// * `password` - The password for authentication.
+    /// 
     pub async fn new_login_username_password(
         url: &str,
         username: impl Into<String>,
@@ -42,10 +44,13 @@ impl super::Api {
     ///
     /// This method allows you to login using the credentials stored in the API state.
     /// If the user is already logged in, it will check the validity of the session.
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#login)
     ///
     /// # Arguments
     /// * `credentials` - The credentials to use for authentication.
     /// * `force` - If true, forces a login even if already logged in.
+    /// 
     pub async fn login(&mut self, force: bool) -> Result<(), Error> {
         // check if already login (aka cookie set)
         if self.state.read().await.as_cookie().is_some() && !force {
@@ -129,6 +134,7 @@ impl super::Api {
     /// # Arguments
     /// * `url` - The base URL of the API service.
     /// * `sid_cookie` - The session ID cookie for authentication.
+    /// 
     pub async fn new_from_cookie(url: &str, sid_cookie: impl Into<&str>) -> Result<Self, Error> {
         let mut api = Self::new(url)?;
 
@@ -148,6 +154,9 @@ impl super::Api {
     /// Logout the client instance
     ///
     /// This will clear the current session and remove the SID cookie.
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#logout)
+    ///
     pub async fn logout(&self) -> Result<(), Error> {
         self._post("auth/logout").await?.send().await?;
 

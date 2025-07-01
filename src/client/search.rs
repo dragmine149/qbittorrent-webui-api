@@ -7,6 +7,8 @@ use crate::{
 
 impl super::Api {
     /// Start search
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#start-search)
     ///
     /// # Arguments
     /// * `pattern` - Pattern to search for (e.g. "Ubuntu 18.04")
@@ -14,6 +16,7 @@ impl super::Api {
     /// multiple plugins separated by `|`. Also supports `all` and `enabled`
     /// * `category` - Categories to limit your search to (e.g. "legittorrents").
     /// Available categories depend on the specified plugins. Also supports `all`
+    /// 
     pub async fn search_start(
         &self,
         pattern: &str,
@@ -41,9 +44,12 @@ impl super::Api {
     }
 
     /// Stop search
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#start-search)
     ///
     /// # Arguments
     /// * `id` - ID of the search job
+    /// 
     pub async fn search_stop(&self, id: u64) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("id", id.to_string());
@@ -58,10 +64,13 @@ impl super::Api {
     }
 
     /// Get search status
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-search-status)
     ///
     /// # Arguments
     ///
     /// * `id` - ID of the search job. If `None`, all search jobs are returned
+    /// 
     pub async fn search_status(&self, id: Option<u64>) -> Result<Vec<Search>, Error> {
         let mut query = vec![];
         if let Some(id) = id {
@@ -83,12 +92,15 @@ impl super::Api {
     /// Get search results
     ///
     /// This function retrieves search results for a given search job.
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-search-results)
     ///
     /// # Arguments
     ///
     /// * `id` - The unique identifier of the search job.
     /// * `limit` - The maximum number of results to return. A value of `0` indicates no limit.
     /// * `offset` - The starting point for results. If negative, counts backwards (e.g., `-2` retrieves the 2 most recent results).
+    /// 
     pub async fn search_results(
         &self,
         id: u64,
@@ -115,9 +127,12 @@ impl super::Api {
     }
 
     /// Delete search
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#delete-search)
     ///
     /// # Arguments
     /// * `id` - The unique identifier of the search job.
+    /// 
     pub async fn search_delete(&self, id: u64) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("id", id.to_string());
@@ -132,6 +147,9 @@ impl super::Api {
     }
 
     /// Get search plugins
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-search-plugins)
+    /// 
     pub async fn search_plugins(&self) -> Result<Vec<SearchPlugin>, Error> {
         let plugins = self
             ._get("search/plugins")
@@ -145,9 +163,12 @@ impl super::Api {
     }
 
     /// Install search plugin
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#install-search-plugin)
     ///
     /// # Arguments
     /// * `sources` - List of Url and file path of the plugin to install.
+    /// 
     pub async fn search_install_plugin(&self, sources: Vec<&str>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("sources", sources.join("|"));
@@ -162,9 +183,12 @@ impl super::Api {
     }
 
     /// Uninstall search plugin
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#uninstall-search-plugin)
     ///
     /// # Arguments
     /// * `names` - List of names for torrents to uninstall.
+    /// 
     pub async fn search_uninstall_plugin(&self, names: Vec<&str>) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("names", names.join("|"));
@@ -179,9 +203,12 @@ impl super::Api {
     }
 
     /// Enable search plugin
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#enable-search-plugin)
     ///
     /// # Arguments
     /// * `names` - List of names for torrents to enable.
+    /// 
     pub async fn search_enable_plugin(&self, names: Vec<&str>, enable: bool) -> Result<(), Error> {
         let mut form = multipart::Form::new();
         form = form.text("names", names.join("|"));
@@ -197,6 +224,9 @@ impl super::Api {
     }
 
     /// Update search plugins
+    /// 
+    /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#update-search-plugins)
+    /// 
     pub async fn search_update_plugin(&self) -> Result<(), Error> {
         self._post("search/updatePlugins").await?.send().await?;
 
