@@ -91,7 +91,7 @@ impl Credentials {
     }
 
     fn is_empty(&self) -> bool {
-        self.username.is_empty() && self.password.is_empty()
+        self.username.is_empty() || self.password.is_empty()
     }
 }
 

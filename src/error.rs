@@ -4,7 +4,7 @@
 /// HTTP request errors, URL parsing errors, and JSON serialization/deserialization errors.
 #[derive(Debug)]
 pub enum Error {
-    AuthFailed,
+    AuthFailed(String),
     InvalidResponse(String),
     HttpRequestError(reqwest::Error),
     UrlParseError(url::ParseError),

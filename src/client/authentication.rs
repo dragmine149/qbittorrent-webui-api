@@ -52,16 +52,18 @@ impl super::Api {
             }
         }
 
-        //  check if credentials are set
-        if self.state.read().await.as_credentials().is_none() {
-            // TODO: provide a more meaningful error message
-            return Err(Error::AuthFailed);
-        }
-
-        //  check if credentials are set withe value
-        if self.state.read().await.as_credentials().unwrap().is_empty() {
-            // TODO: provide a more meaningful error message
-            return Err(Error::AuthFailed);
+        if let Some(cred) = self.state.read().await.as_credentials() {
+            if cred.is_empty() {
+                return Err(Error::AuthFailed(
+                    format!(
+                        "Credential filed is empty and missing values: {}",
+                        cred.to_string()
+                    )
+                    .to_string(),
+                ));
+            }
+        } else {
+            return Err(Error::AuthFailed("Credentials are not set".to_string()));
         }
 
         let res = self
@@ -81,12 +83,17 @@ impl super::Api {
             .await?;
 
         if !res.status().is_success() {
-            return Err(Error::AuthFailed);
+            return Err(Error::AuthFailed(format!(
+                "Login endpoint returned no success status code: {}",
+                res.status()
+            )));
         }
 
         let sid = res.headers().get(header::SET_COOKIE);
         if sid.is_none() {
-            return Err(Error::AuthFailed);
+            return Err(Error::AuthFailed(
+                "Missing set-cookie header from response".to_string(),
+            ));
         }
 
         let mut state = self.state.write().await;
@@ -95,10 +102,15 @@ impl super::Api {
             cookie_sid: sid
                 .unwrap()
                 .to_str()
-                .map_err(|_| Error::AuthFailed)?
+                .map_err(|e| {
+                    Error::AuthFailed(format!(
+                        "Failed to pars SID cookie to str. err: {}",
+                        e.to_string()
+                    ))
+                })?
                 .split(';')
                 .next()
-                .ok_or(Error::AuthFailed)?
+                .ok_or(Error::AuthFailed("Failed to parse SID cookie".to_string()))?
                 .trim_start_matches("SID=")
                 .to_string(),
         };
@@ -119,7 +131,7 @@ impl super::Api {
         let test_result = api.version().await;
 
         if test_result.is_err() {
-            return Err(Error::AuthFailed);
+            return Err(Error::AuthFailed("Failed to login with provided SID cookie".to_string()));
         }
 
         Ok(api)
