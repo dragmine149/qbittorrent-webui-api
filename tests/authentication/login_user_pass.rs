@@ -3,7 +3,7 @@ use qbit::Api;
 #[tokio::test]
 async fn login_url_1() {
     let result =
-        Api::new_login_username_password("http://127.0.0.1:8090/", "admin", "adminadmin").await;
+        Api::new_login_username_password("http://localhost:45378/", "admin", "adminadmin").await;
 
     if result.is_err() {
         eprintln!("{:?}", result.as_ref().err().unwrap());
@@ -15,7 +15,7 @@ async fn login_url_1() {
 #[tokio::test]
 async fn login_url_2() {
     let result =
-        Api::new_login_username_password("http://127.0.0.1:8090", "admin", "adminadmin").await;
+        Api::new_login_username_password("http://localhost:45378", "admin", "adminadmin").await;
 
     if result.is_err() {
         eprintln!("{:?}", result.as_ref().err().unwrap());
@@ -27,7 +27,7 @@ async fn login_url_2() {
 #[tokio::test]
 async fn incorrect_username() {
     let result =
-        Api::new_login_username_password("http://127.0.0.1:8090/", "fjiooiaaso", "adminadmin")
+        Api::new_login_username_password("http://localhost:45378/", "fjiooiaaso", "adminadmin")
             .await;
 
     assert!(result.is_err());
@@ -36,7 +36,8 @@ async fn incorrect_username() {
 #[tokio::test]
 async fn incorrect_password() {
     let result =
-        Api::new_login_username_password("http://127.0.0.1:8090/", "admin", "snkabjhioahsio").await;
+        Api::new_login_username_password("http://localhost:45378/", "admin", "snkabjhioahsio")
+            .await;
 
     assert!(result.is_err());
 }
