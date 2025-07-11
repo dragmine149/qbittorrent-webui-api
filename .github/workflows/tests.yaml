@@ -15,7 +15,7 @@ jobs:
           chmod 700 ~/bin/qbittorrent-nox
 
       - name: Debug version
-        run: qbittorrent-nox -v
+        run: ~/bin/qbittorrent-nox -v
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,5 +25,5 @@ jobs:
 
       - name: Run tests
         run: |
-          qbittorrent-nox &
+          ~/bin/qbittorrent-nox &
           cargo test
