@@ -13,6 +13,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Start qbittorrent-nox in background
+        run: qbittorrent-nox &
+
       - name: Run tests
         run: |
           cargo test
