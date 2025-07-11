@@ -1,4 +1,5 @@
 use core::str;
+use url::{self, Url};
 
 use reqwest::{
     Client as ReqwestClient, RequestBuilder,
@@ -19,7 +20,7 @@ mod transfer;
 /// Represents a client for interacting with a remote API, handling HTTP requests.
 pub struct Api {
     http_client: ReqwestClient,
-    base_url: tokio::sync::RwLock<String>,
+    base_url: tokio::sync::RwLock<Url>,
     state: tokio::sync::RwLock<LoginState>,
 }
 
@@ -28,7 +29,7 @@ impl Api {
     pub fn new(url: impl Into<String>) -> Result<Self, Error> {
         Ok(Self {
             http_client: ReqwestClient::new(),
-            base_url: tokio::sync::RwLock::new(url.into()),
+            base_url: tokio::sync::RwLock::new(Url::parse(&url.into())?),
             state: tokio::sync::RwLock::new(LoginState::Unknown),
         })
     }
@@ -36,7 +37,7 @@ impl Api {
     /// Helper for constructing API URLs
     async fn _build_url(&self, endpoint: &str) -> Result<String, Error> {
         let base_url = self.base_url.read().await;
-        let url = format!("{}/api/v2/{}", base_url, endpoint);
+        let url = format!("{}api/v2/{}", base_url, endpoint);
 
         Ok(url)
     }
