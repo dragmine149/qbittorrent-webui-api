@@ -8,7 +8,10 @@ jobs:
 
     steps:
       - name: Install qbittorrent-nox
-        run: sudo apt install qbittorrent-nox
+        run: |
+          sudo add-apt-repository ppa:qbittorrent-team/qbittorrent-stable
+          sudo apt update
+          sudo apt install qbittorrent-nox
 
       - name: Debug version
         run: qbittorrent-nox -v
