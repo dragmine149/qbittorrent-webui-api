@@ -5,6 +5,10 @@ async fn login_url_1() {
     let result =
         Api::new_login_username_password("http://127.0.0.1:8090/", "admin", "adminadmin").await;
 
+    if result.is_err() {
+        eprintln!("{:?}", result.as_ref().err().unwrap());
+    }
+
     assert!(result.is_ok());
 }
 
@@ -12,6 +16,10 @@ async fn login_url_1() {
 async fn login_url_2() {
     let result =
         Api::new_login_username_password("http://127.0.0.1:8090", "admin", "adminadmin").await;
+
+    if result.is_err() {
+        eprintln!("{:?}", result.as_ref().err().unwrap());
+    }
 
     assert!(result.is_ok());
 }
