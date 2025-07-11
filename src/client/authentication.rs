@@ -114,7 +114,7 @@ impl super::Api {
                 .map_err(|e| {
                     Error::AuthFailed(format!(
                         "Failed to pars SID cookie to str. err: {}",
-                        e.to_string()
+                        e
                     ))
                 })?
                 .split(';')
