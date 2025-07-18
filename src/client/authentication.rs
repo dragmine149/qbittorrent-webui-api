@@ -55,8 +55,7 @@ impl super::Api {
         // check if already login (aka cookie set)
         if self.state.read().await.as_cookie().is_some() && !force {
             // test if the cookie is valid by calling the version api
-            if self.version().await.unwrap() != "Forbidden" {
-                println!("login");
+            if self.version().await.is_ok() {
                 return Ok(());
             }
         }
@@ -152,7 +151,11 @@ impl super::Api {
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#logout)
     ///
     pub async fn logout(&self) -> Result<(), Error> {
-        self._post("auth/logout").await?.send().await?;
+        self._post("auth/logout")
+            .await?
+            .send()
+            .await?
+            .error_for_status()?;
 
         let mut state = self.state.write().await;
         *state = LoginState::NotLoggedIn {

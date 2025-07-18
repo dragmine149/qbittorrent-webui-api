@@ -34,6 +34,7 @@ impl super::Api {
             .multipart(form)
             .send()
             .await?
+            .error_for_status()?
             .json()
             .await?;
         let id = json["id"].as_u64().ok_or_else(|| {
@@ -58,7 +59,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -83,6 +85,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<Search>>()
             .await?;
 
@@ -120,6 +123,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<SearchResult>()
             .await?;
 
@@ -141,7 +145,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -156,6 +161,7 @@ impl super::Api {
             .await?
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<SearchPlugin>>()
             .await?;
 
@@ -177,7 +183,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -197,7 +204,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -218,7 +226,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -228,7 +237,11 @@ impl super::Api {
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#update-search-plugins)
     ///
     pub async fn search_update_plugin(&self) -> Result<(), Error> {
-        self._post("search/updatePlugins").await?.send().await?;
+        self._post("search/updatePlugins")
+            .await?
+            .send()
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }

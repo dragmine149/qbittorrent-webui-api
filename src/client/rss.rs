@@ -24,7 +24,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -50,7 +51,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -72,7 +74,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -96,7 +99,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -126,6 +130,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<HashMap<String, RssFeedCollection>>()
             .await?;
 
@@ -154,7 +159,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -176,7 +182,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -198,7 +205,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -220,7 +228,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -240,7 +249,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -255,6 +265,7 @@ impl super::Api {
             .await?
             .send()
             .await?
+            .error_for_status()?
             .json::<HashMap<String, RssRule>>()
             .await?;
 
@@ -280,6 +291,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<HashMap<String, Vec<String>>>()
             .await?;
 
