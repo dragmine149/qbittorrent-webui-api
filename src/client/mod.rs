@@ -1,4 +1,5 @@
 use core::str;
+use url::{self, Url};
 
 use reqwest::{
     Client as ReqwestClient, RequestBuilder,
@@ -19,7 +20,7 @@ mod transfer;
 /// Represents a client for interacting with a remote API, handling HTTP requests.
 pub struct Api {
     http_client: ReqwestClient,
-    base_url: tokio::sync::RwLock<String>,
+    base_url: tokio::sync::RwLock<Url>,
     state: tokio::sync::RwLock<LoginState>,
 }
 
@@ -28,7 +29,7 @@ impl Api {
     pub fn new(url: impl Into<String>) -> Result<Self, Error> {
         Ok(Self {
             http_client: ReqwestClient::new(),
-            base_url: tokio::sync::RwLock::new(url.into()),
+            base_url: tokio::sync::RwLock::new(Url::parse(&url.into())?),
             state: tokio::sync::RwLock::new(LoginState::Unknown),
         })
     }
@@ -36,7 +37,7 @@ impl Api {
     /// Helper for constructing API URLs
     async fn _build_url(&self, endpoint: &str) -> Result<String, Error> {
         let base_url = self.base_url.read().await;
-        let url = format!("{}/api/v2/{}", base_url, endpoint);
+        let url = format!("{}api/v2/{}", base_url, endpoint);
 
         Ok(url)
     }
@@ -80,5 +81,42 @@ impl Api {
         let builder = self.http_client.get(url).headers(header_map);
 
         Ok(builder)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use url::ParseError::RelativeUrlWithoutBase;
+
+    #[tokio::test]
+    async fn url_with_trailing() {
+        let result = Api::new("http://127.0.0.1:8090/");
+
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn url_without_trailing() {
+        let result = Api::new("http://127.0.0.1:8090");
+
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn url_without_port() {
+        let result = Api::new("http://127.0.0.1/");
+
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn url_without_base() {
+        let result = Api::new("127.0.0.1:8090");
+
+        assert!(result.is_err());
+        let err = result.err().unwrap();
+
+        assert!(matches!(err, Error::InvalidURL(RelativeUrlWithoutBase)));
     }
 }
