@@ -3,7 +3,7 @@ use qbit::Api;
 #[tokio::test]
 async fn correct_credentials() {
     let result =
-        Api::new_login_username_password("http://localhost:45378/", "admin", "adminadmin").await;
+        Api::new_login_username_password("http://localhost:45378", "admin", "adminadmin").await;
 
     if result.is_err() {
         println!("Err: {:?}", result.err().unwrap());
@@ -16,7 +16,7 @@ async fn correct_credentials() {
 #[tokio::test]
 async fn incorrect_username() {
     let result =
-        Api::new_login_username_password("http://localhost:45378/", "fjiooiaaso", "adminadmin")
+        Api::new_login_username_password("http://localhost:45378", "fjiooiaaso", "adminadmin")
             .await;
 
     assert!(result.is_err());
@@ -25,8 +25,7 @@ async fn incorrect_username() {
 #[tokio::test]
 async fn incorrect_password() {
     let result =
-        Api::new_login_username_password("http://localhost:45378/", "admin", "snkabjhioahsio")
-            .await;
+        Api::new_login_username_password("http://localhost:45378", "admin", "snkabjhioahsio").await;
 
     assert!(result.is_err());
 }
