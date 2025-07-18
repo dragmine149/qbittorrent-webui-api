@@ -19,28 +19,37 @@ impl super::Api {
     ///
     /// * `parames` - Parameter object
     ///
-    pub async fn torrents(&self, parames: TorrentListParams) -> Result<Vec<TorrentInfo>, Error> {
+    pub async fn torrents(
+        &self,
+        params: Option<TorrentListParams>,
+    ) -> Result<Vec<TorrentInfo>, Error> {
         let mut query = vec![];
-        query.push(("reverse", parames.reverse.to_string()));
-        if let Some(filter) = parames.filter {
+
+        let params = match params {
+            Some(params) => params,
+            None => TorrentListParams::default(),
+        };
+
+        query.push(("reverse", params.reverse.to_string()));
+        if let Some(filter) = params.filter {
             query.push(("filter", filter.to_string()));
         }
-        if let Some(category) = parames.category {
+        if let Some(category) = params.category {
             query.push(("category", category));
         }
-        if let Some(tag) = parames.tag {
+        if let Some(tag) = params.tag {
             query.push(("tag", tag));
         }
-        if let Some(sort) = parames.sort {
+        if let Some(sort) = params.sort {
             query.push(("sort", sort.to_string()));
         }
-        if let Some(limit) = parames.limit {
+        if let Some(limit) = params.limit {
             query.push(("limit", limit.to_string()));
         }
-        if let Some(offset) = parames.offset {
+        if let Some(offset) = params.offset {
             query.push(("offset", offset.to_string()));
         }
-        if let Some(hashes) = parames.hashes {
+        if let Some(hashes) = params.hashes {
             query.push(("hashes", hashes.join("|")));
         }
 
@@ -50,6 +59,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<TorrentInfo>>()
             .await?;
 
@@ -73,6 +83,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<TorrentProperties>()
             .await?;
 
@@ -96,6 +107,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<Tracker>>()
             .await?;
 
@@ -119,6 +131,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<WebSeed>>()
             .await?;
 
@@ -159,6 +172,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<TorrentContent>>()
             .await?;
 
@@ -182,6 +196,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<PiecesState>>()
             .await?;
 
@@ -205,6 +220,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<String>>()
             .await?;
 
@@ -226,7 +242,8 @@ impl super::Api {
             .await?
             .query(&query)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -246,7 +263,8 @@ impl super::Api {
             .await?
             .query(&query)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -271,7 +289,8 @@ impl super::Api {
             .await?
             .query(&query)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -291,7 +310,8 @@ impl super::Api {
             .await?
             .query(&query)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -311,7 +331,8 @@ impl super::Api {
             .await?
             .query(&query)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -367,7 +388,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -390,7 +412,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -420,7 +443,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -447,7 +471,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -470,7 +495,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -496,7 +522,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -522,7 +549,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -548,7 +576,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -574,7 +603,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -611,7 +641,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -642,6 +673,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<HashMap<String, u64>>()
             .await?;
 
@@ -675,7 +707,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -720,7 +753,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -751,6 +785,7 @@ impl super::Api {
             .query(&query)
             .send()
             .await?
+            .error_for_status()?
             .json::<HashMap<String, i64>>()
             .await?;
 
@@ -784,7 +819,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -816,7 +852,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -839,7 +876,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -871,7 +909,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -886,6 +925,7 @@ impl super::Api {
             .await?
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<String>>()
             .await?;
 
@@ -910,7 +950,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -933,7 +974,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -954,7 +996,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -982,7 +1025,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1014,7 +1058,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1029,6 +1074,7 @@ impl super::Api {
             .await?
             .send()
             .await?
+            .error_for_status()?
             .json::<Vec<String>>()
             .await?;
 
@@ -1051,7 +1097,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1072,7 +1119,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1104,7 +1152,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1130,7 +1179,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1156,7 +1206,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1188,7 +1239,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1220,7 +1272,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1250,7 +1303,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
@@ -1280,7 +1334,8 @@ impl super::Api {
             .await?
             .multipart(form)
             .send()
-            .await?;
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }

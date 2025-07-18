@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use super::{ConnectionStatus, TorrentInfo};
 
 /// Main response data object
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct MainData {
     /// Response ID
     pub rid: i64,
@@ -32,7 +32,7 @@ pub struct MainData {
 }
 
 /// Category response data object
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Category {
     /// Category name
     pub name: String,
@@ -42,7 +42,7 @@ pub struct Category {
 }
 
 /// Server state response data object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ServerState {
     /// Alltime download
     pub alltime_dl: i64,
@@ -95,7 +95,7 @@ pub struct ServerState {
 }
 
 /// Peers response data object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct PeersData {
     /// Response ID
     pub rid: i64,
@@ -109,7 +109,7 @@ pub struct PeersData {
 }
 
 /// Peer response data object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Peer {
     /// Client used by the peer. (μTorrent, qBittorrent, etc...)
     pub client: Option<String>,
