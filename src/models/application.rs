@@ -123,298 +123,349 @@ pub struct BuildInfo {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Preferences {
     /// Currently selected language (e.g. en_GB for English)
-    pub locale: Option<String>,
-    /// True if a subfolder should be created when adding a torrent
-    pub create_subfolder_enabled: Option<bool>,
-    /// True if torrents should be added in a Paused state
-    pub start_paused_enabled: Option<bool>,
+    pub locale: String,
+    // True if a subfolder should be created when adding a torrent
+    // NOTE: Removed since I can't find it in the code. Most likely old documentation
+    // pub create_subfolder_enabled: Option<bool>,
+    // True if torrents should be added in a Paused state
+    // NOTE: Removed since I can't find it in the code. Most likely old documentation
+    // pub start_paused_enabled: Option<bool>,
     /// TODO
-    pub auto_delete_mode: Option<i64>,
+    pub auto_delete_mode: u8,
     /// True if disk space should be pre-allocated for all files
-    pub preallocate_all: Option<bool>,
+    pub preallocate_all: bool,
     /// True if ".!qB" should be appended to incomplete files
-    pub incomplete_files_ext: Option<bool>,
+    pub incomplete_files_ext: bool,
     /// True if Automatic Torrent Management is enabled by default
-    pub auto_tmm_enabled: Option<bool>,
+    pub auto_tmm_enabled: bool,
     /// True if torrent should be relocated when its Category changes
-    pub torrent_changed_tmm_enabled: Option<bool>,
+    pub torrent_changed_tmm_enabled: bool,
     /// True if torrent should be relocated when the default save path changes
-    pub save_path_changed_tmm_enabled: Option<bool>,
+    pub save_path_changed_tmm_enabled: bool,
     /// True if torrent should be relocated when its Category's save path changes
-    pub category_changed_tmm_enabled: Option<bool>,
+    pub category_changed_tmm_enabled: bool,
     /// Default save path for torrents, separated by slashes
-    pub save_path: Option<String>,
+    pub save_path: String,
     /// True if folder for incomplete torrents is enabled
-    pub temp_path_enabled: Option<bool>,
+    pub temp_path_enabled: bool,
     /// Path for incomplete torrents, separated by slashes
-    pub temp_path: Option<String>,
+    pub temp_path: String,
     // Property: directory to watch for torrent files, value: where torrents loaded from this directory should be downloaded to (see list of possible values below). Slashes are used as path separators; multiple key/value pairs can be specified
-    pub scan_dirs: Option<HashMap<String, ScanDir>>,
+    pub scan_dirs: HashMap<String, ScanDir>,
     /// Path to directory to copy .torrent files to. Slashes are used as path separators
-    pub export_dir: Option<String>,
+    pub export_dir: String,
     /// Path to directory to copy .torrent files of completed downloads to. Slashes are used as path separators
-    pub export_dir_fin: Option<String>,
+    pub export_dir_fin: String,
     /// True if e-mail notification should be enabled
-    pub mail_notification_enabled: Option<bool>,
+    pub mail_notification_enabled: bool,
     /// e-mail where notifications should originate from
-    pub mail_notification_sender: Option<String>,
+    pub mail_notification_sender: String,
     /// e-mail to send notifications to
-    pub mail_notification_email: Option<String>,
+    pub mail_notification_email: String,
     /// smtp server for e-mail notifications
-    pub mail_notification_smtp: Option<String>,
+    pub mail_notification_smtp: String,
     /// True if smtp server requires SSL connection
-    pub mail_notification_ssl_enabled: Option<bool>,
+    pub mail_notification_ssl_enabled: bool,
     /// True if smtp server requires authentication
-    pub mail_notification_auth_enabled: Option<bool>,
+    pub mail_notification_auth_enabled: bool,
     /// Username for smtp authentication
-    pub mail_notification_username: Option<String>,
+    pub mail_notification_username: String,
     /// Password for smtp authentication
-    pub mail_notification_password: Option<String>,
+    pub mail_notification_password: String,
     /// True if external program should be run after torrent has finished downloading
-    pub autorun_enabled: Option<bool>,
+    pub autorun_enabled: bool,
     /// Program path/name/arguments to run if `autorun_enabled` is enabled; path is separated by slashes; you can use `%f` and `%n` arguments, which will be expanded by qBittorent as path_to_torrent_file and torrent_name (from the GUI; not the .torrent file name) respectively
-    pub autorun_program: Option<String>,
+    pub autorun_program: String,
     /// True if torrent queuing is enabled
-    pub queueing_enabled: Option<bool>,
+    pub queueing_enabled: bool,
     /// Maximum number of active simultaneous downloads
-    pub max_active_downloads: Option<i64>,
+    pub max_active_downloads: i64,
     /// Maximum number of active simultaneous downloads and uploads
-    pub max_active_torrents: Option<i64>,
+    pub max_active_torrents: i64,
     /// Maximum number of active simultaneous uploads
-    pub max_active_uploads: Option<i64>,
+    pub max_active_uploads: i64,
     /// If true torrents w/o any activity (stalled ones) will not be counted towards `max_active_*` limits; see dont_count_slow_torrents for more information
-    pub dont_count_slow_torrents: Option<bool>,
+    pub dont_count_slow_torrents: bool,
     /// Download rate in KiB/s for a torrent to be considered "slow"
-    pub slow_torrent_dl_rate_threshold: Option<i64>,
+    pub slow_torrent_dl_rate_threshold: i64,
     /// Upload rate in KiB/s for a torrent to be considered "slow"
-    pub slow_torrent_ul_rate_threshold: Option<i64>,
+    pub slow_torrent_ul_rate_threshold: i64,
     /// Seconds a torrent should be inactive before considered "slow"
-    pub slow_torrent_inactive_timer: Option<i64>,
+    pub slow_torrent_inactive_timer: i64,
     /// True if share ratio limit is enabled
-    pub max_ratio_enabled: Option<bool>,
+    pub max_ratio_enabled: bool,
     /// Get the global share ratio limit
-    pub max_ratio: Option<f32>,
+    pub max_ratio: f64,
     /// Action performed when a torrent reaches the maximum share ratio. See list of possible values here below.
-    pub max_ratio_act: Option<RatioAct>,
+    pub max_ratio_act: RatioAct,
     /// Port for incoming connections
-    pub listen_port: Option<i64>,
+    pub listen_port: u16,
     /// True if UPnP/NAT-PMP is enabled
-    pub upnp: Option<bool>,
+    pub upnp: bool,
     /// True if the port is randomly selected
-    pub random_port: Option<bool>,
+    ///
+    /// NOTE: This is marked as deprecated in the src file
+    /// [Github referanse](https://github.com/qbittorrent/qBittorrent/blob/4f94eac235cefa8b83489cb3135dad87fcbed1e3/src/webui/api/appcontroller.cpp#L228)
+    pub random_port: bool,
     /// Global download speed limit in KiB/s; -1 means no limit is applied
-    pub dl_limit: Option<i64>,
+    pub dl_limit: i64,
     /// Global upload speed limit in KiB/s; -1 means no limit is applied
-    pub up_limit: Option<i64>,
+    pub up_limit: i64,
     /// Maximum global number of simultaneous connections
-    pub max_connec: Option<i64>,
+    ///
+    /// `-1` means disabled
+    pub max_connec: i64,
     /// Maximum number of simultaneous connections per torrent
-    pub max_connec_per_torrent: Option<i64>,
+    ///
+    /// `-1` means disabled
+    pub max_connec_per_torrent: i64,
     /// Maximum number of upload slots
-    pub max_uploads: Option<i64>,
+    ///
+    /// `-1` means disabled
+    pub max_uploads: i64,
     /// Maximum number of upload slots per torrent
-    pub max_uploads_per_torrent: Option<i64>,
+    ///
+    /// `-1` means disabled
+    pub max_uploads_per_torrent: i64,
     /// Timeout in seconds for a stopped announce request to trackers
-    pub stop_tracker_timeout: Option<i64>,
+    ///
+    /// If the value is set to 0, the connections to trackers with the stopped event are suppressed.
+    pub stop_tracker_timeout: i64,
     /// True if the advanced libtorrent option piece_extent_affinity is enabled
-    pub enable_piece_extent_affinity: Option<bool>,
+    pub enable_piece_extent_affinity: bool,
     /// Bittorrent Protocol to use (see list of possible values below)
-    pub bittorrent_protocol: Option<BittorrentProtocol>,
+    pub bittorrent_protocol: BittorrentProtocol,
     /// True if `dl_limit` should be applied to uTP connections; this option is only available in qBittorent built against libtorrent version `0.16.X` and higher
-    pub limit_utp_rate: Option<bool>,
+    pub limit_utp_rate: bool,
     /// True if `dl_limit` should be applied to estimated TCP overhead (service data: e.g. packet headers)
-    pub limit_tcp_overhead: Option<bool>,
+    pub limit_tcp_overhead: bool,
     /// True if `dl_limit` should be applied to peers on the LAN
-    pub limit_lan_peers: Option<bool>,
+    pub limit_lan_peers: bool,
     /// Alternative global download speed limit in KiB/s
-    pub alt_dl_limit: Option<i64>,
+    pub alt_dl_limit: i64,
     /// Alternative global upload speed limit in KiB/s
-    pub alt_up_limit: Option<i64>,
+    pub alt_up_limit: i64,
     /// True if alternative limits should be applied according to schedule
-    pub scheduler_enabled: Option<bool>,
+    pub scheduler_enabled: bool,
     /// Scheduler starting hour
-    pub schedule_from_hour: Option<i64>,
+    pub schedule_from_hour: i8,
     /// Scheduler starting minute
-    pub schedule_from_min: Option<i64>,
+    pub schedule_from_min: i8,
     /// Scheduler ending hour
-    pub schedule_to_hour: Option<i64>,
+    pub schedule_to_hour: i8,
     /// Scheduler ending minute
-    pub schedule_to_min: Option<i64>,
+    pub schedule_to_min: i8,
     /// Scheduler days. See possible values here below
-    pub scheduler_days: Option<SchedulerTime>,
+    pub scheduler_days: SchedulerTime,
     /// True if DHT is enabled
-    pub dht: Option<bool>,
+    pub dht: bool,
     /// True if PeX is enabled
-    pub pex: Option<bool>,
+    pub pex: bool,
     /// True if LSD is enabled
-    pub lsd: Option<bool>,
+    pub lsd: bool,
     /// See list of possible values here below
-    pub encryption: Option<Encryption>,
+    pub encryption: Encryption,
     /// If true anonymous mode will be enabled; read more here; this option is only available in qBittorent built against libtorrent version 0.16.X and higher
-    pub anonymous_mode: Option<bool>,
+    pub anonymous_mode: bool,
     /// See list of possible values here below
-    pub proxy_type: Option<ProxyType>,
+    pub proxy_type: ProxyType,
     /// Proxy IP address or domain name
-    pub proxy_ip: Option<String>,
+    pub proxy_ip: String,
     /// Proxy port
-    pub proxy_port: Option<i64>,
+    pub proxy_port: u16,
     /// True if peer and web seed connections should be proxified; this option will have any effect only in qBittorent built against libtorrent version 0.16.X and higher
-    pub proxy_peer_connections: Option<bool>,
+    pub proxy_peer_connections: bool,
     /// True proxy requires authentication; doesn't apply to SOCKS4 proxies
-    pub proxy_auth_enabled: Option<bool>,
+    pub proxy_auth_enabled: bool,
     /// Username for proxy authentication
-    pub proxy_username: Option<String>,
+    pub proxy_username: String,
     /// Password for proxy authentication
-    pub proxy_password: Option<String>,
-    /// True if proxy is only used for torrents
-    pub proxy_torrents_only: Option<bool>,
+    pub proxy_password: String,
+    // True if proxy is only used for torrents
+    // NOTE: Removed since I can't find it in the code. Most likely old documentation
+    // pub proxy_torrents_only: bool,
     /// True if external IP filter should be enabled
-    pub ip_filter_enabled: Option<bool>,
+    pub ip_filter_enabled: bool,
     /// Path to IP filter file (.dat, .p2p, .p2b files are supported); path is separated by slashes
-    pub ip_filter_path: Option<String>,
+    pub ip_filter_path: String,
     /// True if IP filters are applied to trackers
-    pub ip_filter_trackers: Option<bool>,
+    pub ip_filter_trackers: bool,
     /// Semicolon-separated list of domains to accept when performing Host header validation
-    pub web_ui_domain_list: Option<String>,
+    pub web_ui_domain_list: String,
     /// IP address to use for the WebUI
-    pub web_ui_address: Option<String>,
+    pub web_ui_address: String,
     /// WebUI port
-    pub web_ui_port: Option<i64>,
+    pub web_ui_port: u16,
     /// True if UPnP is used for the WebUI port
-    pub web_ui_upnp: Option<bool>,
+    pub web_ui_upnp: bool,
     /// WebUI username
-    pub web_ui_username: Option<String>,
-    /// For API ≥ v2.3.0: Plaintext WebUI password, not readable, write-only. For API < v2.3.0: MD5 hash of WebUI password, hash is generated from the following string: username:Web UI Access:plain_text_web_ui_password
+    pub web_ui_username: String,
+    /// For API ≥ v2.3.0: Plaintext WebUI password. This field is write-only and cannot be read back.
+    ///
+    /// The password is used exclusively for setting or updating the WebUI password.
     pub web_ui_password: Option<String>,
     /// True if WebUI CSRF protection is enabled
-    pub web_ui_csrf_protection_enabled: Option<bool>,
+    pub web_ui_csrf_protection_enabled: bool,
     /// True if WebUI clickjacking protection is enabled
-    pub web_ui_clickjacking_protection_enabled: Option<bool>,
+    pub web_ui_clickjacking_protection_enabled: bool,
     /// True if WebUI cookie Secure flag is enabled
-    pub web_ui_secure_cookie_enabled: Option<bool>,
+    pub web_ui_secure_cookie_enabled: bool,
     /// Maximum number of authentication failures before WebUI access ban
-    pub web_ui_max_auth_fail_count: Option<i64>,
+    pub web_ui_max_auth_fail_count: i64,
     /// WebUI access ban duration in seconds
-    pub web_ui_ban_duration: Option<i64>,
+    pub web_ui_ban_duration: i64,
     /// Seconds until WebUI is automatically signed off
-    pub web_ui_session_timeout: Option<i64>,
+    pub web_ui_session_timeout: i64,
     /// True if WebUI host header validation is enabled
-    pub web_ui_host_header_validation_enabled: Option<bool>,
+    pub web_ui_host_header_validation_enabled: bool,
     /// True if authentication challenge for loopback address (127.0.0.1) should be disabled
-    pub bypass_local_auth: Option<bool>,
+    pub bypass_local_auth: bool,
     /// True if webui authentication should be bypassed for clients whose ip resides within (at least) one of the subnets on the whitelist
-    pub bypass_auth_subnet_whitelist_enabled: Option<bool>,
+    pub bypass_auth_subnet_whitelist_enabled: bool,
     /// (White)list of ipv4/ipv6 subnets for which webui authentication should be bypassed; list entries are separated by commas
-    pub bypass_auth_subnet_whitelist: Option<String>,
+    pub bypass_auth_subnet_whitelist: String,
     /// True if an alternative WebUI should be used
-    pub alternative_webui_enabled: Option<bool>,
+    pub alternative_webui_enabled: bool,
     /// File path to the alternative WebUI
-    pub alternative_webui_path: Option<String>,
+    pub alternative_webui_path: String,
     /// True if WebUI HTTPS access is enabled
-    pub use_https: Option<bool>,
-    /// For API < v2.0.1: SSL keyfile contents (this is a not a path)
-    pub ssl_key: Option<String>,
-    /// For API < v2.0.1: SSL certificate contents (this is a not a path)
-    pub ssl_cert: Option<String>,
+    pub use_https: bool,
+    // For API < v2.0.1: SSL keyfile contents (this is a not a path)
+    // NOTE: For a older version of the Web api
+    // pub ssl_key: String,
+    // For API < v2.0.1: SSL certificate contents (this is a not a path)
+    // NOTE: For a older version of the Web api
+    // pub ssl_cert: String,
     /// For API ≥ v2.0.1: Path to SSL keyfile
-    pub web_ui_https_key_path: Option<String>,
+    pub web_ui_https_key_path: String,
     /// For API ≥ v2.0.1: Path to SSL certificate
-    pub web_ui_https_cert_path: Option<String>,
+    pub web_ui_https_cert_path: String,
     /// True if server DNS should be updated dynamically
-    pub dyndns_enabled: Option<bool>,
+    pub dyndns_enabled: bool,
     /// See list of possible values here below
-    pub dyndns_service: Option<DyndnsService>,
+    pub dyndns_service: DyndnsService,
     /// Username for DDNS service
-    pub dyndns_username: Option<String>,
+    pub dyndns_username: String,
     /// Password for DDNS service
-    pub dyndns_password: Option<String>,
+    pub dyndns_password: String,
     /// Your DDNS domain name
-    pub dyndns_domain: Option<String>,
+    pub dyndns_domain: String,
     /// RSS refresh interval
-    pub rss_refresh_interval: Option<i64>,
+    pub rss_refresh_interval: i64,
     /// Max stored articles per RSS feed
-    pub rss_max_articles_per_feed: Option<i64>,
+    pub rss_max_articles_per_feed: u32,
     /// Enable processing of RSS feeds
-    pub rss_processing_enabled: Option<bool>,
+    pub rss_processing_enabled: bool,
     /// Enable auto-downloading of torrents from the RSS feeds
-    pub rss_auto_downloading_enabled: Option<bool>,
+    pub rss_auto_downloading_enabled: bool,
     /// For API ≥ v2.5.1: Enable downloading of repack/proper Episodes
-    pub rss_download_repack_proper_episodes: Option<bool>,
+    pub rss_download_repack_proper_episodes: bool,
     /// For API ≥ v2.5.1: List of RSS Smart Episode Filters
-    pub rss_smart_episode_filters: Option<String>,
+    pub rss_smart_episode_filters: String,
     /// Enable automatic adding of trackers to new torrents
-    pub add_trackers_enabled: Option<bool>,
+    pub add_trackers_enabled: bool,
     /// List of trackers to add to new torrent
-    pub add_trackers: Option<String>,
+    pub add_trackers: String,
     /// For API ≥ v2.5.1: Enable custom http headers
-    pub web_ui_use_custom_http_headers_enabled: Option<bool>,
+    pub web_ui_use_custom_http_headers_enabled: bool,
     /// For API ≥ v2.5.1: List of custom http headers
-    pub web_ui_custom_http_headers: Option<String>,
+    pub web_ui_custom_http_headers: String,
     /// True enables max seeding time
-    pub max_seeding_time_enabled: Option<bool>,
+    pub max_seeding_time_enabled: bool,
     /// Number of minutes to seed a torrent
-    pub max_seeding_time: Option<i64>,
+    pub max_seeding_time: i64,
     /// TODO
-    pub announce_ip: Option<String>,
+    pub announce_ip: String,
     /// True always announce to all tiers
-    pub announce_to_all_tiers: Option<bool>,
+    pub announce_to_all_tiers: bool,
     /// True always announce to all trackers in a tier
-    pub announce_to_all_trackers: Option<bool>,
+    pub announce_to_all_trackers: bool,
     /// Number of asynchronous I/O threads
-    pub async_io_threads: Option<i64>,
+    pub async_io_threads: u16,
     /// List of banned IPs
     #[serde(rename = "banned_IPs")]
-    pub banned_ips: Option<String>,
+    pub banned_ips: String,
     /// Outstanding memory when checking torrents in MiB
-    pub checking_memory_use: Option<i64>,
+    pub checking_memory_use: u32,
     /// IP Address to bind to. Empty String means All addresses
-    pub current_interface_address: Option<String>,
+    pub current_interface_address: String,
     /// Network Interface used
-    pub current_network_interface: Option<String>,
+    pub current_network_interface: String,
     /// Disk cache used in MiB
-    pub disk_cache: Option<i64>,
+    pub disk_cache: i64,
     /// Disk cache expiry interval in seconds
-    pub disk_cache_ttl: Option<i64>,
+    pub disk_cache_ttl: i64,
     /// Port used for embedded tracker
-    pub embedded_tracker_port: Option<i64>,
+    pub embedded_tracker_port: u16,
     /// True enables coalesce reads & writes
-    pub enable_coalesce_read_write: Option<bool>,
+    pub enable_coalesce_read_write: bool,
     /// True enables embedded tracker
-    pub enable_embedded_tracker: Option<bool>,
+    pub enable_embedded_tracker: bool,
     /// True allows multiple connections from the same IP address
-    pub enable_multi_connections_from_same_ip: Option<bool>,
-    /// True enables os cache
-    pub enable_os_cache: Option<bool>,
+    pub enable_multi_connections_from_same_ip: bool,
+    // True enables os cache
+    // NOTE: Removed since I can't find it in the code. Most likely old documentation
+    // pub enable_os_cache: bool,
     /// True enables sending of upload piece suggestions
-    pub enable_upload_suggestions: Option<bool>,
+    pub enable_upload_suggestions: bool,
     /// File pool size
-    pub file_pool_size: Option<i64>,
+    ///
+    /// Sets the upper limit on the total number of files this session will keep open.
+    /// The reason why files are left open at all is that some anti virus software hooks
+    /// on every file close, and scans the file for viruses. deferring the closing of
+    /// the files will be the difference between a usable system and a completely hogged
+    /// down system. Most operating systems also has a limit on the total number of file
+    /// descriptors a process may have open.
+    pub file_pool_size: i64,
     /// Maximal outgoing port (0: Disabled)
-    pub outgoing_ports_max: Option<i64>,
+    pub outgoing_ports_max: u16,
     /// Minimal outgoing port (0: Disabled)
-    pub outgoing_ports_min: Option<i64>,
+    pub outgoing_ports_min: u16,
     /// True rechecks torrents on completion
-    pub recheck_completed_torrents: Option<bool>,
+    pub recheck_completed_torrents: bool,
     /// True resolves peer countries
-    pub resolve_peer_countries: Option<bool>,
+    pub resolve_peer_countries: bool,
     /// Save resume data interval in min
-    pub save_resume_data_interval: Option<i64>,
+    pub save_resume_data_interval: i64,
     /// Send buffer low watermark in KiB
-    pub send_buffer_low_watermark: Option<i64>,
+    ///
+    /// The minimum send buffer target size (send buffer includes bytes pending being
+    /// read from disk). For good and snappy seeding performance, set this fairly high,
+    /// to at least fit a few blocks. This is essentially the initial window size
+    /// which will determine how fast we can ramp up the send rate
+    pub send_buffer_low_watermark: i64,
     /// Send buffer watermark in KiB
-    pub send_buffer_watermark: Option<i64>,
+    ///
+    /// if the send buffer has fewer bytes than send_buffer_watermark, we'll read
+    /// another 16 kiB block onto it. If set too small, upload rate capacity will
+    /// suffer. If set too high, memory will be wasted. The actual watermark may be
+    /// lower than this in case the upload rate is low, this is the upper limit.
+    pub send_buffer_watermark: i64,
     /// Send buffer watermark factor in percent
-    pub send_buffer_watermark_factor: Option<i64>,
+    ///
+    /// the current upload rate to a peer is multiplied by this factor to get the
+    /// send buffer watermark. The factor is specified as a percentage. i.e.
+    /// 50 -> 0.5 This product is clamped to the send_buffer_watermark setting to
+    /// not exceed the max. For high speed upload, this should be set to a greater
+    /// value than 100. For high capacity connections, setting this higher can
+    /// improve upload performance and disk throughput. Setting it too high may
+    /// waste RAM and create a bias towards read jobs over write jobs.
+    pub send_buffer_watermark_factor: i64,
     /// Socket backlog size
-    pub socket_backlog_size: Option<i64>,
+    pub socket_backlog_size: i64,
     /// Upload choking algorithm used (see list of possible values below)
-    pub upload_choking_algorithm: Option<UploadChokingAlgorithm>,
+    pub upload_choking_algorithm: UploadChokingAlgorithm,
     /// Upload slots behavior used (see list of possible values below)
-    pub upload_slots_behavior: Option<UploadSlotsBehavior>,
+    pub upload_slots_behavior: UploadSlotsBehavior,
     /// UPnP lease duration (0: Permanent lease)
-    pub upnp_lease_duration: Option<i64>,
+    ///
+    /// The expiration time of UPnP port-mappings, specified in seconds. 0 means
+    /// permanent lease. Some routers do not support expiration times on port-maps
+    /// (nor correctly returning an error indicating lack of support). In those
+    /// cases, set this to 0. Otherwise, don't set it any lower than 5 minutes.
+    pub upnp_lease_duration: u32,
     /// μTP-TCP mixed mode algorithm (see list of possible values below)
-    pub utp_tcp_mixed_mode: Option<UtpTcpMixedMode>,
+    pub utp_tcp_mixed_mode: UtpTcpMixedMode,
 }
 
 /// Scan dir types
