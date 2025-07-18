@@ -6,6 +6,8 @@ pub mod models;
 /// Parameter objects.
 pub mod parameters;
 
+use std::fmt::Display;
+
 pub use client::Api;
 pub use error::Error;
 
@@ -95,8 +97,8 @@ impl Credentials {
     }
 }
 
-impl ToString for Credentials {
-    fn to_string(&self) -> String {
-        format!("username={}&password={}", self.username, self.password)
+impl Display for Credentials {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "username={}&password={}", self.username, self.password)
     }
 }
