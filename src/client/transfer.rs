@@ -27,8 +27,7 @@ impl super::Api {
     /// The response is 1 if alternative speed limits are enabled, 0 otherwise.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-alternative-speed-limits-state)
-    ///
-    pub async fn alternative_speed_limit(&self) -> Result<u8, Error> {
+    pub async fn alternative_speed_limit(&self) -> Result<bool, Error> {
         let is_active = self
             ._get("transfer/speedLimitsMode")
             .await?
@@ -38,7 +37,7 @@ impl super::Api {
             .json::<u8>()
             .await?;
 
-        Ok(is_active)
+        Ok(is_active != 0)
     }
 
     /// Toggle alternative speed limits
