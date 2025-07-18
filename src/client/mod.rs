@@ -83,3 +83,40 @@ impl Api {
         Ok(builder)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use url::ParseError::RelativeUrlWithoutBase;
+
+    #[tokio::test]
+    async fn url_with_trailing() {
+        let result = Api::new("http://127.0.0.1:8090/");
+
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn url_without_trailing() {
+        let result = Api::new("http://127.0.0.1:8090");
+
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn url_without_port() {
+        let result = Api::new("http://127.0.0.1/");
+
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn url_without_base() {
+        let result = Api::new("127.0.0.1:8090");
+
+        assert!(result.is_err());
+        let err = result.err().unwrap();
+
+        assert!(matches!(err, Error::InvalidURL(RelativeUrlWithoutBase)));
+    }
+}
