@@ -20,6 +20,7 @@ async fn incorrect_username() {
             .await;
 
     assert!(result.is_err());
+    assert!(matches!(result.err().unwrap(), qbit::Error::AuthFailed(_)));
 }
 
 #[tokio::test]
@@ -28,4 +29,5 @@ async fn incorrect_password() {
         Api::new_login_username_password("http://localhost:45378", "admin", "snkabjhioahsio").await;
 
     assert!(result.is_err());
+    assert!(matches!(result.err().unwrap(), qbit::Error::AuthFailed(_)));
 }
