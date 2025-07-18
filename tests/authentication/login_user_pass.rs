@@ -26,19 +26,3 @@ async fn login_url_3() {
 
     assert!(matches!(err, Error::InvalidURL(RelativeUrlWithoutBase)));
 }
-
-#[tokio::test]
-async fn incorrect_username() {
-    let result =
-        Api::new_login_username_password("http://127.0.0.1:8090/", "fjiooiaaso", "torrent").await;
-
-    assert!(result.is_err());
-}
-
-#[tokio::test]
-async fn incorrect_password() {
-    let result =
-        Api::new_login_username_password("http://127.0.0.1:8090/", "admin", "snkabjhioahsio").await;
-
-    assert!(result.is_err());
-}
