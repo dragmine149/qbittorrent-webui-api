@@ -19,28 +19,37 @@ impl super::Api {
     ///
     /// * `parames` - Parameter object
     ///
-    pub async fn torrents(&self, parames: TorrentListParams) -> Result<Vec<TorrentInfo>, Error> {
+    pub async fn torrents(
+        &self,
+        params: Option<TorrentListParams>,
+    ) -> Result<Vec<TorrentInfo>, Error> {
         let mut query = vec![];
-        query.push(("reverse", parames.reverse.to_string()));
-        if let Some(filter) = parames.filter {
+
+        let params = match params {
+            Some(params) => params,
+            None => TorrentListParams::default(),
+        };
+
+        query.push(("reverse", params.reverse.to_string()));
+        if let Some(filter) = params.filter {
             query.push(("filter", filter.to_string()));
         }
-        if let Some(category) = parames.category {
+        if let Some(category) = params.category {
             query.push(("category", category));
         }
-        if let Some(tag) = parames.tag {
+        if let Some(tag) = params.tag {
             query.push(("tag", tag));
         }
-        if let Some(sort) = parames.sort {
+        if let Some(sort) = params.sort {
             query.push(("sort", sort.to_string()));
         }
-        if let Some(limit) = parames.limit {
+        if let Some(limit) = params.limit {
             query.push(("limit", limit.to_string()));
         }
-        if let Some(offset) = parames.offset {
+        if let Some(offset) = params.offset {
             query.push(("offset", offset.to_string()));
         }
-        if let Some(hashes) = parames.hashes {
+        if let Some(hashes) = params.hashes {
             query.push(("hashes", hashes.join("|")));
         }
 
