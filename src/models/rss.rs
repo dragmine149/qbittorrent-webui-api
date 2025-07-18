@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 /// This module defines structures for representing RSS feeds collections.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum RssFeedCollection {
     /// Represents a full RSS feed object containing detailed information about the feed.

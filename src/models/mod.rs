@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 mod application;
 mod log;
@@ -17,7 +17,7 @@ pub use torrent::*;
 pub use transfer::*;
 
 /// Connection status of the Qbit application
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub enum ConnectionStatus {
     #[serde(rename = "connected")]
     Connected,
