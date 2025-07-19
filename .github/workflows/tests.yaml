@@ -6,6 +6,15 @@ jobs:
   Run_tests:
     runs-on: ubuntu-latest
 
+    env:
+      # url should not need to chance as we are running qbittorrent locally on github servers.
+      url: http://localhost
+      port: 45378
+      username: admin
+
+      password: "@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"
+      unencrypted_password: adminadmin
+
     steps:
       - name: Install qbittorrent-nox
         # Source: https://github.com/userdocs/qbittorrent-nox-static
@@ -19,8 +28,9 @@ jobs:
           mkdir -p ~/.config/qBittorrent
           cat > ~/.config/qBittorrent/qBittorrent.conf << 'EOF'
           [Preferences]
-          WebUI\Password_PBKDF2="@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"
-          WebUI\Port=45378
+          WebUI\Password_PBKDF2="${{ env.password }}"
+          WebUI\Port=${{ env.port }}
+          WebUI\Username=${{ env.username }}
           EOF
 
       - name: Debug version
@@ -28,6 +38,15 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup dotenv
+        run: |
+          cat > .env << 'EOF'
+          url = ${{ env.url }}
+          port = ${{ env.port }}
+          username = ${{ env.username }}
+          password = ${{ env.unencrypted_password }}
+          EOF
 
       - name: Setup rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
