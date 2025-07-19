@@ -51,7 +51,7 @@ jobs:
       - name: Debug files
         run: |
           cat ~/.config/qBittorrent/qBittorrent.conf
-          cat .env
+          # cat .env
 
       - name: Setup rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
