@@ -48,6 +48,11 @@ jobs:
           password = ${{ env.unencrypted_password }}
           EOF
 
+      - name: Debug files
+        run: |
+          cat ~/.config/qBittorrent/qBittorrent.conf
+          cat .env
+
       - name: Setup rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
 
