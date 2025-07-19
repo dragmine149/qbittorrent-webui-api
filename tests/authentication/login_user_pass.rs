@@ -1,6 +1,7 @@
 use qbit::Api;
 
 #[tokio::test]
+#[ignore = "Test hits api endpoint"]
 async fn correct_credentials() {
     let result =
         Api::new_login_username_password("http://localhost:45378", "admin", "adminadmin").await;
@@ -14,6 +15,7 @@ async fn correct_credentials() {
 }
 
 #[tokio::test]
+#[ignore = "Test hits api endpoint"]
 async fn incorrect_username() {
     let result =
         Api::new_login_username_password("http://localhost:45378", "fjiooiaaso", "adminadmin")
@@ -24,6 +26,7 @@ async fn incorrect_username() {
 }
 
 #[tokio::test]
+#[ignore = "Test hits api endpoint"]
 async fn incorrect_password() {
     let result =
         Api::new_login_username_password("http://localhost:45378", "admin", "snkabjhioahsio").await;
