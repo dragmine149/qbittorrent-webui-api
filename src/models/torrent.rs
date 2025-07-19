@@ -1,8 +1,109 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
+/// Torrent info response object
+#[derive(Debug, Deserialize, Serialize)]
+pub struct TorrentInfo {
+    /// Time (Unix Epoch) when the torrent was added to the client
+    pub added_on: i64,
+    /// Amount of data left to download (bytes)
+    pub amount_left: i64,
+    /// Whether this torrent is managed by Automatic Torrent Management
+    pub auto_tmm: bool,
+    /// Percentage of file pieces currently available
+    pub availability: f64,
+    /// Category of the torrent
+    pub category: String,
+    /// Amount of transfer data completed (bytes)
+    pub completed: i64,
+    /// Time (Unix Epoch) when the torrent completed
+    pub completion_on: i64,
+    /// Absolute path of torrent content (root path for multifile torrents, absolute file path for singlefile torrents)
+    pub content_path: String,
+    /// Torrent download speed limit (bytes/s). -1 if unlimited.
+    pub dl_limit: i64,
+    /// Torrent download speed (bytes/s)
+    pub dlspeed: i64,
+    /// Amount of data downloaded
+    pub downloaded: i64,
+    /// Amount of data downloaded this session
+    pub downloaded_session: i64,
+    /// Torrent ETA (seconds)
+    pub eta: i64,
+    /// True if first last piece are prioritized
+    pub f_l_piece_prio: bool,
+    /// True if force start is enabled for this torrent
+    pub force_start: bool,
+    /// Torrent hash
+    pub hash: Option<String>,
+    /// True if torrent is from a private tracker (added in 5.0.0)
+    ///
+    /// NOTE: Documetaion is wrong field name is "private" not "isPrivate"
+    pub private: bool,
+    /// Last time (Unix Epoch) when a chunk was downloaded/uploaded
+    pub last_activity: i64,
+    /// Magnet URI corresponding to this torrent
+    pub magnet_uri: String,
+    /// Maximum share ratio until torrent is stopped from seeding/uploading
+    pub max_ratio: f32,
+    /// Maximum seeding time (seconds) until torrent is stopped from seeding
+    pub max_seeding_time: i64,
+    /// Torrent name
+    pub name: String,
+    /// Number of seeds in the swarm
+    pub num_complete: i64,
+    /// Number of leechers in the swarm
+    pub num_incomplete: i64,
+    /// Number of leechers connected to
+    pub num_leechs: i64,
+    /// Number of seeds connected to
+    pub num_seeds: i64,
+    /// Torrent priority. Returns -1 if queuing is disabled or torrent is in seed mode
+    pub priority: i64,
+    /// Torrent progress (percentage/100)
+    pub progress: f32,
+    /// Torrent share ratio. Max ratio value: 9999.
+    pub ratio: f32,
+    /// TODO (what is different from max_ratio?)
+    pub ratio_limit: f32,
+    /// Time until the next tracker reannounce
+    pub reannounce: i64,
+    /// Path where this torrent's data is stored
+    pub save_path: String,
+    /// Torrent elapsed time while complete (seconds)
+    pub seeding_time: i64,
+    /// TODO (what is different from max_seeding_time?) seeding_time_limit is a per torrent setting, when Automatic Torrent Management is disabled, furthermore then max_seeding_time is set to seeding_time_limit for this torrent. If Automatic Torrent Management is enabled, the value is -2. And if max_seeding_time is unset it have a default value -1.
+    pub seeding_time_limit: i64,
+    /// Time (Unix Epoch) when this torrent was last seen complete
+    pub seen_complete: i64,
+    /// True if sequential download is enabled
+    pub seq_dl: bool,
+    /// Total size (bytes) of files selected for download
+    pub size: i64,
+    /// Torrent state. See table here below for the possible values
+    pub state: String,
+    /// True if super seeding is enabled
+    pub super_seeding: bool,
+    /// Comma-concatenated tag list of the torrent
+    pub tags: String,
+    /// Total active time (seconds)
+    pub time_active: i64,
+    /// Total size (bytes) of all file in this torrent (including unselected ones)
+    pub total_size: i64,
+    /// The first tracker with working status. Returns empty string if no tracker is working.
+    pub tracker: String,
+    /// Torrent upload speed limit (bytes/s). -1 if unlimited.
+    pub up_limit: i64,
+    /// Amount of data uploaded
+    pub uploaded: i64,
+    /// Amount of data uploaded this session
+    pub uploaded_session: i64,
+    /// Torrent upload speed (bytes/s)
+    pub upspeed: i64,
+}
+
 /// Generic torrent properties
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct TorrentProperties {
     /// Torrent save path
     pub save_path: String,
@@ -75,7 +176,7 @@ pub struct TorrentProperties {
 }
 
 /// Torrent tracker data object
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Tracker {
     /// Tracker url
     pub url: String,
@@ -96,14 +197,14 @@ pub struct Tracker {
 }
 
 /// Web seed data object
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct WebSeed {
     /// Web seed URL
     pub url: String,
 }
 
 /// Torrent file/content data object
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct TorrentContent {
     /// File index
     pub index: i64,
@@ -138,7 +239,7 @@ pub enum FilePriority {
 }
 
 /// Pices state
-#[derive(Debug, Deserialize_repr)]
+#[derive(Debug, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum PiecesState {
     NotDownloaded = 0,

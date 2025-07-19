@@ -1,8 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 /// Log item data object
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct LogItem {
     /// ID of the message
     pub id: i64,
@@ -30,7 +30,7 @@ pub enum LogType {
 }
 
 /// Peer log item data object
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct LogPeers {
     /// ID of the peer
     pub id: i64,
