@@ -12,8 +12,8 @@ jobs:
       port: 45378
       username: admin
 
-      password: "@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"
-      unencrypted_password: adminadmin
+      encrypted_password: "@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"
+      password: adminadmin
 
     steps:
       - name: Install qbittorrent-nox
@@ -28,7 +28,7 @@ jobs:
           mkdir -p ~/.config/qBittorrent
           cat > ~/.config/qBittorrent/qBittorrent.conf << 'EOF'
           [Preferences]
-          WebUI\Password_PBKDF2="${{ env.password }}"
+          WebUI\Password_PBKDF2="${{ env.encrypted_password }}"
           WebUI\Port=${{ env.port }}
           EOF
 
@@ -44,7 +44,7 @@ jobs:
           url = ${{ env.url }}
           port = ${{ env.port }}
           username = ${{ env.username }}
-          password = ${{ env.unencrypted_password }}
+          password = ${{ env.password }}
           EOF
 
       - name: Debug files
