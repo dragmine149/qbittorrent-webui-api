@@ -19,15 +19,10 @@ fn get_server_details() -> String {
 }
 
 fn get_server_username() -> String {
-    println!("{}", env::var("username").unwrap_or("admin".to_string()));
     env::var("username").unwrap_or("admin".to_string())
 }
 
 fn get_server_password() -> String {
-    println!(
-        "{}",
-        env::var("password").unwrap_or("adminadmin".to_string())
-    );
     env::var("password").unwrap_or("adminadmin".to_string())
 }
 

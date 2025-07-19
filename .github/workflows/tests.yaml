@@ -6,6 +6,7 @@ jobs:
   Run_tests:
     runs-on: ubuntu-latest
 
+    # The way github works, means that this `env` will also pretty much do the `.env` file for rust to work.
     env:
       # url should not need to chance as we are running qbittorrent locally on github servers.
       url: http://localhost
@@ -39,19 +40,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Setup dotenv
-      #   run: |
-      #     cat > .env << 'EOF'
-      #     url = ${{ env.url }}
-      #     port = ${{ env.port }}
-      #     username = ${{ env.username }}
-      #     password = ${{ env.password }}
-      #     EOF
-
       - name: Debug files
         run: |
           cat ~/.config/qBittorrent/qBittorrent.conf
-          # cat .env
 
       - name: Setup rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
