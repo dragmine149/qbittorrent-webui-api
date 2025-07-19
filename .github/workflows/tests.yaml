@@ -39,14 +39,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup dotenv
-        run: |
-          cat > .env << 'EOF'
-          url = ${{ env.url }}
-          port = ${{ env.port }}
-          username = ${{ env.username }}
-          password = ${{ env.password }}
-          EOF
+      # - name: Setup dotenv
+      #   run: |
+      #     cat > .env << 'EOF'
+      #     url = ${{ env.url }}
+      #     port = ${{ env.port }}
+      #     username = ${{ env.username }}
+      #     password = ${{ env.password }}
+      #     EOF
 
       - name: Debug files
         run: |
