@@ -1,4 +1,10 @@
+# No need to include the compiled data
 /target
-
+# It's a library
 Cargo.lock
+
+# used in testing, should be local to device in most situtations. Github will automatically create one whilst testing.
+.env
+
+# Other
 /tests/me.rs

@@ -1,0 +1,53 @@
+on:
+  push:
+  pull_request:
+
+jobs:
+  Run_tests:
+    runs-on: ubuntu-latest
+
+    # The way github works, means that this `env` will also pretty much do the `.env` file for rust to work.
+    env:
+      # url should not need to chance as we are running qbittorrent locally on github servers.
+      url: http://localhost
+      port: 45378
+      username: admin
+
+      encrypted_password: "@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"
+      password: adminadmin
+
+    steps:
+      - name: Install qbittorrent-nox
+        # Source: https://github.com/userdocs/qbittorrent-nox-static
+        run: |
+          mkdir -p ~/bin && source ~/.profile
+          wget -qO ~/bin/qbittorrent-nox https://github.com/userdocs/qbittorrent-nox-static/releases/latest/download/x86_64-qbittorrent-nox
+          chmod 700 ~/bin/qbittorrent-nox
+
+      - name: Configure qBittorrent
+        run: |
+          mkdir -p ~/.config/qBittorrent
+          cat > ~/.config/qBittorrent/qBittorrent.conf << 'EOF'
+          [Preferences]
+          WebUI\Username=${{ env.username }}
+          WebUI\Password_PBKDF2="${{ env.encrypted_password }}"
+          WebUI\Port=${{ env.port }}
+          EOF
+
+      - name: Debug version
+        run: ~/bin/qbittorrent-nox -v
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Debug files
+        run: |
+          cat ~/.config/qBittorrent/qBittorrent.conf
+
+      - name: Setup rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Run tests
+        run: |
+          ~/bin/qbittorrent-nox --confirm-legal-notice &
+          cargo test -- --include-ignored
