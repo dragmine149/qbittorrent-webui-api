@@ -58,5 +58,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ~/bin/qbittorrent-nox &
+          ~/bin/qbittorrent-nox --confirm-legal-notice &
           cargo test -- --include-ignored
