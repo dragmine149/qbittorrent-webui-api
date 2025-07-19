@@ -10,7 +10,7 @@ jobs:
       # url should not need to chance as we are running qbittorrent locally on github servers.
       url: http://localhost
       port: 45378
-      username: admin
+      username: dragon
 
       encrypted_password: "@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"
       password: adminadmin
@@ -28,6 +28,7 @@ jobs:
           mkdir -p ~/.config/qBittorrent
           cat > ~/.config/qBittorrent/qBittorrent.conf << 'EOF'
           [Preferences]
+          WebUI\Username=${{ env.username }}
           WebUI\Password_PBKDF2="${{ env.encrypted_password }}"
           WebUI\Port=${{ env.port }}
           EOF
