@@ -30,7 +30,6 @@ jobs:
           [Preferences]
           WebUI\Password_PBKDF2="${{ env.password }}"
           WebUI\Port=${{ env.port }}
-          WebUI\Username=${{ env.username }}
           EOF
 
       - name: Debug version
