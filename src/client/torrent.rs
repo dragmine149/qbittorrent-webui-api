@@ -236,11 +236,12 @@ impl super::Api {
     /// * `hashes` - Hashes list of torrents to stop.
     ///
     pub async fn stop(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let query = vec![("hashes", hashes.join("|"))];
+        let mut form = multipart::Form::new();
+        form = form.text("hashes", hashes.join("|"));
 
-        self._get("torrents/stop")
+        self._post("torrents/stop")
             .await?
-            .query(&query)
+            .multipart(form)
             .send()
             .await?
             .error_for_status()?;
@@ -257,11 +258,12 @@ impl super::Api {
     /// * `hashes` - Hashes list of torrents to start.
     ///
     pub async fn start(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let query = vec![("hashes", hashes.join("|"))];
+        let mut form = multipart::Form::new();
+        form = form.text("hashes", hashes.join("|"));
 
-        self._get("torrents/start")
+        self._post("torrents/start")
             .await?
-            .query(&query)
+            .multipart(form)
             .send()
             .await?
             .error_for_status()?;
@@ -280,14 +282,13 @@ impl super::Api {
     ///   otherwise has no effect.
     ///
     pub async fn delete(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
-        let query = vec![
-            ("hashes", hashes.join("|")),
-            ("deleteFiles", delete_files.to_string()),
-        ];
+        let mut form = multipart::Form::new();
+        form = form.text("hashes", hashes.join("|"));
+        form = form.text("deleteFiles", delete_files.to_string());
 
-        self._get("torrents/delete")
+        self._post("torrents/delete")
             .await?
-            .query(&query)
+            .multipart(form)
             .send()
             .await?
             .error_for_status()?;
@@ -304,11 +305,12 @@ impl super::Api {
     /// * `hashes` - Hashes list of torrents to recheck.
     ///
     pub async fn recheck(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let query = vec![("hashes", hashes.join("|"))];
+        let mut form = multipart::Form::new();
+        form = form.text("hashes", hashes.join("|"));
 
-        self._get("torrents/recheck")
+        self._post("torrents/recheck")
             .await?
-            .query(&query)
+            .multipart(form)
             .send()
             .await?
             .error_for_status()?;
@@ -325,11 +327,12 @@ impl super::Api {
     /// * `hashes` - Hashes list of torrents to reannounce.
     ///
     pub async fn reannounce(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let query = vec![("hashes", hashes.join("|"))];
+        let mut form = multipart::Form::new();
+        form = form.text("hashes", hashes.join("|"));
 
-        self._get("torrents/reannounce")
+        self._post("torrents/reannounce")
             .await?
-            .query(&query)
+            .multipart(form)
             .send()
             .await?
             .error_for_status()?;
