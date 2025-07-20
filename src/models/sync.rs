@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
-use super::{ConnectionStatus, TorrentInfo};
+use crate::models::{ConnectionStatus, TorrentsMap};
 
 /// Main response data object
 #[derive(Debug, Deserialize, Serialize)]
@@ -14,7 +14,7 @@ pub struct MainData {
     /// List of Torrents
     ///
     /// Property: torrent hash, value: TorrentInfo
-    pub torrents: Option<HashMap<String, TorrentInfo>>,
+    pub torrents: Option<TorrentsMap>,
     /// List of hashes of torrents removed since last request
     pub torrents_removed: Option<Vec<String>>,
     /// Info for categories added since last request

@@ -1,4 +1,9 @@
-use serde::{Deserialize, Serialize};
+use std::{collections::HashMap, fmt, ops::Deref};
+
+use serde::{
+    Deserialize, Deserializer, Serialize,
+    de::{MapAccess, Visitor},
+};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 /// Torrent info response object
@@ -35,7 +40,7 @@ pub struct TorrentInfo {
     /// True if force start is enabled for this torrent
     pub force_start: bool,
     /// Torrent hash
-    pub hash: Option<String>,
+    pub hash: String,
     /// True if torrent is from a private tracker (added in 5.0.0)
     ///
     /// The value will be `None` if the torrent metadata is not available yet.
@@ -103,6 +108,150 @@ pub struct TorrentInfo {
     pub uploaded_session: i64,
     /// Torrent upload speed (bytes/s)
     pub upspeed: i64,
+}
+
+#[derive(Debug, Serialize)]
+pub struct TorrentsMap(pub HashMap<String, TorrentInfo>);
+
+impl Deref for TorrentsMap {
+    type Target = HashMap<String, TorrentInfo>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<'de> Deserialize<'de> for TorrentsMap {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_map(TorrentMapVisitor)
+    }
+}
+
+struct TorrentMapVisitor;
+
+impl<'de> Visitor<'de> for TorrentMapVisitor {
+    type Value = TorrentsMap;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_str("a map of torrent infohashes to torrent objects")
+    }
+
+    fn visit_map<M>(self, mut access: M) -> Result<Self::Value, M::Error>
+    where
+        M: MapAccess<'de>,
+    {
+        let mut map = HashMap::with_capacity(access.size_hint().unwrap_or(0));
+
+        #[derive(Deserialize)]
+        struct TmpTorrent {
+            added_on: i64,
+            amount_left: i64,
+            auto_tmm: bool,
+            availability: f64,
+            category: String,
+            completed: i64,
+            completion_on: i64,
+            content_path: String,
+            dl_limit: i64,
+            dlspeed: i64,
+            downloaded: i64,
+            downloaded_session: i64,
+            eta: i64,
+            f_l_piece_prio: bool,
+            force_start: bool,
+            private: Option<bool>,
+            last_activity: i64,
+            magnet_uri: String,
+            max_ratio: f32,
+            max_seeding_time: i64,
+            name: String,
+            num_complete: i64,
+            num_incomplete: i64,
+            num_leechs: i64,
+            num_seeds: i64,
+            priority: i64,
+            progress: f32,
+            ratio: f32,
+            ratio_limit: f32,
+            reannounce: i64,
+            save_path: String,
+            seeding_time: i64,
+            seeding_time_limit: i64,
+            seen_complete: i64,
+            seq_dl: bool,
+            size: i64,
+            state: String,
+            super_seeding: bool,
+            tags: String,
+            time_active: i64,
+            total_size: i64,
+            tracker: String,
+            up_limit: i64,
+            uploaded: i64,
+            uploaded_session: i64,
+            upspeed: i64,
+        }
+
+        while let Some(key) = access.next_key::<String>()? {
+            let temp_torrent: TmpTorrent = access.next_value()?;
+
+            let torrent = TorrentInfo {
+                hash: key.clone(),
+                added_on: temp_torrent.added_on,
+                amount_left: temp_torrent.amount_left,
+                auto_tmm: temp_torrent.auto_tmm,
+                availability: temp_torrent.availability,
+                category: temp_torrent.category,
+                completed: temp_torrent.completed,
+                completion_on: temp_torrent.completion_on,
+                content_path: temp_torrent.content_path,
+                dl_limit: temp_torrent.dl_limit,
+                dlspeed: temp_torrent.dlspeed,
+                downloaded: temp_torrent.downloaded,
+                downloaded_session: temp_torrent.downloaded_session,
+                eta: temp_torrent.eta,
+                f_l_piece_prio: temp_torrent.f_l_piece_prio,
+                force_start: temp_torrent.force_start,
+                last_activity: temp_torrent.last_activity,
+                magnet_uri: temp_torrent.magnet_uri,
+                max_ratio: temp_torrent.max_ratio,
+                max_seeding_time: temp_torrent.max_seeding_time,
+                name: temp_torrent.name,
+                num_complete: temp_torrent.num_complete,
+                num_incomplete: temp_torrent.num_incomplete,
+                num_leechs: temp_torrent.num_leechs,
+                num_seeds: temp_torrent.num_seeds,
+                priority: temp_torrent.priority,
+                private: temp_torrent.private,
+                progress: temp_torrent.progress,
+                ratio: temp_torrent.ratio,
+                ratio_limit: temp_torrent.ratio_limit,
+                reannounce: temp_torrent.reannounce,
+                save_path: temp_torrent.save_path,
+                seeding_time: temp_torrent.seeding_time,
+                seeding_time_limit: temp_torrent.seeding_time_limit,
+                seen_complete: temp_torrent.seen_complete,
+                seq_dl: temp_torrent.seq_dl,
+                size: temp_torrent.size,
+                state: temp_torrent.state,
+                super_seeding: temp_torrent.super_seeding,
+                tags: temp_torrent.tags,
+                time_active: temp_torrent.time_active,
+                total_size: temp_torrent.total_size,
+                tracker: temp_torrent.tracker,
+                up_limit: temp_torrent.up_limit,
+                uploaded: temp_torrent.uploaded,
+                uploaded_session: temp_torrent.uploaded_session,
+                upspeed: temp_torrent.upspeed,
+            };
+            map.insert(key, torrent);
+        }
+
+        Ok(TorrentsMap(map))
+    }
 }
 
 /// Generic torrent properties
