@@ -1,7 +1,13 @@
 use dotenv::dotenv;
+use qbit::{Api, parameters::TorrentAddUrls};
 use std::env;
 
 pub mod authentication;
+pub mod sync;
+pub mod torrents;
+
+pub const DEBIAN_HASH: &str = "6f4370df4304609a8793ce2b59178dcc8febf5e2";
+pub const DEBIAN_TRACKER: &str = "magnet:?xt=urn:btih:6f4370df4304609a8793ce2b59178dcc8febf5e2&dn=debian-12.11.0-amd64-netinst.iso&xl=702545920&tr=http%3A%2F%2Fbttracker.debian.org%2Fannounce";
 
 pub fn get_server_details() -> String {
     dotenv().ok();
@@ -25,4 +31,29 @@ pub fn get_server_username() -> String {
 
 pub fn get_server_password() -> String {
     env::var("password").unwrap_or("adminadmin".to_string())
+}
+
+pub async fn login_deafult_client() -> Api {
+    Api::new_login_username_password(
+        &get_server_details(),
+        &get_server_username(),
+        &get_server_password(),
+    )
+    .await
+    .expect("Failed to log in to the default client. Please check the server details, username, and password. : ")
+}
+
+pub async fn add_debian_torrent(client: &Api) {
+    let mut param = TorrentAddUrls::new(vec![DEBIAN_TRACKER.to_string()]);
+    param.paused = true;
+
+    client
+        .add_torrent(param)
+        .await
+        .expect("Failed to add torrent");
+    // Note: Added the stop call since the paused parameter doesn't work for some reason.
+    client
+        .stop(vec![DEBIAN_HASH])
+        .await
+        .expect("Failed to stop torrent");
 }
