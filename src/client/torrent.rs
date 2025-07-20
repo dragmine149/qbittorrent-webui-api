@@ -5,7 +5,7 @@ use reqwest::multipart;
 use crate::{
     error::Error,
     models::{
-        FilePriority, PiecesState, TorrentContent, TorrentInfo, TorrentProperties, Tracker, WebSeed,
+        FilePriority, PiecesState, Torrent, TorrentContent, TorrentProperties, Tracker, WebSeed,
     },
     parameters::{TorrentAddUrls, TorrentListParams},
 };
@@ -19,10 +19,7 @@ impl super::Api {
     ///
     /// * `parames` - Parameter object
     ///
-    pub async fn torrents(
-        &self,
-        params: Option<TorrentListParams>,
-    ) -> Result<Vec<TorrentInfo>, Error> {
+    pub async fn torrents(&self, params: Option<TorrentListParams>) -> Result<Vec<Torrent>, Error> {
         let mut query = vec![];
 
         let params = match params {
@@ -60,7 +57,7 @@ impl super::Api {
             .send()
             .await?
             .error_for_status()?
-            .json::<Vec<TorrentInfo>>()
+            .json::<Vec<Torrent>>()
             .await?;
 
         Ok(torrents)

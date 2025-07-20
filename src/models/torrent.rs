@@ -8,7 +8,7 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 
 /// Torrent info response object
 #[derive(Debug, Deserialize, Serialize)]
-pub struct TorrentInfo {
+pub struct Torrent {
     /// Time (Unix Epoch) when the torrent was added to the client
     pub added_on: i64,
     /// Amount of data left to download (bytes)
@@ -111,10 +111,10 @@ pub struct TorrentInfo {
 }
 
 #[derive(Debug, Serialize)]
-pub struct TorrentsMap(pub HashMap<String, TorrentInfo>);
+pub struct TorrentsMap(pub HashMap<String, Torrent>);
 
 impl Deref for TorrentsMap {
-    type Target = HashMap<String, TorrentInfo>;
+    type Target = HashMap<String, Torrent>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -198,7 +198,7 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
         while let Some(key) = access.next_key::<String>()? {
             let temp_torrent: TmpTorrent = access.next_value()?;
 
-            let torrent = TorrentInfo {
+            let torrent = Torrent {
                 hash: key.clone(),
                 added_on: temp_torrent.added_on,
                 amount_left: temp_torrent.amount_left,
