@@ -7,14 +7,14 @@ pub enum Error {
     AuthFailed(String),
     InvalidResponse(String),
     InvalidRequest(String),
-    InvalidURL(url::ParseError),
-    HttpRequestError(reqwest::Error),
+    ReqwestError(reqwest::Error),
+    UrlParseError(url::ParseError),
     SerdJsonError(serde_json::Error),
 }
 
 impl From<reqwest::Error> for Error {
     fn from(err: reqwest::Error) -> Self {
-        Self::HttpRequestError(err)
+        Self::ReqwestError(err)
     }
 }
 
@@ -26,6 +26,6 @@ impl From<serde_json::Error> for Error {
 
 impl From<url::ParseError> for Error {
     fn from(err: url::ParseError) -> Self {
-        Self::InvalidURL(err)
+        Self::UrlParseError(err)
     }
 }

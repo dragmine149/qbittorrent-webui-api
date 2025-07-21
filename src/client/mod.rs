@@ -117,6 +117,6 @@ mod tests {
         assert!(result.is_err());
         let err = result.err().unwrap();
 
-        assert!(matches!(err, Error::InvalidURL(RelativeUrlWithoutBase)));
+        assert!(matches!(err, Error::UrlParseError(RelativeUrlWithoutBase)));
     }
 }
