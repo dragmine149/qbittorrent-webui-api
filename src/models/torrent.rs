@@ -19,6 +19,8 @@ pub struct Torrent {
     pub availability: f64,
     /// Category of the torrent
     pub category: String,
+    /// Torrent comment metadata form the `.torrent` file
+    pub comment: String,
     /// Amount of transfer data completed (bytes)
     pub completed: i64,
     /// Time (Unix Epoch) when the torrent completed
@@ -29,6 +31,8 @@ pub struct Torrent {
     pub dl_limit: i64,
     /// Torrent download speed (bytes/s)
     pub dlspeed: i64,
+    /// TODO: Need to look into the purposes of the field.
+    pub download_path: String,
     /// Amount of data downloaded
     pub downloaded: i64,
     /// Amount of data downloaded this session
@@ -39,17 +43,22 @@ pub struct Torrent {
     pub f_l_piece_prio: bool,
     /// True if force start is enabled for this torrent
     pub force_start: bool,
+    /// True if the torrent has metadata available
+    pub has_metadata: bool,
     /// Torrent hash
     pub hash: String,
-    /// True if torrent is from a private tracker (added in 5.0.0)
-    ///
-    /// The value will be `None` if the torrent metadata is not available yet.
-    /// See issue [#10](https://github.com/Mattress237/qbittorrent-webui-api/issues/10)
-    ///
-    /// NOTE: Documentation is incorrect. The field name is "private", not "isPrivate".
-    pub private: Option<bool>,
+    /// TODO: need doc block
+    /// I dont know if this is the right filed: https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit
+    pub inactive_seeding_time_limit: i64,
+    /// The SHA-1 hash of the torrent's info dictionary (used in BitTorrent v1).
+    pub infohash_v1: String,
+    ///  SHA-256 hash of the torrent's info dictionary (used in BitTorrent v2).
+    pub infohash_v2: String,
     /// Last time (Unix Epoch) when a chunk was downloaded/uploaded
     pub last_activity: i64,
+    /// TODO: need doc block
+    /// I dont know if this is the right filed: https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit
+    pub max_inactive_seeding_time: i64,
     /// Magnet URI corresponding to this torrent
     pub magnet_uri: String,
     /// Maximum share ratio until torrent is stopped from seeding/uploading
@@ -66,8 +75,17 @@ pub struct Torrent {
     pub num_leechs: i64,
     /// Number of seeds connected to
     pub num_seeds: i64,
+    /// Popularity of the torrent
+    pub popularity: i64,
     /// Torrent priority. Returns -1 if queuing is disabled or torrent is in seed mode
     pub priority: i64,
+    /// True if torrent is from a private tracker (added in 5.0.0)
+    ///
+    /// The value will be `None` if the torrent metadata is not available yet.
+    /// See issue [#10](https://github.com/Mattress237/qbittorrent-webui-api/issues/10)
+    ///
+    /// NOTE: Documentation is incorrect. The field name is "private", not "isPrivate".
+    pub private: Option<bool>,
     /// Torrent progress (percentage/100)
     pub progress: f32,
     /// Torrent share ratio. Max ratio value: 9999.
@@ -76,6 +94,8 @@ pub struct Torrent {
     pub ratio_limit: f32,
     /// Time until the next tracker reannounce
     pub reannounce: i64,
+    /// TODO: need doc block
+    pub root_path: String,
     /// Path where this torrent's data is stored
     pub save_path: String,
     /// Torrent elapsed time while complete (seconds)
@@ -100,6 +120,8 @@ pub struct Torrent {
     pub total_size: i64,
     /// The first tracker with working status. Returns empty string if no tracker is working.
     pub tracker: String,
+    /// Totall count of trackers
+    pub trackers_count: i64,
     /// Torrent upload speed limit (bytes/s). -1 if unlimited.
     pub up_limit: i64,
     /// Amount of data uploaded
@@ -152,18 +174,24 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
             auto_tmm: bool,
             availability: f64,
             category: String,
+            comment: String,
             completed: i64,
             completion_on: i64,
             content_path: String,
             dl_limit: i64,
             dlspeed: i64,
+            download_path: String,
             downloaded: i64,
             downloaded_session: i64,
             eta: i64,
             f_l_piece_prio: bool,
             force_start: bool,
-            private: Option<bool>,
+            has_metadata: bool,
+            inactive_seeding_time_limit: i64,
+            infohash_v1: String,
+            infohash_v2: String,
             last_activity: i64,
+            max_inactive_seeding_time: i64,
             magnet_uri: String,
             max_ratio: f32,
             max_seeding_time: i64,
@@ -172,11 +200,14 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
             num_incomplete: i64,
             num_leechs: i64,
             num_seeds: i64,
+            popularity: i64,
             priority: i64,
+            private: Option<bool>,
             progress: f32,
             ratio: f32,
             ratio_limit: f32,
             reannounce: i64,
+            root_path: String,
             save_path: String,
             seeding_time: i64,
             seeding_time_limit: i64,
@@ -189,6 +220,7 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
             time_active: i64,
             total_size: i64,
             tracker: String,
+            trackers_count: i64,
             up_limit: i64,
             uploaded: i64,
             uploaded_session: i64,
@@ -205,17 +237,24 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
                 auto_tmm: temp_torrent.auto_tmm,
                 availability: temp_torrent.availability,
                 category: temp_torrent.category,
+                comment: temp_torrent.comment,
                 completed: temp_torrent.completed,
                 completion_on: temp_torrent.completion_on,
                 content_path: temp_torrent.content_path,
                 dl_limit: temp_torrent.dl_limit,
                 dlspeed: temp_torrent.dlspeed,
+                download_path: temp_torrent.download_path,
                 downloaded: temp_torrent.downloaded,
                 downloaded_session: temp_torrent.downloaded_session,
                 eta: temp_torrent.eta,
                 f_l_piece_prio: temp_torrent.f_l_piece_prio,
                 force_start: temp_torrent.force_start,
+                has_metadata: temp_torrent.has_metadata,
+                inactive_seeding_time_limit: temp_torrent.inactive_seeding_time_limit,
+                infohash_v1: temp_torrent.infohash_v1,
+                infohash_v2: temp_torrent.infohash_v2,
                 last_activity: temp_torrent.last_activity,
+                max_inactive_seeding_time: temp_torrent.max_inactive_seeding_time,
                 magnet_uri: temp_torrent.magnet_uri,
                 max_ratio: temp_torrent.max_ratio,
                 max_seeding_time: temp_torrent.max_seeding_time,
@@ -224,12 +263,14 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
                 num_incomplete: temp_torrent.num_incomplete,
                 num_leechs: temp_torrent.num_leechs,
                 num_seeds: temp_torrent.num_seeds,
+                popularity: temp_torrent.popularity,
                 priority: temp_torrent.priority,
                 private: temp_torrent.private,
                 progress: temp_torrent.progress,
                 ratio: temp_torrent.ratio,
                 ratio_limit: temp_torrent.ratio_limit,
                 reannounce: temp_torrent.reannounce,
+                root_path: temp_torrent.root_path,
                 save_path: temp_torrent.save_path,
                 seeding_time: temp_torrent.seeding_time,
                 seeding_time_limit: temp_torrent.seeding_time_limit,
@@ -242,6 +283,7 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
                 time_active: temp_torrent.time_active,
                 total_size: temp_torrent.total_size,
                 tracker: temp_torrent.tracker,
+                trackers_count: temp_torrent.trackers_count,
                 up_limit: temp_torrent.up_limit,
                 uploaded: temp_torrent.uploaded,
                 uploaded_session: temp_torrent.uploaded_session,
