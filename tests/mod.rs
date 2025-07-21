@@ -36,7 +36,7 @@ pub fn get_server_password() -> String {
     env::var("password").unwrap_or("adminadmin".to_string())
 }
 
-pub async fn login_deafult_client() -> Api {
+pub async fn login_default_client() -> Api {
     Api::new_login_username_password(
         &get_server_details(),
         &get_server_username(),

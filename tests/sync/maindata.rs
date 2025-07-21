@@ -1,10 +1,10 @@
-use crate::{DEBIAN_HASH, add_debian_torrent, login_deafult_client};
+use crate::{DEBIAN_HASH, add_debian_torrent, login_default_client};
 
 /// This test ensures that the API correctly deserialize the torrents field from the response.
 #[tokio::test]
 #[ignore = "Test hits api endpoint"]
-async fn corectly_deserialize_from_respose() {
-    let client = login_deafult_client().await;
+async fn correctly_deserialize_from_response() {
+    let client = login_default_client().await;
     add_debian_torrent(&client).await;
 
     let res = client
