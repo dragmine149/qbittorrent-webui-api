@@ -22,10 +22,7 @@ impl super::Api {
     pub async fn torrents(&self, params: Option<TorrentListParams>) -> Result<Vec<Torrent>, Error> {
         let mut query = vec![];
 
-        let params = match params {
-            Some(params) => params,
-            None => TorrentListParams::default(),
-        };
+        let params = params.unwrap_or_default();
 
         query.push(("reverse", params.reverse.to_string()));
         if let Some(filter) = params.filter {
