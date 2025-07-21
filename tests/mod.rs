@@ -1,5 +1,8 @@
 use dotenv::dotenv;
-use qbit::{Api, parameters::TorrentAddUrls};
+use qbit::{
+    Api,
+    parameters::{AddTorrent, AddTorrentType},
+};
 use std::env;
 
 pub mod authentication;
@@ -44,7 +47,8 @@ pub async fn login_deafult_client() -> Api {
 }
 
 pub async fn add_debian_torrent(client: &Api) {
-    let mut param = TorrentAddUrls::new(vec![DEBIAN_TRACKER.to_string()]);
+    let mut param = AddTorrent::new();
+    param.torrents = AddTorrentType::Links(vec![DEBIAN_TRACKER.to_string()]);
     param.paused = true;
 
     client

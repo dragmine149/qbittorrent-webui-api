@@ -219,10 +219,11 @@ impl Display for TorrentSort {
 
 /// Add torrent parameter object
 #[derive(Debug, Default)]
-pub struct TorrentAddUrls {
-    /// Torrent URLs separated with newlines
-    pub urls: Vec<String>,
-    // TODO: add `pub torrents`
+pub struct AddTorrent {
+    /// A list of torrent files or magnet links to be added.
+    ///
+    /// This field is required and must contain at least one item.
+    pub torrents: AddTorrentType,
     /// Download folder
     pub savepath: Option<String>,
     /// Category for the torrent
@@ -253,10 +254,10 @@ pub struct TorrentAddUrls {
     pub first_last_piece_prio: bool,
 }
 
-impl TorrentAddUrls {
-    pub fn new(urls: Vec<String>) -> Self {
+impl AddTorrent {
+    pub fn new() -> Self {
         Self {
-            urls,
+            torrents: AddTorrentType::default(),
             savepath: None,
             category: None,
             tags: None,
@@ -273,4 +274,31 @@ impl TorrentAddUrls {
             first_last_piece_prio: false,
         }
     }
+}
+
+#[derive(Debug)]
+pub enum AddTorrentType {
+    Links(Vec<String>),
+    Files(Vec<TorrentFile>),
+}
+
+impl AddTorrentType {
+    pub fn is_empty(&self) -> bool {
+        match self {
+            AddTorrentType::Links(items) => items.is_empty(),
+            AddTorrentType::Files(items) => items.is_empty(),
+        }
+    }
+}
+
+impl Default for AddTorrentType {
+    fn default() -> Self {
+        AddTorrentType::Links(vec![])
+    }
+}
+
+#[derive(Debug)]
+pub struct TorrentFile {
+    pub filename: String,
+    pub data: Vec<u8>,
 }

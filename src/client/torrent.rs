@@ -7,7 +7,7 @@ use crate::{
     models::{
         FilePriority, PiecesState, Torrent, TorrentContent, TorrentProperties, Tracker, WebSeed,
     },
-    parameters::{TorrentAddUrls, TorrentListParams},
+    parameters::{AddTorrent, AddTorrentType, TorrentListParams},
 };
 
 impl super::Api {
@@ -342,9 +342,35 @@ impl super::Api {
     ///
     /// * `params` - Torrent parameters
     ///
-    pub async fn add_torrent(&self, params: TorrentAddUrls) -> Result<(), Error> {
+    pub async fn add_torrent(&self, params: AddTorrent) -> Result<(), Error> {
+        if params.torrents.is_empty() {
+            return Err(Error::InvalidRequest(
+                "Expected urls or torrents to not be empty!".to_string(),
+            ));
+        }
+
         let mut form = multipart::Form::new();
-        form = form.text("urls", params.urls.join("\n"));
+        match params.torrents {
+            AddTorrentType::Links(items) => {
+                form = form.text("urls", items.join("\n"));
+            }
+            AddTorrentType::Files(torrent_files) => {
+                for file in torrent_files {
+                    let mut filename = file.filename;
+                    if !filename.ends_with(".torrent") {
+                        filename.insert_str(0, ".torrent");
+                    }
+
+                    form = form.part(
+                        "torrents",
+                        multipart::Part::bytes(file.data)
+                            .file_name(filename)
+                            .mime_str("application/x-bittorrent")?,
+                    );
+                }
+            }
+        };
+
         form = form.text("skip_checking", params.skip_checking.to_string());
         form = form.text("paused", params.paused.to_string());
         form = form.text("autoTMM", params.auto_tmm.to_string());

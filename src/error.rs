@@ -6,6 +6,7 @@
 pub enum Error {
     AuthFailed(String),
     InvalidResponse(String),
+    InvalidRequest(String),
     InvalidURL(url::ParseError),
     HttpRequestError(reqwest::Error),
     SerdJsonError(serde_json::Error),
