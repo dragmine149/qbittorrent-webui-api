@@ -406,14 +406,14 @@ pub struct Preferences {
 /// How the torrent content is laied out.
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ContentLayout {
-    /// Does whatever the server says to do, which by default is SubFolder
+    /// Does whatever the server says to do, which by default is Subfolder
     Original,
     /// In cases of batches, will create a separate subfolder automatically of the batch name.
     /// Example: `Save_path/Torrent_name/Torrent_files`
-    SubFolder,
+    Subfolder,
     /// In cases of batches, will just place them all in the save_path.
     /// Example: `Save_path/Torrent_files`
-    NoSubFolder,
+    NoSubfolder,
 }
 
 impl Default for ContentLayout {
@@ -426,8 +426,8 @@ impl std::fmt::Display for ContentLayout {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ContentLayout::Original => write!(f, "Original"),
-            ContentLayout::SubFolder => write!(f, "Subfolder"),
-            ContentLayout::NoSubFolder => write!(f, "NoSubfolder"),
+            ContentLayout::Subfolder => write!(f, "Subfolder"),
+            ContentLayout::NoSubfolder => write!(f, "NoSubfolder"),
         }
     }
 }
@@ -458,21 +458,21 @@ impl std::fmt::Display for StopCondition {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum TorrentDeletion {
-    Permanently,
-    Wastebin,
+    Delete,
+    MoveToTrash,
 }
 
 impl Default for TorrentDeletion {
     fn default() -> Self {
-        Self::Permanently
+        Self::Delete
     }
 }
 
 impl std::fmt::Display for TorrentDeletion {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Permanently => write!(f, "Delete"),
-            Self::Wastebin => write!(f, "MoveToTrash"),
+            Self::Delete => write!(f, "Delete"),
+            Self::MoveToTrash => write!(f, "MoveToTrash"),
         }
     }
 }
