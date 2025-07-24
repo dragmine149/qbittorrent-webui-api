@@ -1,8 +1,5 @@
 use dotenv::dotenv;
-use qbit::{
-    Api,
-    parameters::{AddTorrentBuilder, AddTorrentType},
-};
+use qbit::{Api, parameters::AddTorrentBuilder};
 use std::env;
 
 pub mod authentication;
