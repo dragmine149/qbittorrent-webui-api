@@ -39,6 +39,14 @@ pub struct Preferences {
     pub save_path_changed_tmm_enabled: bool,
     /// True if torrent should be relocated when its Category's save path changes
     pub category_changed_tmm_enabled: bool,
+    /// The default layout of the torrent content.
+    pub torrent_content_layout: ContentLayout,
+    /// The size limit of `.torrent` files
+    pub torrent_file_size_limit: u64,
+    /// When does the torrent stop
+    pub torrent_stop_condition: StopCondition,
+    /// What to do with removing torrents.
+    pub torrent_content_remove_option: TorrentDeletion,
 
     // ========== File Paths ==========
     /// Default save path for torrents, separated by slashes
@@ -396,7 +404,7 @@ pub struct Preferences {
 }
 
 /// How the torrent content is laied out.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum ContentLayout {
     /// Does whatever the server says to do, which by default is SubFolder
     Original,
@@ -420,6 +428,51 @@ impl std::fmt::Display for ContentLayout {
             ContentLayout::Original => write!(f, "Original"),
             ContentLayout::SubFolder => write!(f, "Subfolder"),
             ContentLayout::NoSubFolder => write!(f, "NoSubfolder"),
+        }
+    }
+}
+
+/// When does the torrent stop
+#[derive(Debug, Serialize, Deserialize)]
+pub enum StopCondition {
+    None,
+    MetadataReceived,
+    FilesChecked,
+}
+
+impl Default for StopCondition {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+impl std::fmt::Display for StopCondition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            StopCondition::None => write!(f, "None"),
+            StopCondition::MetadataReceived => write!(f, "MetadataReceived"),
+            StopCondition::FilesChecked => write!(f, "FilesChecked"),
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum TorrentDeletion {
+    Permanently,
+    Wastebin,
+}
+
+impl Default for TorrentDeletion {
+    fn default() -> Self {
+        Self::Permanently
+    }
+}
+
+impl std::fmt::Display for TorrentDeletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Permanently => write!(f, "Delete"),
+            Self::Wastebin => write!(f, "MoveToTrash"),
         }
     }
 }
