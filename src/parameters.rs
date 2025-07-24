@@ -256,22 +256,9 @@ pub struct AddTorrent {
 
 impl AddTorrent {
     pub fn new() -> Self {
+        // Although Self::default() could work here, this is done as semi boiler plate for future things if need be.
         Self {
-            torrents: AddTorrentType::default(),
-            savepath: None,
-            category: None,
-            tags: None,
-            skip_checking: false,
-            paused: false,
-            root_folder: None,
-            rename: None,
-            up_limit: None,
-            dl_limit: None,
-            ratio_limit: None,
-            seeding_time_limit: None,
-            auto_tmm: false,
-            sequential_download: false,
-            first_last_piece_prio: false,
+            ..Default::default()
         }
     }
 }
