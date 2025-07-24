@@ -367,6 +367,35 @@ pub struct Preferences {
     pub utp_tcp_mixed_mode: UtpTcpMixedMode,
 }
 
+/// How the torrent content is laied out.
+#[derive(Debug)]
+pub enum ContentLayout {
+    /// Does whatever the server says to do, which by default is SubFolder
+    Original,
+    /// In cases of batches, will create a separate subfolder automatically of the batch name.
+    /// Example: `Save_path/Torrent_name/Torrent_files`
+    SubFolder,
+    /// In cases of batches, will just place them all in the save_path.
+    /// Example: `Save_path/Torrent_files`
+    NoSubFolder,
+}
+
+impl Default for ContentLayout {
+    fn default() -> Self {
+        Self::Original
+    }
+}
+
+impl std::fmt::Display for ContentLayout {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ContentLayout::Original => write!(f, "Original"),
+            ContentLayout::SubFolder => write!(f, "Subfolder"),
+            ContentLayout::NoSubFolder => write!(f, "NoSubfolder"),
+        }
+    }
+}
+
 /// Scan dir types
 #[derive(Debug)]
 pub enum ScanDir {
