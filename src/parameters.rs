@@ -232,6 +232,7 @@ pub struct AddTorrent {
     /// A list of torrent files or magnet links to be added.
     ///
     /// This field is required and must contain at least one item.
+    #[builder(setter(into))]
     pub torrents: AddTorrentType,
     /// Download folder
     #[builder(setter(into, strip_option), default)]
@@ -311,6 +312,18 @@ impl AddTorrentType {
             AddTorrentType::Links(items) => items.is_empty(),
             AddTorrentType::Files(items) => items.is_empty(),
         }
+    }
+}
+
+impl From<Vec<String>> for AddTorrentType {
+    fn from(value: Vec<String>) -> Self {
+        Self::Links(value)
+    }
+}
+
+impl From<Vec<TorrentFile>> for AddTorrentType {
+    fn from(value: Vec<TorrentFile>) -> Self {
+        Self::Files(value)
     }
 }
 
