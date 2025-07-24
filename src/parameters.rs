@@ -2,28 +2,36 @@ use derive_builder::Builder;
 use std::fmt::Display;
 
 /// Torrent List/info parameter object
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Builder)]
 pub struct TorrentListParams {
     /// Filter torrent list by state. Allowed state filters: TorrentState
+    #[builder(setter(strip_option), default)]
     pub filter: Option<TorrentState>,
     /// Get torrents with the given category (empty string means "without category"; no "category" parameter means "any category"). Remember to URL-encode the category name. For example, `My category` becomes `My%20category`
+    #[builder(setter(into, strip_option), default)]
     pub category: Option<String>,
     /// Get torrents with the given tag (empty string means "without tag"; no "tag" parameter means "any tag". Remember to URL-encode the category name. For example, `My tag` becomes `My%20tag`
+    #[builder(setter(into, strip_option), default)]
     pub tag: Option<String>,
     /// Sort torrents by given key. They can be sorted using any field of the response's JSON array (which are documented below) as the sort key.
+    #[builder(setter(strip_option), default)]
     pub sort: Option<TorrentSort>,
     /// Enable reverse sorting. Defaults to `false`
+    #[builder(default)]
     pub reverse: bool,
     /// Limit the number of torrents returned
+    #[builder(setter(into, strip_option), default)]
     pub limit: Option<i64>,
     /// Set offset (if less than 0, offset from end)
+    #[builder(setter(into, strip_option), default)]
     pub offset: Option<i64>,
     /// Filter by hashes. Can contain multiple hashes separated by `|`
+    #[builder(setter(into, strip_option), default)]
     pub hashes: Option<Vec<String>>,
 }
 
 /// Posibel Torrent states
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum TorrentState {
     All,
     Downloading,
@@ -63,7 +71,7 @@ impl Display for TorrentState {
 }
 
 /// Torrent sort fields
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum TorrentSort {
     /// Time when the torrent was added to the client
     AddedOn,
