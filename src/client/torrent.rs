@@ -389,7 +389,7 @@ impl super::Api {
             form = form.text("tags", tags.join(","));
         }
         if let Some(root_folder) = params.root_folder {
-            form = form.text("root_folder", root_folder);
+            form = form.text("root_folder", root_folder.to_string());
         }
         if let Some(rename) = params.rename {
             form = form.text("rename", rename);
