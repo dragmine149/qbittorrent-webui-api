@@ -435,8 +435,11 @@ impl std::fmt::Display for ContentLayout {
 /// When does the torrent stop
 #[derive(Debug, Serialize, Deserialize)]
 pub enum StopCondition {
+    /// Don't stop and go straight to downloading
     None,
+    /// Stop after receiving the metadata
     MetadataReceived,
+    /// Stop after checking the files.
     FilesChecked,
 }
 
@@ -456,9 +459,12 @@ impl std::fmt::Display for StopCondition {
     }
 }
 
+/// What to do when removing content files upon removing a torrent.
 #[derive(Debug, Serialize, Deserialize)]
 pub enum TorrentDeletion {
+    /// Erase from disk permanatly
     Delete,
+    /// Attempts to move to Trash/Wastebin if possible.
     MoveToTrash,
 }
 
