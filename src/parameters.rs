@@ -21,7 +21,7 @@ pub struct TorrentListParams {
     pub hashes: Option<Vec<String>>,
 }
 
-/// Posibel Torrent states
+/// Possible Torrent states
 #[derive(Debug)]
 pub enum TorrentState {
     All,
