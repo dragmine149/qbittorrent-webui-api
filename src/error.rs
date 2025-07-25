@@ -9,7 +9,7 @@ pub enum Error {
     InvalidRequest(String),
     ReqwestError(reqwest::Error),
     UrlParseError(url::ParseError),
-    SerdJsonError(serde_json::Error),
+    SerdeJsonError(serde_json::Error),
 }
 
 impl From<reqwest::Error> for Error {
@@ -20,7 +20,7 @@ impl From<reqwest::Error> for Error {
 
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
-        Self::SerdJsonError(err)
+        Self::SerdeJsonError(err)
     }
 }
 
