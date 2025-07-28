@@ -31,7 +31,7 @@ pub struct TorrentListParams {
 }
 
 /// Possible Torrent states
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum TorrentState {
     All,
     Downloading,
