@@ -32,7 +32,18 @@ impl From<url::ParseError> for Error {
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{self}")
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::AuthFailed(e) => e.to_string(),
+                Self::InvalidResponse(e) => e.to_string(),
+                Self::InvalidRequest(e) => e.to_string(),
+                Self::ReqwestError(e) => e.to_string(),
+                Self::UrlParseError(e) => e.to_string(),
+                Self::SerdeJsonError(e) => e.to_string(),
+            }
+        )
     }
 }
 
