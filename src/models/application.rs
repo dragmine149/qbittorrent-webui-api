@@ -404,7 +404,7 @@ pub struct Preferences {
 }
 
 /// How the torrent content is laied out.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum ContentLayout {
     /// Does whatever the server says to do, which by default is Subfolder
     Original,
