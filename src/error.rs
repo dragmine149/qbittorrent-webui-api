@@ -9,7 +9,7 @@ pub enum Error {
     InvalidRequest(String),
     ReqwestError(reqwest::Error),
     UrlParseError(url::ParseError),
-    SerdJsonError(serde_json::Error),
+    SerdeJsonError(serde_json::Error),
 }
 
 impl From<reqwest::Error> for Error {
@@ -20,7 +20,7 @@ impl From<reqwest::Error> for Error {
 
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
-        Self::SerdJsonError(err)
+        Self::SerdeJsonError(err)
     }
 }
 
@@ -29,3 +29,11 @@ impl From<url::ParseError> for Error {
         Self::UrlParseError(err)
     }
 }
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self}")
+    }
+}
+
+impl std::error::Error for Error {}
