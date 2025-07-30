@@ -1,6 +1,8 @@
 use derive_builder::Builder;
 use std::fmt::Display;
 
+use crate::models::ContentLayout;
+
 /// Torrent List/info parameter object
 #[derive(Debug, Default, Builder)]
 pub struct TorrentListParams {
@@ -249,9 +251,9 @@ pub struct AddTorrent {
     /// Add torrents in the paused state. Possible values are `true`, `false` (default)
     #[builder(default)]
     pub paused: bool,
-    /// Create the root folder. Possible values are `"true"`, `"false"`, unset (default)
-    #[builder(setter(into, strip_option), default)]
-    pub root_folder: Option<String>,
+    /// The torrent subfolder layout.
+    #[builder(setter(into), default)]
+    pub content_layout: ContentLayout,
     /// Rename torrent
     #[builder(setter(into, strip_option), default)]
     pub rename: Option<String>,
