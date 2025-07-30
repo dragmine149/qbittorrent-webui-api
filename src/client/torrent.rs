@@ -11,7 +11,7 @@ use crate::{
 };
 
 impl super::Api {
-    /// Get torrent listf
+    /// Get torrent list
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-list)
     ///
