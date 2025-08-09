@@ -7,7 +7,7 @@ use serde::{
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 /// Torrent info response object
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, Default)]
 pub struct Torrent {
     /// Time (Unix Epoch) when the torrent was added to the client
     pub added_on: i64,
