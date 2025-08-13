@@ -6,6 +6,8 @@ use serde::{
 };
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
+use crate::parameters::TorrentState;
+
 /// Torrent info response object
 #[derive(Debug, Deserialize, Serialize, Clone, Default)]
 pub struct Torrent {
@@ -109,7 +111,7 @@ pub struct Torrent {
     /// Total size (bytes) of files selected for download
     pub size: i64,
     /// Torrent state. See table here below for the possible values
-    pub state: String,
+    pub state: TorrentState,
     /// True if super seeding is enabled
     pub super_seeding: bool,
     /// Comma-concatenated tag list of the torrent
@@ -214,7 +216,7 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
             seen_complete: i64,
             seq_dl: bool,
             size: i64,
-            state: String,
+            state: TorrentState,
             super_seeding: bool,
             tags: String,
             time_active: i64,

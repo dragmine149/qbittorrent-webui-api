@@ -77,49 +77,69 @@ impl Display for FilterTorrentState {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum TorrentState {
     /// Some error occurred, applies to paused torrents
+    #[serde(rename = "error")]
     Error,
     /// Torrent data files is missing
+    #[serde(rename = "missingFiles")]
     MissingFiles,
     /// Torrent is moving to another location
+    #[serde(rename = "moving")]
     Moving,
     /// Unknown status
+    #[serde(rename = "unknown")]
     Unknown,
     /// Torrent is allocating disk space for download
+    #[serde(rename = "allocating")]
     Allocating,
     /// Checking resume data on qBt startup
+    #[serde(rename = "checkingResumeData")]
     CheckingResumeData,
 
     /// Torrent is being seeded and data is being transferred
+    #[serde(rename = "uploading")]
     Uploading,
     /// Renamed from paused version in webUI API v2.11.0
     /// Torrent is stopped and has finished downloading
+    #[serde(rename = "stoppedUP")]
     StoppedUploading,
     /// Queuing is enabled and torrent is queued for upload
+    #[serde(rename = "queuedUP")]
     QueuedUploading,
     /// Torrent is being seeded, but no connection were made
+    #[serde(rename = "stalledUP")]
     StalledUploading,
     /// Torrent has finished downloading and is being checked
+    #[serde(rename = "checkingUP")]
     CheckingUploading,
     /// Torrent is forced to uploading and ignore queue limit
+    #[serde(rename = "forcedUP")]
     ForcedUploading,
 
     /// Torrent is being downloaded and data is being transferred
+    #[serde(rename = "downloading")]
     Downloading,
     /// Torrent has just started downloading and is fetching metadata
+    #[serde(rename = "metaDL")]
     MetadataDownloading,
     /// Torrent has just started downloading and is fetching metadata. Queue limit is being ignored
     /// Officiall undocumented
+    #[serde(rename = "forcedMetaDL")]
     ForcedMetadataDownloading,
     /// Renamed from paused version in webUI API v2.11.0
     /// Torrent is stopped and has NOT finished downloading
+    #[serde(rename = "stoppedDL")]
     StoppedDownloading,
     /// Queuing is enabled and torrent is queued for download
+    #[serde(rename = "queuedDL")]
     QueuedDownloading,
     /// Torrent is being downloaded, but no connection were made
+    #[serde(rename = "stalledDL")]
     StalledDownloading,
     /// Torrent has NOT finished downloading, and is being checked
+    #[serde(rename = "checkingDL")]
     CheckingDownloading,
     /// Torrent is forced to downloading to ignore queue limit
+    #[serde(rename = "forcedDL")]
     ForcedDownloading,
 }
 
