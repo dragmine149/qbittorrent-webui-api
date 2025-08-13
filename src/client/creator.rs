@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use bytes::Bytes;
+
 use crate::{
     Error,
     models::{TorrentCreator, TorrentCreatorTask, TorrentCreatorTaskStatus},
@@ -60,7 +62,7 @@ impl super::Api {
             .await?)
     }
 
-    pub async fn torrent_creator_status(&self) -> Result<Vec<TorrentCreatorTaskStatus>, Error> {
+    pub async fn task_list(&self) -> Result<Vec<TorrentCreatorTaskStatus>, Error> {
         Ok(self
             ._get("torrentcreator/status")
             .await?
@@ -69,6 +71,34 @@ impl super::Api {
             .error_for_status()?
             .json::<Vec<TorrentCreatorTaskStatus>>()
             .await?)
+    }
+
+    /// Get the `.torrent` file for a given task id. (Task must have finished)
+    pub async fn get_task_file(
+        &self,
+        task_id: impl Into<TorrentCreatorTask>,
+    ) -> Result<Bytes, Error> {
+        let mut data = HashMap::new();
+        data.insert("taskID", task_id.into().task_id.to_owned());
+
+        let data = self
+            ._post("torrentcreator/torrentFile")
+            .await?
+            .form(&data)
+            .send()
+            .await?
+            .error_for_status();
+
+        match data {
+            Ok(d) => Ok(d.bytes().await?),
+            Err(e) => {
+                if e.status().unwrap().as_u16() == 409 {
+                    Err(Error::CreateTorrentNotFonshed)
+                } else {
+                    Err(Error::ReqwestError(e))
+                }
+            }
+        }
     }
 
     pub async fn delete_task(&self, task_id: &TorrentCreatorTask) -> Result<(), Error> {

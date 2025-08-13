@@ -66,29 +66,27 @@ pub async fn add_debian_torrent(client: &Api) {
 }
 
 pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qbit::Error> {
-    if !fs::exists(".dummy").unwrap() {
-        fs::create_dir(".dummy").expect("Dir already exists");
+    // persionally did not want to have to do this, but `/tmp` can cause some issues so...
+    let folder = env::var("temp_dir").unwrap();
+
+    if !fs::exists(&folder).unwrap() {
+        fs::create_dir(&folder).expect("Dir already exists");
+    }
+    if !fs::exists(format!("{folder}_data")).unwrap() {
+        fs::create_dir(format!("{folder}_data")).expect("Dir already exists");
     }
 
-    let result = fs::write(
-        ".dummy/dummy.txt",
+    fs::write(
+        format!("{folder}/dummy.txt"),
         "This is a dummy file. You are a dummy for downloading this file.",
-    );
-    if result.is_err() {
-        panic!("Failed to write the temporary file we need to test this!");
-    }
+    )
+    .expect("Failed to write dummy file");
 
     let mut builder = TorrentCreatorBuilder::default();
 
-    builder.source_path(
-        std::path::absolute(".dummy")
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .to_string(),
-    );
-    builder.piece_size(TorrentPieceSize::m256());
+    builder.source_path(&folder);
     builder.start_seeding(true);
+    builder.torrent_file_path(format!("{folder}_data/dummy.torrent"));
     let torrent = builder.build().unwrap();
 
     client.create_torrent(&torrent).await

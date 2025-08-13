@@ -36,15 +36,16 @@ impl Display for TorrentFormat {
     Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Builder,
 )]
 pub struct TorrentCreator {
-    /// Source file (or directory) of current torrent. Must be a relative path
+    /// Source file (or directory) of current torrent. Must be a absolute path
     #[builder(setter(into))]
     pub source_path: String,
     #[builder(setter(into, strip_option), default)]
     pub format: Option<TorrentFormat>,
     /// How big a piece of the file is. (in Bytes). 0 = auto.
+    /// Note: If piece size is too big this can cause the torrent to fail to be added.
     #[builder(setter(into, strip_option), default)]
     pub piece_size: Option<TorrentPieceSize>,
-    #[builder(default)]
+    #[builder(default = Some(false))]
     pub optimize_alignment: Option<bool>,
     /// -1 = disable
     #[builder(setter(into, strip_option), default = Some(-1))]
@@ -73,6 +74,12 @@ pub struct TorrentCreatorTask {
     /// The task id related to the torrent just created
     #[serde(rename = "taskID")]
     pub task_id: String,
+}
+
+impl From<String> for TorrentCreatorTask {
+    fn from(value: String) -> Self {
+        Self { task_id: value }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
