@@ -39,6 +39,7 @@ pub struct TorrentCreator {
     /// Source file (or directory) of current torrent. Must be a absolute path
     #[builder(setter(into))]
     pub source_path: String,
+    /// Format of the torrent.
     #[builder(setter(into, strip_option), default)]
     pub format: Option<TorrentFormat>,
     /// How big a piece of the file is. (in Bytes). 0 = auto.

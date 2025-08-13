@@ -8,10 +8,8 @@ use crate::{
 };
 
 impl super::Api {
-    pub async fn create_torrent(
-        &self,
-        params: &TorrentCreator,
-    ) -> Result<TorrentCreatorTask, Error> {
+    /// Create a task to eventually make a new torrent.
+    pub async fn create_task(&self, params: &TorrentCreator) -> Result<TorrentCreatorTask, Error> {
         let mut form = HashMap::new();
         form.insert("sourcePath", params.source_path.clone());
 
@@ -62,7 +60,8 @@ impl super::Api {
             .await?)
     }
 
-    pub async fn task_list(&self) -> Result<Vec<TorrentCreatorTaskStatus>, Error> {
+    /// List all tasks that have been created before.
+    pub async fn list_tasks(&self) -> Result<Vec<TorrentCreatorTaskStatus>, Error> {
         Ok(self
             ._get("torrentcreator/status")
             .await?
@@ -101,6 +100,7 @@ impl super::Api {
         }
     }
 
+    /// Delete the task with the given id.
     pub async fn delete_task(&self, task_id: &TorrentCreatorTask) -> Result<(), Error> {
         let mut data = HashMap::new();
         data.insert("taskID", task_id.task_id.to_owned());

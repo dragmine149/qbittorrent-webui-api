@@ -19,7 +19,7 @@ async fn create_basic_torrent() {
 async fn create_list_tasks() {
     let client = login_default_client().await;
     let result = create_dummy_torrent(&client).await.unwrap();
-    let list = client.task_list().await.unwrap();
+    let list = client.list_tasks().await.unwrap();
     assert!(!list.is_empty());
     assert!(list.iter().any(|t| t.task_id == result.task_id));
 }
@@ -34,7 +34,7 @@ async fn get_torrent_file() {
     // This... might not be the best way to go around this, but it works (somehow).
     let mut task_id = String::new();
     while task_id.is_empty() {
-        let list = client.task_list().await.unwrap();
+        let list = client.list_tasks().await.unwrap();
         if let Some(stat) = list.iter().find(|v| v.status == TaskStatus::Finished) {
             task_id = stat.task_id.clone();
         }
@@ -52,13 +52,13 @@ async fn get_torrent_file() {
 async fn delete_created_task() {
     let client = login_default_client().await;
     let task_id = create_dummy_torrent(&client).await.unwrap();
-    let list = client.task_list().await.unwrap();
+    let list = client.list_tasks().await.unwrap();
     assert!(!list.is_empty());
     assert!(list.iter().any(|t| t.task_id == task_id.task_id));
     client
         .delete_task(&task_id)
         .await
         .expect("Failed to delete task");
-    let list = client.task_list().await.unwrap();
+    let list = client.list_tasks().await.unwrap();
     assert!(!list.iter().any(|t| t.task_id == task_id.task_id));
 }
