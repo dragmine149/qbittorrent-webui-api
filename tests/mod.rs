@@ -99,5 +99,5 @@ pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qb
     builder.torrent_file_path(format!("{folder}_data/dummy.torrent"));
     let torrent = builder.build().unwrap();
 
-    client.create_torrent(&torrent).await
+    client.create_task(&torrent).await
 }
