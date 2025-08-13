@@ -176,7 +176,7 @@ pub struct TorrentCreatorTaskStatus {
     pub error_message: Option<String>,
     /// The comment attached to the torrent
     pub comment: Option<String>,
-    pub optimize_alignment: bool,
+    pub optimize_alignment: Option<bool>,
     pub padded_file_size_limit: i64,
     pub piece_size: TorrentPieceSize,
     /// Is the torrent private
