@@ -11,11 +11,12 @@ async fn torrent_is_stopped() {
 
     // This is a required delay (and also a kinda sub test) for when this test runs before the other tests.
     let torrent_state = get_debian_torrent(&client).await.unwrap().state;
+    println!("{:?}", get_debian_torrent(&client).await.unwrap().state);
     if torrent_state.is_checking() || torrent_state == TorrentState::MetadataDownloading {
         std::thread::sleep(std::time::Duration::from_secs(5));
     }
 
-    // println!("{:?}", get_debian_torrent(&client).await.unwrap().state);
+    println!("{:?}", get_debian_torrent(&client).await.unwrap().state);
 
     assert!(
         get_debian_torrent(&client)
