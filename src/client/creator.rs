@@ -70,4 +70,18 @@ impl super::Api {
             .json::<Vec<TorrentCreatorTaskStatus>>()
             .await?)
     }
+
+    pub async fn delete_task(&self, task_id: &TorrentCreatorTask) -> Result<(), Error> {
+        let mut data = HashMap::new();
+        data.insert("taskID", task_id.task_id.to_owned());
+
+        self._post("torrentcreator/deleteTask")
+            .await?
+            .form(&data)
+            .send()
+            .await?
+            .error_for_status()?;
+
+        Ok(())
+    }
 }
