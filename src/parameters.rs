@@ -283,6 +283,10 @@ impl TorrentState {
             || *self == Self::CheckingDownloading
             || *self == Self::MetadataDownloading
     }
+    /// If an error has occurred within the torrent.
+    pub fn is_errored(&self) -> bool {
+        *self == Self::Error || *self == Self::MissingFiles
+    }
 }
 
 /// Torrent sort fields
