@@ -110,7 +110,7 @@ pub struct Torrent {
     pub seq_dl: bool,
     /// Total size (bytes) of files selected for download
     pub size: i64,
-    /// Torrent state. See table here below for the possible values
+    /// State that the torrent is currently in.
     pub state: TorrentState,
     /// True if super seeding is enabled
     pub super_seeding: bool,
