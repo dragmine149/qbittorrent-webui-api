@@ -1,11 +1,6 @@
-use std::{
-    fs,
-    path::{Path, PathBuf},
-};
-
-use qbit::models::{TorrentCreator, TorrentCreatorBuilder};
-
 use crate::login_default_client;
+use qbit::models::{TorrentCreatorBuilder, TorrentPieceSize};
+use std::{fs, path::PathBuf};
 
 /// This test ensures that the API correctly deserialize the torrents the response.
 #[tokio::test]
@@ -27,11 +22,12 @@ async fn create_basic_torrent() {
 
     let mut builder = TorrentCreatorBuilder::default();
     builder.source_path(PathBuf::from(".dummy"));
-    builder.format(qbit::models::TorrentFormat::Hybrid);
+    builder.piece_size(TorrentPieceSize::m256());
     let torrent = builder.build().unwrap();
 
     let result = client
         .create_torrent(&torrent)
         .await
         .expect("Failed to upload our own custom torrent: ");
+    println!("{:?}", result);
 }

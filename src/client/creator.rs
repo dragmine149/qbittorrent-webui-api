@@ -9,7 +9,7 @@ impl super::Api {
         creator: &TorrentCreator,
     ) -> Result<TorrentCreatorTask, Error> {
         Ok(self
-            ._get("torrentcreator/addTask")
+            ._post("torrentcreator/addTask")
             .await?
             .query(creator)
             .send()

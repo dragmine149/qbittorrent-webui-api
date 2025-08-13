@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
+/// The format of the torrent.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum TorrentFormat {
     V1,
@@ -22,28 +23,39 @@ impl Default for TorrentFormat {
 )]
 pub struct TorrentCreator {
     #[builder(setter(into))]
+    /// Source file (or directory) of current torrent.
     pub source_path: PathBuf,
     #[builder(setter(into), default)]
     pub format: TorrentFormat,
     /// How big a piece of the file is. (in Bytes). 0 = auto.
     #[builder(setter(into), default)]
     pub piece_size: TorrentPieceSize,
+    #[builder(default)]
     pub optimize_alignment: bool,
+    #[builder(default)]
     pub padded_file_size_limit: u64,
     #[builder(default)]
     pub private: bool,
     #[builder(default)]
+    /// To start seeding the torrent as soon as the file is created.
     pub start_seeding: bool,
-    pub torrent_file_path: String,
-    pub trackers: Vec<String>,
-    pub url_seeds: Vec<String>,
-    pub source: String,
+    #[builder(setter(into, strip_option), default)]
+    /// The filepath of the `.torrent` file to save to.
+    pub torrent_file_path: Option<PathBuf>,
+    #[builder(setter(into, strip_option), default)]
+    pub trackers: Option<Vec<String>>,
+    #[builder(setter(into, strip_option), default)]
+    pub url_seeds: Option<Vec<String>>,
+    #[builder(setter(into, strip_option), default)]
+    pub source: Option<String>,
     /// A comment to attach to the torrent.
+    #[builder(setter(into, strip_option), default)]
     pub comment: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TorrentCreatorTask {
+    /// The task id related to the torrent just created
     pub task_id: String,
 }
 
