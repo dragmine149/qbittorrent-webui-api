@@ -12,15 +12,26 @@ impl super::Api {
     ) -> Result<TorrentCreatorTask, Error> {
         let mut form = HashMap::new();
         form.insert("sourcePath", params.source_path.clone());
-        form.insert("format", format!("{}", params.format));
-        form.insert("pieceSize", params.piece_size.0.to_string());
-        form.insert("optimizeAlignment", params.optimize_alignment.to_string());
-        form.insert(
-            "paddedFileSizeLimit",
-            params.padded_file_size_limit.to_string(),
-        );
-        form.insert("private", params.private.to_string());
-        form.insert("start_seeding", params.start_seeding.to_string());
+
+        // apparently all of these are optional...
+        if let Some(format) = &params.format {
+            form.insert("format", format.to_string());
+        }
+        if let Some(piece) = &params.piece_size {
+            form.insert("pieceSize", piece.0.to_string());
+        }
+        if let Some(optimize) = &params.optimize_alignment {
+            form.insert("optimizeAlignment", optimize.to_string());
+        }
+        if let Some(padded_limit) = &params.padded_file_size_limit {
+            form.insert("paddedFileSizeLimit", padded_limit.to_string());
+        }
+        if let Some(private) = params.private {
+            form.insert("private", private.to_string());
+        }
+        if let Some(seeding) = params.start_seeding {
+            form.insert("start_seeding", seeding.to_string());
+        }
         if let Some(file_path) = &params.torrent_file_path {
             form.insert("torrentFilePath", file_path.clone());
         }

@@ -36,25 +36,26 @@ impl Display for TorrentFormat {
     Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Builder,
 )]
 pub struct TorrentCreator {
+    /// Source file (or directory) of current torrent. Must be a relative path
     #[builder(setter(into))]
-    /// Source file (or directory) of current torrent.
     pub source_path: String,
-    #[builder(setter(into), default)]
-    pub format: TorrentFormat,
-    /// How big a piece of the file is. (in Bytes). 0 = auto.
-    #[builder(setter(into), default)]
-    pub piece_size: TorrentPieceSize,
-    #[builder(default)]
-    pub optimize_alignment: bool,
-    #[builder(default)]
-    pub padded_file_size_limit: u64,
-    #[builder(default)]
-    pub private: bool,
-    #[builder(default)]
-    /// To start seeding the torrent as soon as the file is created.
-    pub start_seeding: bool,
     #[builder(setter(into, strip_option), default)]
-    /// The filepath of the `.torrent` file to save to.
+    pub format: Option<TorrentFormat>,
+    /// How big a piece of the file is. (in Bytes). 0 = auto.
+    #[builder(setter(into, strip_option), default)]
+    pub piece_size: Option<TorrentPieceSize>,
+    #[builder(default)]
+    pub optimize_alignment: Option<bool>,
+    /// -1 = disable
+    #[builder(setter(into, strip_option), default = Some(-1))]
+    pub padded_file_size_limit: Option<i64>,
+    #[builder(setter(into, strip_option), default)]
+    pub private: Option<bool>,
+    /// To start seeding the torrent as soon as the file is created.
+    #[builder(setter(into, strip_option), default)]
+    pub start_seeding: Option<bool>,
+    #[builder(setter(into, strip_option), default)]
+    /// The path to save the generated `.torrent` file to.
     pub torrent_file_path: Option<String>,
     #[builder(setter(into, strip_option), default)]
     pub trackers: Option<Vec<String>>,
@@ -168,7 +169,7 @@ pub struct TorrentCreatorTaskStatus {
     /// The comment attached to the torrent
     pub comment: Option<String>,
     pub optimize_alignment: bool,
-    pub padded_file_size_limit: u64,
+    pub padded_file_size_limit: i64,
     pub piece_size: TorrentPieceSize,
     /// Is the torrent private
     pub private: bool,
@@ -182,9 +183,9 @@ pub struct TorrentCreatorTaskStatus {
     /// The time this task got added
     pub time_added: String,
     /// The time this task finished
-    pub time_finished: String,
+    pub time_finished: Option<String>,
     /// The time this task started being processed
-    pub time_started: String,
+    pub time_started: Option<String>,
     pub source: Option<String>,
     pub trackers: Vec<String>,
     pub url_seeds: Vec<String>,

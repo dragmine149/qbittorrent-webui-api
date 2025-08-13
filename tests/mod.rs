@@ -4,7 +4,7 @@ use qbit::{
     models::{TorrentCreatorBuilder, TorrentCreatorTask, TorrentPieceSize},
     parameters::AddTorrentBuilder,
 };
-use std::{env, fs};
+use std::{env, fs, path::Path};
 
 pub mod authentication;
 pub mod sync;
@@ -79,7 +79,14 @@ pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qb
     }
 
     let mut builder = TorrentCreatorBuilder::default();
-    builder.source_path(".dummy");
+
+    builder.source_path(
+        std::path::absolute(".dummy")
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string(),
+    );
     builder.piece_size(TorrentPieceSize::m256());
     builder.start_seeding(true);
     let torrent = builder.build().unwrap();
