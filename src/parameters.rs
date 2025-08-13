@@ -1,5 +1,6 @@
 use derive_builder::Builder;
-use std::fmt::Display;
+use serde::{Deserialize, Serialize};
+use std::fmt::{Debug, Display};
 
 use crate::models::ContentLayout;
 
@@ -73,31 +74,68 @@ impl Display for FilterTorrentState {
 }
 
 /// Possible states that any given torrent can be in at a time.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum TorrentState {
+    /// Some error occurred, applies to paused torrents
     Error,
+    /// Torrent data files is missing
     MissingFiles,
+    /// Torrent is moving to another location
     Moving,
+    /// Unknown status
     Unknown,
+    /// Torrent is allocating disk space for download
+    Allocating,
+    /// Checking resume data on qBt startup
+    CheckingResumeData,
 
+    /// Torrent is being seeded and data is being transferred
     Uploading,
     /// Renamed from paused version in webUI API v2.11.0
+    /// Torrent is stopped and has finished downloading
     StoppedUploading,
+    /// Queuing is enabled and torrent is queued for upload
     QueuedUploading,
+    /// Torrent is being seeded, but no connection were made
     StalledUploading,
+    /// Torrent has finished downloading and is being checked
     CheckingUploading,
+    /// Torrent is forced to uploading and ignore queue limit
     ForcedUploading,
-    Allocating,
 
+    /// Torrent is being downloaded and data is being transferred
     Downloading,
-    /// Renamed from paused version in webUI API v2.11.0
-    StoppedDownloading,
+    /// Torrent has just started downloading and is fetching metadata
     MetadataDownloading,
+    /// Torrent has just started downloading and is fetching metadata. Queue limit is being ignored
+    /// Officiall undocumented
+    ForcedMetadataDownloading,
+    /// Renamed from paused version in webUI API v2.11.0
+    /// Torrent is stopped and has NOT finished downloading
+    StoppedDownloading,
+    /// Queuing is enabled and torrent is queued for download
     QueuedDownloading,
+    /// Torrent is being downloaded, but no connection were made
     StalledDownloading,
+    /// Torrent has NOT finished downloading, and is being checked
     CheckingDownloading,
+    /// Torrent is forced to downloading to ignore queue limit
     ForcedDownloading,
-    CheckingResumeData,
+}
+
+// impl Serialize for TorrentState {
+//     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+//     where
+//         S: serde::Serializer,
+//     {
+//         serializer.collect_str(value)
+//     }
+// }
+
+impl Default for TorrentState {
+    fn default() -> Self {
+        Self::Unknown
+    }
 }
 
 impl From<&str> for TorrentState {
@@ -119,11 +157,73 @@ impl From<&str> for TorrentState {
             "stalledDL" => Self::StalledDownloading,
             "checkingDL" => Self::CheckingDownloading,
             "forcedDL" => Self::ForcedDownloading,
+            "forcedMetaDL" => Self::ForcedMetadataDownloading,
             "checkingResumeData" => Self::CheckingResumeData,
             "moving" => Self::Moving,
             "unknown" => Self::Unknown,
             _ => Self::Unknown,
         }
+    }
+}
+impl From<String> for TorrentState {
+    fn from(value: String) -> Self {
+        Self::from(value.as_str())
+    }
+}
+
+impl Debug for TorrentState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            if f.alternate() {
+                match self {
+                    TorrentState::Error => "Error",
+                    TorrentState::MissingFiles => "Missing Files",
+                    TorrentState::Moving => "Moving",
+                    TorrentState::Unknown => "Unknown",
+                    TorrentState::Allocating => "Allocating",
+                    TorrentState::CheckingResumeData => "Checking Resume Data",
+                    TorrentState::Uploading => "Uploading",
+                    TorrentState::StoppedUploading => "Stopped Uploading",
+                    TorrentState::QueuedUploading => "Queued Uploading",
+                    TorrentState::StalledUploading => "Stalled Uploading",
+                    TorrentState::CheckingUploading => "Checking Uploading",
+                    TorrentState::ForcedUploading => "Forced Uploading",
+                    TorrentState::Downloading => "Downloading",
+                    TorrentState::MetadataDownloading => "Metadata Downloading",
+                    TorrentState::ForcedMetadataDownloading => "Forced Metadata Downloading",
+                    TorrentState::StoppedDownloading => "Stopped Downloading",
+                    TorrentState::QueuedDownloading => "Queued Downloading",
+                    TorrentState::StalledDownloading => "Stalled Downloading",
+                    TorrentState::CheckingDownloading => "Checking Downloading",
+                    TorrentState::ForcedDownloading => "Forced Downloading",
+                }
+            } else {
+                match self {
+                    TorrentState::Error => "error",
+                    TorrentState::MissingFiles => "missingFiles",
+                    TorrentState::Moving => "moving",
+                    TorrentState::Unknown => "unknown",
+                    TorrentState::Uploading => "uploading",
+                    TorrentState::StoppedUploading => "stoppedUP",
+                    TorrentState::QueuedUploading => "queuedUP",
+                    TorrentState::StalledUploading => "stalledUP",
+                    TorrentState::CheckingUploading => "checkingUP",
+                    TorrentState::ForcedUploading => "forcedUP",
+                    TorrentState::Allocating => "allocating",
+                    TorrentState::Downloading => "downloading",
+                    TorrentState::StoppedDownloading => "stoppedDL",
+                    TorrentState::MetadataDownloading => "metaDL",
+                    TorrentState::QueuedDownloading => "queuedDL",
+                    TorrentState::StalledDownloading => "stalledDL",
+                    TorrentState::CheckingDownloading => "checkingDL",
+                    TorrentState::ForcedDownloading => "forcedDL",
+                    TorrentState::ForcedMetadataDownloading => "forcedMetaDL",
+                    TorrentState::CheckingResumeData => "checkingResumeData",
+                }
+            }
+        )
     }
 }
 
@@ -138,10 +238,32 @@ impl TorrentState {
         *self == Self::QueuedUploading || *self == Self::QueuedDownloading
     }
     pub fn is_checking(&self) -> bool {
-        *self == Self::CheckingUploading || *self == Self::CheckingDownloading
+        *self == Self::CheckingUploading
+            || *self == Self::CheckingDownloading
+            || *self == Self::CheckingResumeData
     }
     pub fn is_forced(&self) -> bool {
-        *self == Self::ForcedUploading || *self == Self::ForcedDownloading
+        *self == Self::ForcedUploading
+            || *self == Self::ForcedDownloading
+            || *self == Self::ForcedMetadataDownloading
+    }
+    pub fn is_uploading(&self) -> bool {
+        *self == Self::Uploading
+            || *self == Self::ForcedUploading
+            || *self == Self::QueuedUploading
+            || *self == Self::StalledUploading
+            || *self == Self::StoppedUploading
+            || *self == Self::CheckingUploading
+    }
+    pub fn is_downloading(&self) -> bool {
+        *self == Self::Downloading
+            || *self == Self::ForcedDownloading
+            || *self == Self::ForcedMetadataDownloading
+            || *self == Self::QueuedDownloading
+            || *self == Self::StalledDownloading
+            || *self == Self::StoppedDownloading
+            || *self == Self::CheckingDownloading
+            || *self == Self::MetadataDownloading
     }
 }
 
