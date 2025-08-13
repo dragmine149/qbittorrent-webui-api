@@ -25,10 +25,10 @@ pub struct TorrentCreator {
     #[builder(setter(into), default)]
     pub format: TorrentFormat,
     /// How big a piece of the file is. (in Bytes). 0 = auto.
-    #[builder(default)]
-    pub piece_size: u64,
+    #[builder(setter(into), default)]
+    pub piece_size: TorrentPieceSize,
     pub optimize_alignment: bool,
-    pub padded_file_size_limit: TorrentPieceSize,
+    pub padded_file_size_limit: u64,
     pub private: bool,
     pub start_seeding: bool,
     pub torrent_file_path: String,
