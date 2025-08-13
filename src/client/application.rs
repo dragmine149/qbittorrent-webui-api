@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use reqwest::multipart;
 
 use crate::{
@@ -172,5 +174,21 @@ impl super::Api {
             .error_for_status()?;
 
         Ok(())
+    }
+
+    /// List the contents of the directory. (Yes this is an endpoint)
+    pub async fn get_directory_contents(&self, dir: &str) -> Result<Vec<String>, Error> {
+        let mut form = HashMap::new();
+        form.insert("dirPath", dir);
+
+        Ok(self
+            ._post("app/getDirectoryContent")
+            .await?
+            .form(&form)
+            .send()
+            .await?
+            .error_for_status()?
+            .json::<Vec<String>>()
+            .await?)
     }
 }

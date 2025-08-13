@@ -6,6 +6,7 @@ use qbit::{
 };
 use std::{env, fs, path::Path};
 
+pub mod application;
 pub mod authentication;
 pub mod sync;
 pub mod torrents;
@@ -30,10 +31,12 @@ pub fn get_server_details() -> String {
 }
 
 pub fn get_server_username() -> String {
+    dotenv().ok();
     env::var("username").unwrap_or("admin".to_string())
 }
 
 pub fn get_server_password() -> String {
+    dotenv().ok();
     env::var("password").unwrap_or("adminadmin".to_string())
 }
 
@@ -65,7 +68,8 @@ pub async fn add_debian_torrent(client: &Api) {
         .expect("Failed to stop torrent");
 }
 
-pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qbit::Error> {
+pub fn create_test_data() -> String {
+    dotenv().ok();
     // persionally did not want to have to do this, but `/tmp` can cause some issues so...
     let folder = env::var("temp_dir").unwrap();
 
@@ -81,6 +85,12 @@ pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qb
         "This is a dummy file. You are a dummy for downloading this file.",
     )
     .expect("Failed to write dummy file");
+
+    folder
+}
+
+pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qbit::Error> {
+    let folder = create_test_data();
 
     let mut builder = TorrentCreatorBuilder::default();
 
