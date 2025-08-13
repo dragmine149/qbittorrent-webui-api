@@ -143,15 +143,6 @@ pub enum TorrentState {
     ForcedDownloading,
 }
 
-// impl Serialize for TorrentState {
-//     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-//     where
-//         S: serde::Serializer,
-//     {
-//         serializer.collect_str(value)
-//     }
-// }
-
 impl Default for TorrentState {
     fn default() -> Self {
         Self::Unknown
