@@ -16,6 +16,7 @@ impl Default for TorrentFormat {
     }
 }
 
+/// Everything required to create a new torrent.
 #[derive(
     Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Builder,
 )]
@@ -29,13 +30,16 @@ pub struct TorrentCreator {
     pub piece_size: TorrentPieceSize,
     pub optimize_alignment: bool,
     pub padded_file_size_limit: u64,
+    #[builder(default)]
     pub private: bool,
+    #[builder(default)]
     pub start_seeding: bool,
     pub torrent_file_path: String,
     pub trackers: Vec<String>,
     pub url_seeds: Vec<String>,
     pub source: String,
-    pub comment: String,
+    /// A comment to attach to the torrent.
+    pub comment: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
