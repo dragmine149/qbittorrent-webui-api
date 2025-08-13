@@ -1,4 +1,6 @@
-use crate::{DEBIAN_HASH, add_debian_torrent, login_default_client};
+use qbit::parameters::TorrentState;
+
+use crate::{add_debian_torrent, get_debian_torrent, login_default_client};
 
 /// As the torrent is automatically stopped (in theory). We should confirm it's stopped.
 #[tokio::test]
@@ -7,16 +9,17 @@ async fn torrent_is_stopped() {
     let client = login_default_client().await;
     add_debian_torrent(&client).await;
 
-    let torrents = client
-        .torrents(None)
-        .await
-        .expect("Failed to fetch main data:");
+    // This is a required delay (and also a kinda sub test) for when this test runs before the other tests.
+    let torrent_state = get_debian_torrent(&client).await.unwrap().state;
+    if torrent_state.is_checking() || torrent_state == TorrentState::MetadataDownloading {
+        std::thread::sleep(std::time::Duration::from_secs(5));
+    }
+
+    // println!("{:?}", get_debian_torrent(&client).await.unwrap().state);
 
     assert!(
-        torrents
-            .iter()
-            .filter(|t| t.hash == DEBIAN_HASH)
-            .next()
+        get_debian_torrent(&client)
+            .await
             .unwrap()
             .state
             .is_stopped()
