@@ -1,10 +1,10 @@
-use std::path::PathBuf;
+use std::fmt::{Debug, Display};
 
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
 /// The format of the torrent.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Debug)]
 pub enum TorrentFormat {
     V1,
     V2,
@@ -17,6 +17,20 @@ impl Default for TorrentFormat {
     }
 }
 
+impl Display for TorrentFormat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                TorrentFormat::V1 => "v1",
+                TorrentFormat::V2 => "v2",
+                TorrentFormat::Hybrid => "hybrid",
+            }
+        )
+    }
+}
+
 /// Everything required to create a new torrent.
 #[derive(
     Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Builder,
@@ -24,7 +38,7 @@ impl Default for TorrentFormat {
 pub struct TorrentCreator {
     #[builder(setter(into))]
     /// Source file (or directory) of current torrent.
-    pub source_path: PathBuf,
+    pub source_path: String,
     #[builder(setter(into), default)]
     pub format: TorrentFormat,
     /// How big a piece of the file is. (in Bytes). 0 = auto.
@@ -41,7 +55,7 @@ pub struct TorrentCreator {
     pub start_seeding: bool,
     #[builder(setter(into, strip_option), default)]
     /// The filepath of the `.torrent` file to save to.
-    pub torrent_file_path: Option<PathBuf>,
+    pub torrent_file_path: Option<String>,
     #[builder(setter(into, strip_option), default)]
     pub trackers: Option<Vec<String>>,
     #[builder(setter(into, strip_option), default)]
@@ -56,11 +70,12 @@ pub struct TorrentCreator {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TorrentCreatorTask {
     /// The task id related to the torrent just created
+    #[serde(rename = "taskID")]
     pub task_id: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct TorrentPieceSize(u64);
+pub struct TorrentPieceSize(pub u64);
 
 impl Default for TorrentPieceSize {
     fn default() -> Self {
