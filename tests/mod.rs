@@ -1,10 +1,10 @@
 use dotenv::dotenv;
 use qbit::{
     Api,
-    models::{TorrentCreatorBuilder, TorrentCreatorTask, TorrentPieceSize},
+    models::{TorrentCreatorBuilder, TorrentCreatorTask},
     parameters::AddTorrentBuilder,
 };
-use std::{env, fs, path::Path};
+use std::{env, fs};
 
 pub mod application;
 pub mod authentication;

@@ -20,7 +20,7 @@ async fn create_list_tasks() {
     let client = login_default_client().await;
     let result = create_dummy_torrent(&client).await.unwrap();
     let list = client.task_list().await.unwrap();
-    assert!(list.len() >= 1);
+    assert!(!list.is_empty());
     assert!(list.iter().any(|t| t.task_id == result.task_id));
 }
 
@@ -35,11 +35,7 @@ async fn get_torrent_file() {
     let mut task_id = String::new();
     while task_id.is_empty() {
         let list = client.task_list().await.unwrap();
-        if let Some(stat) = list
-            .iter()
-            .filter(|v| v.status == TaskStatus::Finished)
-            .next()
-        {
+        if let Some(stat) = list.iter().find(|v| v.status == TaskStatus::Finished) {
             task_id = stat.task_id.clone();
         }
     }
@@ -57,7 +53,7 @@ async fn delete_created_task() {
     let client = login_default_client().await;
     let task_id = create_dummy_torrent(&client).await.unwrap();
     let list = client.task_list().await.unwrap();
-    assert!(list.len() >= 1);
+    assert!(!list.is_empty());
     assert!(list.iter().any(|t| t.task_id == task_id.task_id));
     client
         .delete_task(&task_id)
