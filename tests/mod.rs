@@ -1,6 +1,10 @@
 use dotenv::dotenv;
-use qbit::{Api, parameters::AddTorrentBuilder};
-use std::env;
+use qbit::{
+    Api,
+    models::{TorrentCreatorBuilder, TorrentCreatorTask, TorrentPieceSize},
+    parameters::AddTorrentBuilder,
+};
+use std::{env, fs};
 
 pub mod authentication;
 pub mod sync;
@@ -59,4 +63,26 @@ pub async fn add_debian_torrent(client: &Api) {
         .stop(vec![DEBIAN_HASH])
         .await
         .expect("Failed to stop torrent");
+}
+
+pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qbit::Error> {
+    if !fs::exists(".dummy").unwrap() {
+        fs::create_dir(".dummy").expect("Dir already exists");
+    }
+
+    let result = fs::write(
+        ".dummy/dummy.txt",
+        "This is a dummy file. You are a dummy for downloading this file.",
+    );
+    if result.is_err() {
+        panic!("Failed to write the temporary file we need to test this!");
+    }
+
+    let mut builder = TorrentCreatorBuilder::default();
+    builder.source_path(".dummy");
+    builder.piece_size(TorrentPieceSize::m256());
+    builder.start_seeding(true);
+    let torrent = builder.build().unwrap();
+
+    client.create_torrent(&torrent).await
 }

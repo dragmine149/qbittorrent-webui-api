@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     Error,
-    models::{TorrentCreator, TorrentCreatorTask},
+    models::{TorrentCreator, TorrentCreatorTask, TorrentCreatorTaskStatus},
 };
 
 impl super::Api {
@@ -46,6 +46,17 @@ impl super::Api {
             .await?
             .error_for_status()?
             .json::<TorrentCreatorTask>()
+            .await?)
+    }
+
+    pub async fn torrent_creator_status(&self) -> Result<Vec<TorrentCreatorTaskStatus>, Error> {
+        Ok(self
+            ._get("torrentcreator/status")
+            .await?
+            .send()
+            .await?
+            .error_for_status()?
+            .json::<Vec<TorrentCreatorTaskStatus>>()
             .await?)
     }
 }

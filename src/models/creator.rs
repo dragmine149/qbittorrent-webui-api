@@ -149,3 +149,43 @@ impl TorrentPieceSize {
         Self(268435456)
     }
 }
+
+/// The current status of the task
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum TaskStatus {
+    Failed,
+    Queued,
+    Running,
+    Finished,
+}
+
+/// Information about a created torrent
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TorrentCreatorTaskStatus {
+    /// An error message as to why the torrent failed to be created
+    pub error_message: Option<String>,
+    /// The comment attached to the torrent
+    pub comment: Option<String>,
+    pub optimize_alignment: bool,
+    pub padded_file_size_limit: u64,
+    pub piece_size: TorrentPieceSize,
+    /// Is the torrent private
+    pub private: bool,
+    /// The path to the file / folder the torrent is uploading
+    pub source_path: String,
+    /// The current status of the task
+    pub status: TaskStatus,
+    /// The task id of the torrent
+    #[serde(rename = "taskID")]
+    pub task_id: String,
+    /// The time this task got added
+    pub time_added: String,
+    /// The time this task finished
+    pub time_finished: String,
+    /// The time this task started being processed
+    pub time_started: String,
+    pub source: Option<String>,
+    pub trackers: Vec<String>,
+    pub url_seeds: Vec<String>,
+}
