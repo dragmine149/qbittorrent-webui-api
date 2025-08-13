@@ -8,7 +8,7 @@ use crate::models::ContentLayout;
 pub struct TorrentListParams {
     /// Filter torrent list by state. Allowed state filters: TorrentState
     #[builder(setter(strip_option), default)]
-    pub filter: Option<TorrentState>,
+    pub filter: Option<FilterTorrentState>,
     /// Get torrents with the given category (empty string means "without category"; no "category" parameter means "any category"). Remember to URL-encode the category name. For example, `My category` becomes `My%20category`
     #[builder(setter(into, strip_option), default)]
     pub category: Option<String>,
@@ -32,9 +32,9 @@ pub struct TorrentListParams {
     pub hashes: Option<Vec<String>>,
 }
 
-/// Possible Torrent states
+/// Possible Torrent states that can be filtered.
 #[derive(Debug, Clone)]
-pub enum TorrentState {
+pub enum FilterTorrentState {
     All,
     Downloading,
     Seeding,
@@ -49,7 +49,7 @@ pub enum TorrentState {
     Errored,
 }
 
-impl Display for TorrentState {
+impl Display for FilterTorrentState {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
@@ -69,6 +69,79 @@ impl Display for TorrentState {
                 Self::Errored => String::from("errored"),
             }
         )
+    }
+}
+
+/// Possible states that any given torrent can be in at a time.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub enum TorrentState {
+    Error,
+    MissingFiles,
+    Moving,
+    Unknown,
+
+    Uploading,
+    /// Renamed from paused version in webUI API v2.11.0
+    StoppedUploading,
+    QueuedUploading,
+    StalledUploading,
+    CheckingUploading,
+    ForcedUploading,
+    Allocating,
+
+    Downloading,
+    /// Renamed from paused version in webUI API v2.11.0
+    StoppedDownloading,
+    MetadataDownloading,
+    QueuedDownloading,
+    StalledDownloading,
+    CheckingDownloading,
+    ForcedDownloading,
+    CheckingResumeData,
+}
+
+impl From<&str> for TorrentState {
+    fn from(value: &str) -> Self {
+        match value {
+            "error" => Self::Error,
+            "missingFiles" => Self::MissingFiles,
+            "uploading" => Self::Uploading,
+            "stoppedUP" => Self::StoppedUploading,
+            "queuedUP" => Self::QueuedUploading,
+            "stalledUP" => Self::StalledUploading,
+            "checkingUP" => Self::CheckingUploading,
+            "forcedUP" => Self::ForcedUploading,
+            "allocating" => Self::Allocating,
+            "downloading" => Self::Downloading,
+            "stoppedDL" => Self::StoppedDownloading,
+            "metaDL" => Self::MetadataDownloading,
+            "queuedDL" => Self::QueuedDownloading,
+            "stalledDL" => Self::StalledDownloading,
+            "checkingDL" => Self::CheckingDownloading,
+            "forcedDL" => Self::ForcedDownloading,
+            "checkingResumeData" => Self::CheckingResumeData,
+            "moving" => Self::Moving,
+            "unknown" => Self::Unknown,
+            _ => Self::Unknown,
+        }
+    }
+}
+
+impl TorrentState {
+    pub fn is_stopped(&self) -> bool {
+        *self == Self::StoppedUploading || *self == Self::StoppedDownloading
+    }
+    pub fn is_stalled(&self) -> bool {
+        *self == Self::StalledUploading || *self == Self::StalledDownloading
+    }
+    pub fn is_queued(&self) -> bool {
+        *self == Self::QueuedUploading || *self == Self::QueuedDownloading
+    }
+    pub fn is_checking(&self) -> bool {
+        *self == Self::CheckingUploading || *self == Self::CheckingDownloading
+    }
+    pub fn is_forced(&self) -> bool {
+        *self == Self::ForcedUploading || *self == Self::ForcedDownloading
     }
 }
 
