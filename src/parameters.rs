@@ -248,25 +248,31 @@ impl Debug for TorrentState {
 }
 
 impl TorrentState {
+    /// Returns true if the torrent has been paused.
     pub fn is_stopped(&self) -> bool {
         *self == Self::StoppedUploading || *self == Self::StoppedDownloading
     }
+    /// Returns true if the torrent is waiting for peers to either download / upload
     pub fn is_stalled(&self) -> bool {
         *self == Self::StalledUploading || *self == Self::StalledDownloading
     }
+    /// Returns true if the torrent is in the queue (queue must be enabled)
     pub fn is_queued(&self) -> bool {
         *self == Self::QueuedUploading || *self == Self::QueuedDownloading
     }
+    /// Returns true if the torrent is currently being checked
     pub fn is_checking(&self) -> bool {
         *self == Self::CheckingUploading
             || *self == Self::CheckingDownloading
             || *self == Self::CheckingResumeData
     }
+    /// Returns true if the torrent was forced to do something (bypassing the queue)
     pub fn is_forced(&self) -> bool {
         *self == Self::ForcedUploading
             || *self == Self::ForcedDownloading
             || *self == Self::ForcedMetadataDownloading
     }
+    /// Returns true if the torrent is in any of the "Uploading" states
     pub fn is_uploading(&self) -> bool {
         *self == Self::Uploading
             || *self == Self::ForcedUploading
@@ -275,6 +281,7 @@ impl TorrentState {
             || *self == Self::StoppedUploading
             || *self == Self::CheckingUploading
     }
+    /// Returns true if the torrent is in any of the "Downloading" states
     pub fn is_downloading(&self) -> bool {
         *self == Self::Downloading
             || *self == Self::ForcedDownloading
