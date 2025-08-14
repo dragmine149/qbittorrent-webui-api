@@ -5,9 +5,8 @@ use std::{env, fs};
 /// This test makes sure that the endpoint can create a dummy task.
 #[tokio::test]
 #[ignore = "Test hits api endpoint"]
-async fn create_basic_torrent() {
+async fn create_task() {
     let client = login_default_client().await;
-
     let result = create_dummy_torrent(&client).await;
 
     assert!(result.is_ok());
@@ -16,7 +15,7 @@ async fn create_basic_torrent() {
 /// This test makes sure that the list shows the dummy task we've just created.
 #[tokio::test]
 #[ignore = "Test hits api endpoint"]
-async fn create_list_tasks() {
+async fn list_tasks() {
     let client = login_default_client().await;
     let result = create_dummy_torrent(&client).await.unwrap();
     let list = client.list_tasks().await.unwrap();

@@ -4,12 +4,17 @@ use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
 /// The format of the torrent.
+///
+/// See https://www.reddit.com/r/qBittorrent/comments/uiwchy/torrent_format_hybrid_v1_and_v2/ for more information
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Debug)]
 pub enum TorrentFormat {
+    /// Old version, uses SHA-1 for hashing.
     #[serde(rename = "v1")]
     V1,
+    /// New version, uses SHA-256 for hashing
     #[serde(rename = "v2")]
     V2,
+    /// Attempts to work with both v1 and v2 torrents.
     #[serde(rename = "hybrid")]
     Hybrid,
 }
@@ -54,16 +59,19 @@ pub struct TorrentCreator {
     /// -1 = disable
     #[builder(setter(into, strip_option), default = Some(-1))]
     pub padded_file_size_limit: Option<i64>,
+    /// Is the torrent private or not? (Won't distrubte on DHT network if private.)
     #[builder(setter(into, strip_option), default)]
     pub private: Option<bool>,
     /// To start seeding the torrent as soon as the file is created.
     #[builder(setter(into, strip_option), default)]
     pub start_seeding: Option<bool>,
-    #[builder(setter(into, strip_option), default)]
     /// The path to save the generated `.torrent` file to.
+    #[builder(setter(into, strip_option), default)]
     pub torrent_file_path: Option<String>,
+    /// List of trackers
     #[builder(setter(into, strip_option), default)]
     pub trackers: Option<Vec<String>>,
+    /// List of url seeds
     #[builder(setter(into, strip_option), default)]
     pub url_seeds: Option<Vec<String>>,
     #[builder(setter(into, strip_option), default)]
@@ -86,12 +94,21 @@ impl From<String> for TorrentCreatorTask {
     }
 }
 
+/// How big the chunks of pieces can be.
+///
+/// Custom values are allowed, however pre-made values have also been included.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct TorrentPieceSize(pub u64);
 
 impl Default for TorrentPieceSize {
     fn default() -> Self {
         Self::auto()
+    }
+}
+
+impl From<u64> for TorrentPieceSize {
+    fn from(value: u64) -> Self {
+        Self(value)
     }
 }
 
@@ -177,6 +194,7 @@ pub enum TaskStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TorrentCreatorTaskStatus {
+    /// The format of the torrent.
     pub format: Option<TorrentFormat>,
     /// An error message as to why the torrent failed to be created
     pub error_message: Option<String>,
@@ -184,6 +202,7 @@ pub struct TorrentCreatorTaskStatus {
     pub comment: Option<String>,
     pub optimize_alignment: Option<bool>,
     pub padded_file_size_limit: Option<i64>,
+    /// How big the pieces of the torrent is.
     pub piece_size: TorrentPieceSize,
     /// Is the torrent private
     pub private: bool,
@@ -201,6 +220,8 @@ pub struct TorrentCreatorTaskStatus {
     /// The time this task started being processed
     pub time_started: Option<String>,
     pub source: Option<String>,
+    /// List of trackers
     pub trackers: Vec<String>,
+    /// List of URL seeds
     pub url_seeds: Vec<String>,
 }

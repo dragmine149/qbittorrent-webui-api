@@ -92,12 +92,14 @@ pub fn create_test_data() -> String {
 pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qbit::Error> {
     let folder = create_test_data();
 
-    let mut builder = TorrentCreatorBuilder::default();
-
-    builder.source_path(&folder);
-    builder.start_seeding(true);
-    builder.torrent_file_path(format!("{folder}_data/dummy.torrent"));
-    let torrent = builder.build().unwrap();
+    let torrent = TorrentCreatorBuilder::default()
+        .source_path(&folder)
+        .start_seeding(true)
+        .piece_size(10)
+        .private(true)
+        .torrent_file_path(format!("{folder}_data/dummy.torrent"))
+        .build()
+        .expect("Failed to build torrent creator");
 
     client.create_task(&torrent).await
 }
