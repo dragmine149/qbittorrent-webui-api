@@ -4,7 +4,7 @@ use reqwest::multipart;
 
 use crate::{
     error::Error,
-    models::{BuildInfo, Cookie, Preferences},
+    models::{BuildInfo, Cookie, DirMode, Preferences},
 };
 
 impl super::Api {
@@ -177,9 +177,14 @@ impl super::Api {
     }
 
     /// List the contents of the directory. (Yes this is an endpoint)
-    pub async fn get_directory_contents(&self, dir: &str) -> Result<Vec<String>, Error> {
+    pub async fn get_directory_contents(
+        &self,
+        dir: &str,
+        mode: &DirMode,
+    ) -> Result<Vec<String>, Error> {
         let mut form = HashMap::new();
-        form.insert("dirPath", dir);
+        form.insert("dirPath", dir.to_string());
+        form.insert("mode", mode.to_string());
 
         Ok(self
             ._post("app/getDirectoryContent")
