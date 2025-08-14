@@ -30,7 +30,7 @@ impl super::Api {
             form.insert("private", private.to_string());
         }
         if let Some(seeding) = params.start_seeding {
-            form.insert("start_seeding", seeding.to_string());
+            form.insert("startSeeding", seeding.to_string());
         }
         if let Some(file_path) = &params.torrent_file_path {
             form.insert("torrentFilePath", file_path.clone());

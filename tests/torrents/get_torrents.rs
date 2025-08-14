@@ -4,7 +4,7 @@ use crate::{DEBIAN_HASH, add_debian_torrent, login_default_client};
 #[tokio::test]
 #[ignore = "Test hits api endpoint"]
 async fn correctly_deserialize_torrents_from_response() {
-    let client = login_default_client().await;
+    let client = login_default_client(false).await;
     add_debian_torrent(&client).await;
 
     let torrents = client
