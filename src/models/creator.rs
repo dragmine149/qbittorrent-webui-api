@@ -6,8 +6,11 @@ use serde::{Deserialize, Serialize};
 /// The format of the torrent.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Debug)]
 pub enum TorrentFormat {
+    #[serde(rename = "v1")]
     V1,
+    #[serde(rename = "v2")]
     V2,
+    #[serde(rename = "hybrid")]
     Hybrid,
 }
 
@@ -169,6 +172,8 @@ pub enum TaskStatus {
 }
 
 /// Information about a created torrent
+///
+/// Depending on the TaskStatus depends on which fields may or may not be included.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TorrentCreatorTaskStatus {
