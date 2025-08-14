@@ -1,7 +1,7 @@
 use crate::{create_dummy_torrent, login_default_client};
 use qbit::{
     models::TaskStatus,
-    parameters::{AddTorrent, AddTorrentBuilder, AddTorrentType, TorrentFile},
+    parameters::{AddTorrentBuilder, AddTorrentType, TorrentFile},
 };
 use std::{env, fs};
 
