@@ -172,12 +172,13 @@ pub enum TaskStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TorrentCreatorTaskStatus {
+    pub format: Option<TorrentFormat>,
     /// An error message as to why the torrent failed to be created
     pub error_message: Option<String>,
     /// The comment attached to the torrent
     pub comment: Option<String>,
     pub optimize_alignment: Option<bool>,
-    pub padded_file_size_limit: i64,
+    pub padded_file_size_limit: Option<i64>,
     pub piece_size: TorrentPieceSize,
     /// Is the torrent private
     pub private: bool,
