@@ -13,7 +13,7 @@ jobs:
       port: 45378
       port2: 45379
       username: admin
-      temp_dir: /tmp/qbt
+      temp_dir: .temp
 
       encrypted_password: "@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"
       password: adminadmin
