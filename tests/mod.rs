@@ -4,7 +4,7 @@ use qbit::{
     models::{TorrentCreatorBuilder, TorrentCreatorTask},
     parameters::AddTorrentBuilder,
 };
-use std::{env, fs};
+use std::{env, fs, path};
 
 pub mod application;
 pub mod authentication;
@@ -90,7 +90,7 @@ pub fn create_test_data() -> String {
     )
     .expect("Failed to write dummy file");
 
-    folder
+    path::absolute(folder).unwrap().display().to_string()
 }
 
 pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qbit::Error> {

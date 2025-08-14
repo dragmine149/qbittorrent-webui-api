@@ -77,7 +77,7 @@ async fn download_created_torrent() {
     // no need to do dotenv as already done in previous function call.
     let folder = env::var("temp_dir").unwrap();
 
-    fs::read_dir(&folder)
+    fs::read_dir(format!("{folder}_data"))
         .unwrap()
         .for_each(|d| println!("{:?}", d));
 
