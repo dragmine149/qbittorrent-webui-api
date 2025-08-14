@@ -74,10 +74,10 @@ pub fn create_test_data() -> String {
     let folder = env::var("temp_dir").unwrap();
 
     if !fs::exists(&folder).unwrap() {
-        fs::create_dir(&folder).expect("Dir already exists");
+        fs::create_dir(&folder).unwrap_or_default();
     }
     if !fs::exists(format!("{folder}_data")).unwrap() {
-        fs::create_dir(format!("{folder}_data")).expect("Dir already exists");
+        fs::create_dir(format!("{folder}_data")).unwrap_or_default();
     }
 
     fs::write(
