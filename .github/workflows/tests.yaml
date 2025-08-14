@@ -33,7 +33,7 @@ jobs:
           wget -qO ~/bin/qbittorrent-nox https://github.com/userdocs/qbittorrent-nox-static/releases/latest/download/x86_64-qbittorrent-nox
           chmod 700 ~/bin/qbittorrent-nox
 
-          sudo mkdir -p /home/dummy/bin && sudo source /home/dummy/.profile
+          sudo mkdir -p /home/dummy/bin
           cp ~/bin/qbittorrent-nox /home/dummy/bin/qbittorrent-nox
           chmod 700 /home/dummy/bin/qbittorrent-nox
 
