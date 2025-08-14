@@ -77,7 +77,9 @@ async fn download_created_torrent() {
     // no need to do dotenv as already done in previous function call.
     let folder = env::var("temp_dir").unwrap();
 
-    println!("{:?}", fs::read_dir(&folder).unwrap());
+    fs::read_dir(&folder)
+        .unwrap()
+        .for_each(|d| println!("{:?}", d));
 
     let file = TorrentFile {
         filename: String::from("dummy.torrent"),
