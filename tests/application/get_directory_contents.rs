@@ -7,7 +7,7 @@ use qbit::models::DirMode;
 #[ignore = "Test hits api endpoint"]
 pub async fn list_directory() {
     let folder = create_test_data();
-    let client = login_default_client(false).await;
+    let client = login_default_client().await;
     let contents = client
         .get_directory_contents(&folder, &DirMode::default())
         .await
@@ -21,7 +21,7 @@ pub async fn list_directory() {
 #[ignore = "Test hits api endpoint"]
 pub async fn list_directory_files() {
     let folder = create_test_data();
-    let client = login_default_client(false).await;
+    let client = login_default_client().await;
     let contents = client
         .get_directory_contents(&folder, &DirMode::Files)
         .await
@@ -35,7 +35,7 @@ pub async fn list_directory_files() {
 #[ignore = "Test hits api endpoint"]
 pub async fn list_directory_dirs() {
     let folder = create_test_data();
-    let client = login_default_client(false).await;
+    let client = login_default_client().await;
     let contents = client
         .get_directory_contents(&folder, &DirMode::Dirs)
         .await

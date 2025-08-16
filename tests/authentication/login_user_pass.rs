@@ -5,7 +5,7 @@ use qbit::Api;
 #[ignore = "Test hits api endpoint"]
 async fn correct_credentials() {
     Api::new_login_username_password(
-        &get_server_details(false),
+        &get_server_details(),
         &get_server_username(),
         &get_server_password(),
     )
@@ -17,7 +17,7 @@ async fn correct_credentials() {
 #[ignore = "Test hits api endpoint"]
 async fn incorrect_username() {
     let result = Api::new_login_username_password(
-        &get_server_details(false),
+        &get_server_details(),
         "fjiooiaaso",
         &get_server_password(),
     )
@@ -31,7 +31,7 @@ async fn incorrect_username() {
 #[ignore = "Test hits api endpoint"]
 async fn incorrect_password() {
     let result = Api::new_login_username_password(
-        &get_server_details(false),
+        &get_server_details(),
         &get_server_username(),
         "snkabjhioahsio",
     )

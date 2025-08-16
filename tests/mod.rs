@@ -14,15 +14,11 @@ pub mod torrents;
 pub const DEBIAN_HASH: &str = "6f4370df4304609a8793ce2b59178dcc8febf5e2";
 pub const DEBIAN_TRACKER: &str = "magnet:?xt=urn:btih:6f4370df4304609a8793ce2b59178dcc8febf5e2&dn=debian-12.11.0-amd64-netinst.iso&xl=702545920&tr=http%3A%2F%2Fbttracker.debian.org%3A6969%2Fannounce&ws=https://cdimage.debian.org/cdimage/archive/12.11.0/amd64/iso-cd/debian-12.11.0-amd64-netinst.iso&ws=https://cdimage.debian.org/cdimage/release/12.11.0/amd64/iso-cd/debian-12.11.0-amd64-netinst.iso";
 
-pub fn get_server_details(port2: bool) -> String {
+pub fn get_server_details() -> String {
     dotenv().ok();
 
     let url = env::var("url");
-    let port = if !port2 {
-        env::var("port")
-    } else {
-        env::var("port2")
-    };
+    let port = env::var("port");
 
     if url.is_err() || port.is_err() {
         println!("Default to `http://localhost:45378` as couldn't fully load data from .env");
@@ -44,9 +40,9 @@ pub fn get_server_password() -> String {
     env::var("password").unwrap_or("adminadmin".to_string())
 }
 
-pub async fn login_default_client(port2: bool) -> Api {
+pub async fn login_default_client() -> Api {
     Api::new_login_username_password(
-        &get_server_details(port2),
+        &get_server_details(),
         &get_server_username(),
         &get_server_password(),
     )

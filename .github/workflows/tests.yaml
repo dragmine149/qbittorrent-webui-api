@@ -11,7 +11,6 @@ jobs:
       # url should not need to chance as we are running qbittorrent locally on github servers.
       url: http://localhost
       port: 45378
-      port2: 45379
       username: admin
       temp_dir: .temp
 
@@ -19,23 +18,12 @@ jobs:
       password: adminadmin
 
     steps:
-      - name: Create dummy user
-        run: |
-          sudo useradd --create-home --shell /bin/bash dummy
-          # give dummy basic sudo without password for testing
-          echo "dummy ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/dummy
-          sudo chmod 0440 /etc/sudoers.d/dummy
-
       - name: Install qbittorrent-nox
         # Source: https://github.com/userdocs/qbittorrent-nox-static
         run: |
           mkdir -p ~/bin && source ~/.profile
           wget -qO ~/bin/qbittorrent-nox https://github.com/userdocs/qbittorrent-nox-static/releases/latest/download/x86_64-qbittorrent-nox
           chmod 700 ~/bin/qbittorrent-nox
-
-          sudo mkdir -p /home/dummy/bin
-          cp ~/bin/qbittorrent-nox /home/dummy/bin/qbittorrent-nox
-          chmod 700 /home/dummy/bin/qbittorrent-nox
 
       - name: Configure qBittorrent
         run: |
@@ -46,15 +34,6 @@ jobs:
           WebUI\Password_PBKDF2="${{ env.encrypted_password }}"
           WebUI\Port=${{ env.port }}
           EOF
-
-          sudo mkdir -p /home/dummy/.config/qBittorrent
-          sudo cat > /home/dummy/.config/qBittorrent/qBittorrent.conf << 'EOF'
-          [Preferences]
-          WebUI\Username=${{ env.username }}
-          WebUI\Password_PBKDF2="${{ env.encrypted_password }}"
-          WebUI\Port=${{ env.port2 }}
-          EOF
-          sudo chown dummy:dummy /home/dummy/.config/qBittorrent -R
 
       - name: Debug version
         run: ~/bin/qbittorrent-nox -v
@@ -72,13 +51,5 @@ jobs:
       - name: Run tests
         run: |
           ~/bin/qbittorrent-nox --confirm-legal-notice &
-
-          sudo -iu dummy bash -lc '
-            nohup ~/bin/qbittorrent-nox --confirm-legal-notice \
-              > /home/dummy/qbittorrent.log 2>&1 &
-            echo $! > /home/dummy/qbittorrent.pid
-            ls -l /home/dummy/qbittorrent.*
-            tail -n 50 /home/dummy/qbittorrent.log || true
-          '
 
           cargo test -- --include-ignored
