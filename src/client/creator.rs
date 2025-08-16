@@ -52,7 +52,6 @@ impl super::Api {
             ._post("torrentcreator/addTask")
             .await?
             .form(&form)
-            // .body()
             .send()
             .await?
             .error_for_status()?
@@ -62,17 +61,6 @@ impl super::Api {
 
     /// List all tasks that have been created before.
     pub async fn list_tasks(&self) -> Result<Vec<TorrentCreatorTaskStatus>, Error> {
-        println!(
-            "{:?}",
-            self._get("torrentcreator/status")
-                .await?
-                .send()
-                .await?
-                .error_for_status()?
-                .text()
-                .await?
-        );
-
         Ok(self
             ._get("torrentcreator/status")
             .await?

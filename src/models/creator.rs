@@ -94,7 +94,7 @@ impl From<String> for TorrentCreatorTask {
     }
 }
 
-/// How big the chunks of pieces can be.
+/// How big the chunks of pieces can be in Bytes
 ///
 /// Custom values are allowed, however pre-made values have also been included.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
