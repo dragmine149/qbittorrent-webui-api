@@ -95,7 +95,6 @@ pub fn create_test_data() -> String {
 
 pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qbit::Error> {
     let folder = create_test_data();
-
     let torrent = TorrentCreatorBuilder::default()
         .source_path(&folder)
         .start_seeding(true)

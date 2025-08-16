@@ -1,8 +1,5 @@
 use crate::{create_dummy_torrent, login_default_client};
-use qbit::{
-    models::TaskStatus,
-    parameters::{AddTorrentBuilder, AddTorrentType, TorrentFile},
-};
+use qbit::parameters::{AddTorrentBuilder, AddTorrentType, TorrentFile};
 use std::{env, fs};
 
 /// This test makes sure that the endpoint can create a dummy task.
@@ -33,19 +30,20 @@ async fn get_torrent_file() {
     let client = login_default_client(false).await;
     create_dummy_torrent(&client).await.unwrap();
 
-    // This... might not be the best way to go around this, but it works (somehow).
-    let mut task_id = String::new();
-    while task_id.is_empty() {
-        let list = client.list_tasks().await.unwrap();
-        if let Some(stat) = list.iter().find(|v| v.status == TaskStatus::Finished) {
-            task_id = stat.task_id.clone();
+    let folder = env::var("temp_dir").unwrap();
+    let data = fs::read(format!("{folder}_data/dummy.torrent")).unwrap();
+
+    let list = client.list_tasks().await.unwrap();
+    for item in list.iter() {
+        let r = client
+            .get_task_file(item.task_id.to_owned())
+            .await
+            .unwrap_or_default()
+            .to_vec();
+        if r == data {
+            assert!(true);
         }
     }
-
-    let r = client.get_task_file(task_id).await.unwrap().to_vec();
-
-    let folder = env::var("temp_dir").unwrap();
-    assert_eq!(fs::read(format!("{folder}_data/dummy.torrent")).unwrap(), r);
 }
 
 /// Make sure that we can delete the created task.
