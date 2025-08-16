@@ -54,6 +54,7 @@ jobs:
           WebUI\Password_PBKDF2="${{ env.encrypted_password }}"
           WebUI\Port=${{ env.port2 }}
           EOF
+          sudo chown dummy:dummy /home/dummy/.config/qBittorrent -R
 
       - name: Debug version
         run: ~/bin/qbittorrent-nox -v
