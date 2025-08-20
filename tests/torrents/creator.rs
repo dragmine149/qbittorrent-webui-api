@@ -1,3 +1,5 @@
+use qbit::{Error, models::TorrentCreatorBuilder};
+
 use crate::{create_dummy_torrent, login_default_client};
 use std::{env, fs};
 
@@ -60,4 +62,28 @@ async fn delete_created_task() {
         .expect("Failed to delete task");
     let list = client.list_tasks().await.unwrap();
     assert!(!list.iter().any(|t| t.task_id == task_id.task_id));
+}
+
+/// Test to check failed to create errors
+#[tokio::test]
+#[ignore = "Test hits api endpoint"]
+async fn make_failed_task() {
+    let client = login_default_client().await;
+
+    let torrent = TorrentCreatorBuilder::default()
+        .start_seeding(true)
+        .private(true)
+        .source_path("/tmp/tmp.L9uwLe8LOA")
+        .build()
+        .expect("Failed to build torrent creator");
+
+    let id = client.create_task(&torrent).await.unwrap();
+
+    let result = client.get_task_file(id).await;
+    assert!(result.is_err());
+    if let Err(Error::Http409(_)) = result {
+        assert!(true);
+    } else {
+        panic!("Expected Http409 error");
+    }
 }

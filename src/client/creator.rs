@@ -91,7 +91,7 @@ impl super::Api {
             Ok(d) => Ok(d.bytes().await?),
             Err(e) => {
                 if e.status().unwrap().as_u16() == 409 {
-                    Err(Error::CreateTorrentNotFonshed)
+                    Err(Error::Http409(e.to_string()))
                 } else {
                     Err(Error::ReqwestError(e))
                 }
