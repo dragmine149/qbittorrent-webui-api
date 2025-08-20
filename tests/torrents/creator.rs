@@ -81,8 +81,10 @@ async fn make_failed_task() {
 
     let result = client.get_task_file(id).await;
     assert!(result.is_err());
-    if let Err(Error::Http409(_)) = result {
+    if let Err(Error::Http409(_e)) = result {
         assert!(true);
+        // eprintln!("error: {}", _e);
+        // assert!(false);
     } else {
         panic!("Expected Http409 error");
     }

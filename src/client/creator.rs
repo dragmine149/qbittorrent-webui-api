@@ -84,14 +84,13 @@ impl super::Api {
             .await?
             .form(&data)
             .send()
-            .await?
-            .error_for_status();
+            .await?;
 
-        match data {
-            Ok(d) => Ok(d.bytes().await?),
+        match data.error_for_status_ref() {
+            Ok(_) => Ok(data.bytes().await?),
             Err(e) => {
                 if e.status().unwrap().as_u16() == 409 {
-                    Err(Error::Http409(e.to_string()))
+                    Err(Error::Http409(data.text().await.unwrap()))
                 } else {
                     Err(Error::ReqwestError(e))
                 }
