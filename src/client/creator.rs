@@ -39,13 +39,13 @@ impl super::Api {
             form.insert("trackers", trackers.join("|"));
         }
         if let Some(seeds) = &params.url_seeds {
-            form.insert("trackers", seeds.join("|"));
+            form.insert("urlSeeds", seeds.join("|"));
         }
         if let Some(source) = &params.source {
-            form.insert("trackers", source.clone());
+            form.insert("source", source.clone());
         }
         if let Some(comment) = &params.comment {
-            form.insert("trackers", comment.clone());
+            form.insert("comment", comment.clone());
         }
 
         Ok(self

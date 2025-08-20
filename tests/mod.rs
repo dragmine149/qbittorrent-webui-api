@@ -95,6 +95,8 @@ pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qb
         .source_path(&folder)
         .start_seeding(true)
         .private(true)
+        .comment("Dummy comment for a dummy torrent")
+        .source("https://example.com/dummy")
         .torrent_file_path(format!("{folder}_data/dummy.torrent"))
         .build()
         .expect("Failed to build torrent creator");
