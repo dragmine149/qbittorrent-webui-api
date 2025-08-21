@@ -17,6 +17,15 @@ impl super::Api {
         form.insert("sourcePath", params.source_path.clone());
 
         // apparently all of these are optional...
+        insert_optional!(form, "private", params.private, |v: bool| v.to_string());
+        insert_optional!(form, "comment", &params.comment, |v: &String| v.to_owned());
+        insert_optional!(form, "source", &params.source, |v: &String| v.to_owned());
+        insert_optional!(form, "startSeeding", params.start_seeding, |v: bool| v
+            .to_string());
+        insert_optional!(form, "trackers", &params.trackers, |v: &Vec<String>| v
+            .join("|"));
+        insert_optional!(form, "urlSeeds", &params.url_seeds, |v: &Vec<String>| v
+            .join("|"));
         insert_optional!(form, "format", &params.format, |v: &TorrentFormat| v
             .to_string());
         insert_optional!(
@@ -37,21 +46,12 @@ impl super::Api {
             params.padded_file_size_limit,
             |v: i64| v.to_string()
         );
-        insert_optional!(form, "private", params.private, |v: bool| v.to_string());
-        insert_optional!(form, "startSeeding", params.start_seeding, |v: bool| v
-            .to_string());
         insert_optional!(
             form,
             "torrentFilePath",
             &params.torrent_file_path,
             |v: &String| v.to_owned()
         );
-        insert_optional!(form, "trackers", &params.trackers, |v: &Vec<String>| v
-            .join("|"));
-        insert_optional!(form, "urlSeeds", &params.url_seeds, |v: &Vec<String>| v
-            .join("|"));
-        insert_optional!(form, "source", &params.source, |v: &String| v.to_owned());
-        insert_optional!(form, "comment", &params.comment, |v: &String| v.to_owned());
 
         Ok(self
             ._post("torrentcreator/addTask")

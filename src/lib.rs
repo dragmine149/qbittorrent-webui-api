@@ -105,12 +105,36 @@ impl Display for Credentials {
     }
 }
 
-// Handle optional parameters with a helper macro
 #[macro_export]
+/// Checks if a value is optional and then transforms it and inserts it into the hashmap.
+///
+/// Args:
+/// - form: HashMap
+/// - key: K
+/// - value: Option(V)
+/// - transform: |v: V| v
 macro_rules! insert_optional {
     ($form:expr, $key:expr, $value:expr, $transform:expr) => {
         if let Some(v) = $value {
             $form.insert($key, $transform(v));
+        }
+    };
+}
+
+#[macro_export]
+/// Checks if a value is optional and then transforms it and inserts it into the hashmap.
+///
+/// Args:
+/// - form: HashMap
+/// - key: K
+/// - value: Option(V)
+/// - transform: |v: V| v
+macro_rules! insert_optional_form_text {
+    ($form:expr, $key:expr, $value:expr, $transform:expr) => {
+        if let Some(v) = $value {
+            $form.text($key, $transform(v))
+        } else {
+            $form
         }
     };
 }

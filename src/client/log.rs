@@ -61,10 +61,8 @@ impl super::Api {
     /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
     ///
     pub async fn peer_log(&self, last_known_id: Option<i64>) -> Result<Vec<LogPeers>, Error> {
-        let mut query = vec![];
-        if let Some(id) = last_known_id {
-            query.push(("last_known_id", id));
-        }
+        let mut query = HashMap::new();
+        insert_optional!(query, "last_know_id", last_known_id, |v: i64| v.to_string());
 
         let log = self
             ._get("log/peers")
