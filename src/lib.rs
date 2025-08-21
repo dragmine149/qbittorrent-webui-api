@@ -109,8 +109,8 @@ impl Display for Credentials {
 #[macro_export]
 macro_rules! insert_optional {
     ($form:expr, $key:expr, $value:expr, $transform:expr) => {
-        if let Some(val) = $value {
-            $form.insert($key, $transform(val));
+        if let Some(v) = $value {
+            $form.insert($key, $transform(v));
         }
     };
 }
