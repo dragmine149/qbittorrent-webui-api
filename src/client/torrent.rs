@@ -4,10 +4,11 @@ use reqwest::multipart;
 
 use crate::{
     error::Error,
+    insert_optional,
     models::{
         FilePriority, PiecesState, Torrent, TorrentContent, TorrentProperties, Tracker, WebSeed,
     },
-    parameters::{AddTorrent, AddTorrentType, TorrentListParams},
+    parameters::{AddTorrent, AddTorrentType, TorrentListParams, TorrentSort, TorrentState},
 };
 
 impl super::Api {
@@ -20,32 +21,17 @@ impl super::Api {
     /// * `parames` - Parameter object
     ///
     pub async fn torrents(&self, params: Option<TorrentListParams>) -> Result<Vec<Torrent>, Error> {
-        let mut query = vec![];
-
+        let mut query = HashMap::new();
         let params = params.unwrap_or_default();
-
-        query.push(("reverse", params.reverse.to_string()));
-        if let Some(filter) = params.filter {
-            query.push(("filter", filter.to_string()));
-        }
-        if let Some(category) = params.category {
-            query.push(("category", category));
-        }
-        if let Some(tag) = params.tag {
-            query.push(("tag", tag));
-        }
-        if let Some(sort) = params.sort {
-            query.push(("sort", sort.to_string()));
-        }
-        if let Some(limit) = params.limit {
-            query.push(("limit", limit.to_string()));
-        }
-        if let Some(offset) = params.offset {
-            query.push(("offset", offset.to_string()));
-        }
-        if let Some(hashes) = params.hashes {
-            query.push(("hashes", hashes.join("|")));
-        }
+        query.insert("reverse", params.reverse.to_string());
+        insert_optional!(query, "filter", params.filter, |v: TorrentState| v
+            .to_string());
+        insert_optional!(query, "category", params.category, |v: String| v);
+        insert_optional!(query, "tag", params.tag, |v: String| v);
+        insert_optional!(query, "sort", params.sort, |v: TorrentSort| v.to_string());
+        insert_optional!(query, "limit", params.limit, |v: i64| v.to_string());
+        insert_optional!(query, "offset", params.offset, |v: i64| v.to_string());
+        insert_optional!(query, "hashes", params.hashes, |v: Vec<String>| v.join("|"));
 
         let torrents = self
             ._get("torrents/info")

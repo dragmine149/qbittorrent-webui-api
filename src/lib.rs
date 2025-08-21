@@ -6,7 +6,7 @@ pub mod models;
 /// Parameter objects.
 pub mod parameters;
 
-use std::{collections::HashMap, fmt::Display};
+use std::fmt::Display;
 
 pub use client::Api;
 pub use error::Error;
@@ -113,16 +113,4 @@ macro_rules! insert_optional {
             $form.insert($key, $transform(val));
         }
     };
-}
-
-pub trait ToVec {
-    fn to_vec(self) -> Vec<(String, String)>;
-}
-
-impl ToVec for HashMap<&str, String> {
-    fn to_vec(self) -> Vec<(String, String)> {
-        self.iter()
-            .map(|v| (v.0.to_owned().to_owned(), v.1.to_owned()))
-            .collect()
-    }
 }
