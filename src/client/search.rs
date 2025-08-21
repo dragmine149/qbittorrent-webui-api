@@ -1,7 +1,11 @@
+use std::collections::HashMap;
+
 use reqwest::multipart;
 
 use crate::{
+    ToVec,
     error::Error,
+    insert_optional,
     models::{Search, SearchPlugin, SearchResult},
 };
 
@@ -74,15 +78,18 @@ impl super::Api {
     /// * `id` - ID of the search job. If `None`, all search jobs are returned
     ///
     pub async fn search_status(&self, id: Option<u64>) -> Result<Vec<Search>, Error> {
-        let mut query = vec![];
-        if let Some(id) = id {
-            query.push(("id", id));
-        }
+        let mut query = HashMap::new();
+        insert_optional!(query, "id", id, |v: u64| v.to_string());
+
+        // let mut query = vec![];
+        // if let Some(id) = id {
+        //     query.push(("id", id));
+        // }
 
         let searches = self
             ._get("search/status")
             .await?
-            .query(&query)
+            .query(&query.to_vec())
             .send()
             .await?
             .error_for_status()?

@@ -6,7 +6,7 @@ pub mod models;
 /// Parameter objects.
 pub mod parameters;
 
-use std::fmt::Display;
+use std::{collections::HashMap, fmt::Display};
 
 pub use client::Api;
 pub use error::Error;
@@ -102,5 +102,27 @@ impl Credentials {
 impl Display for Credentials {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "username={}&password={}", self.username, self.password)
+    }
+}
+
+// Handle optional parameters with a helper macro
+#[macro_export]
+macro_rules! insert_optional {
+    ($form:expr, $key:expr, $value:expr, $transform:expr) => {
+        if let Some(val) = $value {
+            $form.insert($key, $transform(val));
+        }
+    };
+}
+
+pub trait ToVec {
+    fn to_vec(self) -> Vec<(String, String)>;
+}
+
+impl ToVec for HashMap<&str, String> {
+    fn to_vec(self) -> Vec<(String, String)> {
+        self.iter()
+            .map(|v| (v.0.to_owned().to_owned(), v.1.to_owned()))
+            .collect()
     }
 }
