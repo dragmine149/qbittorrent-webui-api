@@ -133,18 +133,13 @@ impl super::Api {
         hash: &str,
         indexes: Option<Vec<i64>>,
     ) -> Result<Vec<TorrentContent>, Error> {
-        let mut query = vec![];
-        query.push(("hash", hash.to_string()));
-        if let Some(indexes) = indexes {
-            query.push((
-                "filter",
-                indexes
-                    .iter()
-                    .map(|&x| x.to_string())
-                    .collect::<Vec<String>>()
-                    .join("|"),
-            ));
-        }
+        let mut query = HashMap::new();
+        query.insert("hash", hash.to_string());
+        insert_optional!(query, "filter", indexes, |v: Vec<i64>| v
+            .iter()
+            .map(|&x| x.to_string())
+            .collect::<Vec<String>>()
+            .join("|"));
 
         let webseeds = self
             ._get("torrents/files")

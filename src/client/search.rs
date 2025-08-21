@@ -111,12 +111,10 @@ impl super::Api {
         limit: u64,
         offset: Option<i64>,
     ) -> Result<SearchResult, Error> {
-        let mut query = vec![];
-        query.push(("id", id.to_string()));
-        query.push(("limit", limit.to_string()));
-        if let Some(offset) = offset {
-            query.push(("offset", offset.to_string()));
-        }
+        let mut query = HashMap::new();
+        query.insert("id", id.to_string());
+        query.insert("limit", limit.to_string());
+        insert_optional!(query, "offset", offset, |v: i64| v.to_string());
 
         let searches = self
             ._get("search/results")
