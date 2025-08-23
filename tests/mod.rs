@@ -1,7 +1,7 @@
 use dotenv::dotenv;
 use qbit::{
     Api,
-    models::{TorrentCreatorBuilder, TorrentCreatorTask},
+    models::{TorrentCreatorBuilder, TorrentCreatorTask, Torrent},
     parameters::AddTorrentBuilder,
 };
 use std::{env, fs, path};
@@ -66,6 +66,19 @@ pub async fn add_debian_torrent(client: &Api) {
         .stop(vec![DEBIAN_HASH])
         .await
         .expect("Failed to stop torrent");
+}
+
+pub async fn get_debian_torrent(client: &Api) -> Option<Torrent> {
+    let torrents = client
+        .torrents(None)
+        .await
+        .expect("Failed to fetch main data:");
+
+    torrents
+        .iter()
+        .filter(|t| t.hash == DEBIAN_HASH)
+        .next()
+        .map(|t| t.to_owned())
 }
 
 pub fn create_test_data() -> String {
