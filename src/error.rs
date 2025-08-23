@@ -10,6 +10,7 @@ pub enum Error {
     ReqwestError(reqwest::Error),
     UrlParseError(url::ParseError),
     SerdeJsonError(serde_json::Error),
+    Http409(String),
 }
 
 impl From<reqwest::Error> for Error {
@@ -42,6 +43,7 @@ impl std::fmt::Display for Error {
                 Self::ReqwestError(e) => e.to_string(),
                 Self::UrlParseError(e) => e.to_string(),
                 Self::SerdeJsonError(e) => e.to_string(),
+                Self::Http409(e) => e.to_string(),
             }
         )
     }
