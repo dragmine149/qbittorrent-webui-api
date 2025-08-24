@@ -32,7 +32,11 @@ async fn get_torrent_file() {
     create_dummy_torrent(&client).await.unwrap();
 
     let folder = env::var("temp_dir").unwrap();
-    let data = fs::read(format!("{folder}_data/dummy.torrent")).unwrap();
+    let path = format!("{folder}_data/dummy.torrent");
+    if !fs::exists(&path).unwrap() {
+        std::thread::sleep(std::time::Duration::from_secs(5));
+    }
+    let data = fs::read(&path).unwrap();
 
     let list = client.list_tasks().await.unwrap();
     for item in list.iter() {
