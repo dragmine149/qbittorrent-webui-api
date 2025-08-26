@@ -23,10 +23,10 @@ impl super::Api {
         plugins: &str,
         category: &str,
     ) -> Result<u64, Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("pattern", pattern.to_string());
-        form = form.text("plugins", plugins.to_string());
-        form = form.text("category", category.to_string());
+        let form = multipart::Form::new()
+            .text("pattern", pattern.to_string())
+            .text("plugins", plugins.to_string())
+            .text("category", category.to_string());
 
         let json: serde_json::Value = self
             ._post("search/start")
@@ -52,8 +52,7 @@ impl super::Api {
     /// * `id` - ID of the search job
     ///
     pub async fn search_stop(&self, id: u64) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("id", id.to_string());
+        let form = multipart::Form::new().text("id", id.to_string());
 
         self._post("search/stop")
             .await?
@@ -138,8 +137,7 @@ impl super::Api {
     /// * `id` - The unique identifier of the search job.
     ///
     pub async fn search_delete(&self, id: u64) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("id", id.to_string());
+        let form = multipart::Form::new().text("id", id.to_string());
 
         self._post("search/delete")
             .await?
@@ -176,8 +174,7 @@ impl super::Api {
     /// * `sources` - List of Url and file path of the plugin to install.
     ///
     pub async fn search_install_plugin(&self, sources: Vec<&str>) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("sources", sources.join("|"));
+        let form = multipart::Form::new().text("sources", sources.join("|"));
 
         self._post("search/installPlugin")
             .await?
@@ -197,8 +194,7 @@ impl super::Api {
     /// * `names` - List of names for torrents to uninstall.
     ///
     pub async fn search_uninstall_plugin(&self, names: Vec<&str>) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("names", names.join("|"));
+        let form = multipart::Form::new().text("names", names.join("|"));
 
         self._post("search/uninstallPlugin")
             .await?
@@ -218,9 +214,9 @@ impl super::Api {
     /// * `names` - List of names for torrents to enable.
     ///
     pub async fn search_enable_plugin(&self, names: Vec<&str>, enable: bool) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("names", names.join("|"));
-        form = form.text("enable", enable.to_string());
+        let form = multipart::Form::new()
+            .text("names", names.join("|"))
+            .text("enable", enable.to_string());
 
         self._post("search/enablePlugin")
             .await?

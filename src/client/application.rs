@@ -101,8 +101,7 @@ impl super::Api {
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-application-preferences)
     ///
     pub async fn set_preferences(&self, preferences: Preferences) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("json", serde_json::to_string(&preferences)?);
+        let form = multipart::Form::new().text("json", serde_json::to_string(&preferences)?);
 
         self._post("app/setPreferences")
             .await?
@@ -163,8 +162,7 @@ impl super::Api {
     /// * `cookies` - A list of cookies to be set.
     ///
     pub async fn set_cookies(&self, cookies: Vec<Cookie>) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("cookies", serde_json::to_string(&cookies)?);
+        let form = multipart::Form::new().text("cookies", serde_json::to_string(&cookies)?);
 
         self._post("app/setCookies")
             .await?
