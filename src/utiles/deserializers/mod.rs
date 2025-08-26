@@ -1,9 +1,17 @@
 use serde::{Deserialize, Deserializer};
 
-/// This generic function handles deserialization for any type `T` that
-/// can be deserialized from a JSON number and has a default value.
-#[allow(dead_code)]
-pub fn from_option<'de, D, T>(deserializer: D) -> Result<T, D::Error>
+/// Deserializes a field from a JSON value that might be `null`.
+///
+/// This function is intended to be used with the `#[serde(deserialize_with = "")]`
+/// attribute. It deserializes a value of a generic type `T`. If the JSON value
+/// is `null`, it returns the default value for `T`. Otherwise, it attempts to
+/// deserialize the value normally.
+///
+/// # Type Parameters
+///
+/// * `T`: The target type to deserialize to. This type must implement
+///   `serde::Deserialize` and `std::default::Default`.
+pub fn from_null_to_default<'de, D, T>(deserializer: D) -> Result<T, D::Error>
 where
     D: Deserializer<'de>,
     T: Deserialize<'de> + Default,
@@ -24,7 +32,7 @@ mod tests {
     where
         T: for<'a> Deserialize<'a> + PartialEq + Default,
     {
-        #[serde(deserialize_with = "from_option")]
+        #[serde(deserialize_with = "from_null_to_default")]
         value: T,
     }
 
