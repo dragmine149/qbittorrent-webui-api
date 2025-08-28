@@ -4,7 +4,7 @@ use qbit::{
     models::{Torrent, TorrentCreatorBuilder, TorrentCreatorTask},
     parameters::AddTorrentBuilder,
 };
-use rand::{Rng, distr::Alphabetic, rngs};
+use rand::{Rng, distr::Alphabetic};
 use std::{env, fs, path};
 
 pub mod application;
