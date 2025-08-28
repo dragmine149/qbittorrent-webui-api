@@ -94,6 +94,24 @@ impl From<String> for TorrentCreatorTask {
     }
 }
 
+impl PartialEq<TorrentCreatorTask> for String {
+    fn eq(&self, other: &TorrentCreatorTask) -> bool {
+        *self == other.task_id
+    }
+}
+
+impl PartialEq<TorrentCreatorTask> for &str {
+    fn eq(&self, other: &TorrentCreatorTask) -> bool {
+        *self == other.task_id
+    }
+}
+
+impl PartialEq<TorrentCreatorTask> for &String {
+    fn eq(&self, other: &TorrentCreatorTask) -> bool {
+        **self == other.task_id
+    }
+}
+
 /// How big the chunks of pieces can be in Bytes
 ///
 /// Custom values are allowed, however pre-made values have also been included.
