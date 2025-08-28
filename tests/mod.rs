@@ -95,7 +95,11 @@ pub fn create_random_name() -> Option<String> {
 pub fn create_test_data(random_name: Option<String>) -> String {
     dotenv().ok();
     // persionally did not want to have to do this, but `/tmp` can cause some issues so...
-    let folder = env::var("temp_dir").unwrap();
+    let folder = format!(
+        "{}{}",
+        env::var("temp_dir").unwrap(),
+        random_name.clone().unwrap_or_default()
+    );
 
     if !fs::exists(&folder).unwrap() {
         fs::create_dir(&folder).unwrap_or_default();

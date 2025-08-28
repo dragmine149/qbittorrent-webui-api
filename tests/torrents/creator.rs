@@ -64,7 +64,11 @@ async fn get_torrent_file() {
         limit -= 1;
     }
 
-    let folder = env::var("temp_dir").unwrap();
+    let folder = format!(
+        "{}{}",
+        env::var("temp_dir").unwrap(),
+        random_name.clone().unwrap()
+    );
     let path = format!("{folder}_data/dummy{}.torrent", random_name.unwrap());
     let data = fs::read(&path).unwrap();
 
