@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     error::Error,
     models::{LogItem, LogPeers, LogType},
@@ -20,35 +22,14 @@ impl super::Api {
         last_known_id: Option<i64>,
         log_types: Option<Vec<LogType>>,
     ) -> Result<Vec<LogItem>, Error> {
-        let mut query = vec![];
+        let mut query = HashMap::new();
         if let Some(last_known_id) = last_known_id {
-            query.push(("last_known_id", last_known_id.to_string()));
+            query.insert("last_known_id".to_string(), last_known_id.to_string());
         }
-        let mut normal = false;
-        let mut info = false;
-        let mut warning = false;
-        let mut critical = false;
         if let Some(log_types) = log_types {
-            for log_type in log_types {
-                match log_type {
-                    LogType::Normal => normal = true,
-                    LogType::Info => info = true,
-                    LogType::Warning => warning = true,
-                    LogType::Critical => critical = true,
-                }
-            }
-        }
-        if normal {
-            query.push(("normal", true.to_string()));
-        }
-        if info {
-            query.push(("info", true.to_string()));
-        }
-        if warning {
-            query.push(("warning", true.to_string()));
-        }
-        if critical {
-            query.push(("critical", true.to_string()));
+            log_types.iter().for_each(|log_type| {
+                query.insert(log_type.to_string(), "true".to_string());
+            });
         }
 
         let log = self
@@ -75,9 +56,9 @@ impl super::Api {
     /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
     ///
     pub async fn peer_log(&self, last_known_id: Option<i64>) -> Result<Vec<LogPeers>, Error> {
-        let mut query = vec![];
-        if let Some(id) = last_known_id {
-            query.push(("last_known_id", id));
+        let mut query = HashMap::new();
+        if let Some(last_known_id) = last_known_id {
+            query.insert("last_known_id".to_string(), last_known_id.to_string());
         }
 
         let log = self
