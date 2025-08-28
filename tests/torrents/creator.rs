@@ -33,6 +33,7 @@ async fn list_tasks() {
 async fn get_torrent_file() {
     let client = login_default_client().await;
     let task = create_dummy_torrent(&client).await.unwrap();
+    println!("task: {}", task);
     let mut list = client.list_tasks().await.unwrap();
 
     // This should hopefully let the torrent finish creating before attempting to do other stuff.
@@ -45,6 +46,7 @@ async fn get_torrent_file() {
         .status
         != TaskStatus::Finished
     {
+        println!("{:?}", list);
         if limit == 0 {
             panic!("Torrent has not finished creating after ~ 10 seconds of checking.");
         }

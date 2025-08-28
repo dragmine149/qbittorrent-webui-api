@@ -94,6 +94,12 @@ impl From<String> for TorrentCreatorTask {
     }
 }
 
+impl Display for TorrentCreatorTask {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.task_id)
+    }
+}
+
 impl PartialEq<TorrentCreatorTask> for String {
     fn eq(&self, other: &TorrentCreatorTask) -> bool {
         *self == other.task_id
