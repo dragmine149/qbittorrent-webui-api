@@ -104,7 +104,10 @@ async fn make_failed_task() {
 
     let id = client.create_task(&torrent).await.unwrap();
 
-    let result = client.get_task_file(id).await;
+    let result = client.get_task_file(id.to_string()).await;
+
+    // delete the task in attempt to clean up for other stuff.
+    client.delete_task(&id).await.unwrap();
     assert!(result.is_err());
     if let Err(Error::Http409(_e)) = result {
         assert!(true);
