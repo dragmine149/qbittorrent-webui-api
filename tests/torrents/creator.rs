@@ -26,7 +26,7 @@ async fn list_tasks() {
     let result = create_dummy_torrent(&client, random_name).await.unwrap();
     let list = client.list_tasks().await.unwrap();
     assert!(!list.is_empty());
-    assert!(list.iter().any(|t| t.task_id == result.task_id));
+    assert!(list.iter().any(|t| t.task_id == result));
 }
 
 /// Tests to see that upon the torrent being finished, it is the same as the information we have in the dummy file.
@@ -93,13 +93,13 @@ async fn delete_created_task() {
     let task_id = create_dummy_torrent(&client, random_name).await.unwrap();
     let list = client.list_tasks().await.unwrap();
     assert!(!list.is_empty());
-    assert!(list.iter().any(|t| t.task_id == task_id.task_id));
+    assert!(list.iter().any(|t| t.task_id == task_id));
     client
         .delete_task(&task_id)
         .await
         .expect("Failed to delete task");
     let list = client.list_tasks().await.unwrap();
-    assert!(!list.iter().any(|t| t.task_id == task_id.task_id));
+    assert!(!list.iter().any(|t| t.task_id == task_id));
 }
 
 /// Test to check failed to create errors
