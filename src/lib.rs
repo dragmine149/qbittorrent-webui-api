@@ -1,5 +1,6 @@
 mod client;
 mod error;
+pub(crate) mod utiles;
 
 /// Data object models.
 pub mod models;

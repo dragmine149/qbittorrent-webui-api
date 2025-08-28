@@ -7,6 +7,7 @@ use serde::{
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 use crate::parameters::TorrentState;
+use crate::utiles::deserializers;
 
 /// Torrent info response object
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
@@ -78,6 +79,7 @@ pub struct Torrent {
     /// Number of seeds connected to
     pub num_seeds: i64,
     /// Popularity of the torrent
+    #[serde(deserialize_with = "deserializers::from_null_to_default")]
     pub popularity: f64,
     /// Torrent priority. Returns -1 if queuing is disabled or torrent is in seed mode
     pub priority: i64,
