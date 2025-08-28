@@ -17,8 +17,7 @@ impl super::Api {
     /// * `path` - Full path of added folder. Use `\\` instead of `/` as the delimiter. (e.g. "The Pirate Bay\\Top100")
     ///
     pub async fn rss_add_folder(&self, path: &str) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("path", path.to_string());
+        let form = multipart::Form::new().text("path", path.to_string());
 
         self._post("rss/addFolder")
             .await?
@@ -39,13 +38,9 @@ impl super::Api {
     /// * `path` - Full path of added feed. Use `\\` instead of `/` as the delimiter. (e.g. "The Pirate Bay\\Top100")
     ///
     pub async fn rss_add_feed(&self, feed_url: &str, path: Option<&str>) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("url", feed_url.to_string());
-        if let Some(path) = path {
-            form = form.text("path", path.to_string());
-        } else {
-            form = form.text("path", "".to_string());
-        }
+        let form = multipart::Form::new()
+            .text("url", feed_url.to_string())
+            .text("path", path.unwrap_or_default().to_string());
 
         self._post("rss/addFeed")
             .await?
@@ -67,8 +62,7 @@ impl super::Api {
     /// * `path` - Full path of removed item. Use `\\` instead of `/` as the delimiter. (e.g. "The Pirate Bay\\Top100")
     ///
     pub async fn rss_remove_item(&self, path: &str) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("path", path.to_string());
+        let form = multipart::Form::new().text("path", path.to_string());
 
         self._post("rss/removeItem")
             .await?
@@ -91,9 +85,9 @@ impl super::Api {
     /// * `dest_path` - New full path of item. Use `\\` instead of `/` as the delimiter. (e.g. "The Pirate Bay")
     ///
     pub async fn rss_move_item(&self, item_path: &str, dest_path: &str) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("itemPath", item_path.to_string());
-        form = form.text("destPath", dest_path.to_string());
+        let form = multipart::Form::new()
+            .text("itemPath", item_path.to_string())
+            .text("destPath", dest_path.to_string());
 
         self._post("rss/moveItem")
             .await?
@@ -149,8 +143,7 @@ impl super::Api {
     /// * `article_id` - ID of article
     ///
     pub async fn rss_mark_as_read(&self, path: &str, article_id: Option<u64>) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("path", path.to_string());
+        let mut form = multipart::Form::new().text("path", path.to_string());
         if let Some(article_id) = article_id {
             form = form.text("articleId", article_id.to_string());
         }
@@ -175,8 +168,7 @@ impl super::Api {
     /// * `item_path` - Current full path of item. Use `\\` instead of `/` as the delimiter. (e.g. "The Pirate Bay\\Top100")
     ///
     pub async fn rss_refresh_item(&self, item_path: &str) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("itemPath", item_path.to_string());
+        let form = multipart::Form::new().text("itemPath", item_path.to_string());
 
         self._post("rss/refreshItem")
             .await?
@@ -197,9 +189,9 @@ impl super::Api {
     /// * `def` - rule definition
     ///
     pub async fn rss_set_rule(&self, name: &str, def: RssRule) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("ruleName", name.to_string());
-        form = form.text("ruleDef", serde_json::to_string(&def)?);
+        let form = multipart::Form::new()
+            .text("ruleName", name.to_string())
+            .text("ruleDef", serde_json::to_string(&def)?);
 
         self._post("rss/setRule")
             .await?
@@ -220,9 +212,9 @@ impl super::Api {
     /// * `new_name` - New rule name (e.g. "The Punisher")
     ///
     pub async fn rss_rename_rule(&self, name: &str, new_name: &str) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("ruleName", name.to_string());
-        form = form.text("newRuleName", new_name.to_string());
+        let form = multipart::Form::new()
+            .text("ruleName", name.to_string())
+            .text("newRuleName", new_name.to_string());
 
         self._post("rss/renameRule")
             .await?
@@ -242,8 +234,7 @@ impl super::Api {
     /// * `name` - Rule name (e.g. "Punisher")
     ///
     pub async fn rss_remove_rule(&self, name: &str) -> Result<(), Error> {
-        let mut form = multipart::Form::new();
-        form = form.text("ruleName", name.to_string());
+        let form = multipart::Form::new().text("ruleName", name.to_string());
 
         self._post("rss/removeRule")
             .await?
