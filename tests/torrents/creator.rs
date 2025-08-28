@@ -46,7 +46,10 @@ async fn get_torrent_file() {
         .status
         != TaskStatus::Finished
     {
-        println!("{:?}", list);
+        println!(
+            "{:?}",
+            list.iter().filter(|v| v.task_id == task).next().unwrap()
+        );
         if limit == 0 {
             panic!("Torrent has not finished creating after ~ 10 seconds of checking.");
         }
@@ -103,11 +106,8 @@ async fn make_failed_task() {
         .expect("Failed to build torrent creator");
 
     let id = client.create_task(&torrent).await.unwrap();
+    let result = client.get_task_file(id).await;
 
-    let result = client.get_task_file(id.to_string()).await;
-
-    // delete the task in attempt to clean up for other stuff.
-    client.delete_task(&id).await.unwrap();
     assert!(result.is_err());
     if let Err(Error::Http409(_e)) = result {
         assert!(true);
