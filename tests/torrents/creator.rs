@@ -1,4 +1,7 @@
-use qbit::{Error, models::TorrentCreatorBuilder};
+use qbit::{
+    Error,
+    models::{TaskStatus, TorrentCreatorBuilder},
+};
 
 use crate::{create_dummy_torrent, login_default_client};
 use std::{env, fs};
@@ -29,16 +32,32 @@ async fn list_tasks() {
 #[ignore = "Test hits api endpoint"]
 async fn get_torrent_file() {
     let client = login_default_client().await;
-    create_dummy_torrent(&client).await.unwrap();
+    let task = create_dummy_torrent(&client).await.unwrap();
+    let mut list = client.list_tasks().await.unwrap();
+
+    // This should hopefully let the torrent finish creating before attempting to do other stuff.
+    let mut limit = 10;
+    while list
+        .iter()
+        .filter(|v| v.task_id == task)
+        .next()
+        .unwrap()
+        .status
+        != TaskStatus::Finished
+    {
+        if limit == 0 {
+            panic!("Torrent has not finished creating after ~ 10 seconds of checking.");
+        }
+
+        std::thread::sleep(std::time::Duration::from_secs(1));
+        list = client.list_tasks().await.unwrap();
+        limit -= 1;
+    }
 
     let folder = env::var("temp_dir").unwrap();
     let path = format!("{folder}_data/dummy.torrent");
-    if !fs::exists(&path).unwrap() {
-        std::thread::sleep(std::time::Duration::from_secs(5));
-    }
     let data = fs::read(&path).unwrap();
 
-    let list = client.list_tasks().await.unwrap();
     for item in list.iter() {
         let r = client
             .get_task_file(item.task_id.to_owned())
