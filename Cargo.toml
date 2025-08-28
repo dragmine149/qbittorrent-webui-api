@@ -23,6 +23,7 @@ bytes = "1.10.1"
 
 [dev-dependencies]
 dotenv = "0.15.0"
+rand = "0.9.2"
 
 [lints.clippy]
 uninlined_format_args = "allow"

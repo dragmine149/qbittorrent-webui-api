@@ -3,7 +3,7 @@ use qbit::{
     models::{TaskStatus, TorrentCreatorBuilder},
 };
 
-use crate::{create_dummy_torrent, login_default_client};
+use crate::{create_dummy_torrent, create_random_name, login_default_client};
 use std::{env, fs};
 
 /// This test makes sure that the endpoint can create a dummy task.
@@ -11,7 +11,8 @@ use std::{env, fs};
 #[ignore = "Test hits api endpoint"]
 async fn create_task() {
     let client = login_default_client().await;
-    let result = create_dummy_torrent(&client).await;
+    let random_name = create_random_name();
+    let result = create_dummy_torrent(&client, random_name).await;
 
     assert!(result.is_ok());
 }
@@ -21,7 +22,8 @@ async fn create_task() {
 #[ignore = "Test hits api endpoint"]
 async fn list_tasks() {
     let client = login_default_client().await;
-    let result = create_dummy_torrent(&client).await.unwrap();
+    let random_name = create_random_name();
+    let result = create_dummy_torrent(&client, random_name).await.unwrap();
     let list = client.list_tasks().await.unwrap();
     assert!(!list.is_empty());
     assert!(list.iter().any(|t| t.task_id == result.task_id));
@@ -32,7 +34,10 @@ async fn list_tasks() {
 #[ignore = "Test hits api endpoint"]
 async fn get_torrent_file() {
     let client = login_default_client().await;
-    let task = create_dummy_torrent(&client).await.unwrap();
+    let random_name = create_random_name();
+    let task = create_dummy_torrent(&client, random_name.clone())
+        .await
+        .unwrap();
     println!("task: {}", task);
     let mut list = client.list_tasks().await.unwrap();
 
@@ -60,7 +65,7 @@ async fn get_torrent_file() {
     }
 
     let folder = env::var("temp_dir").unwrap();
-    let path = format!("{folder}_data/dummy.torrent");
+    let path = format!("{folder}_data/dummy{}.torrent", random_name.unwrap());
     let data = fs::read(&path).unwrap();
 
     for item in list.iter() {
@@ -80,7 +85,8 @@ async fn get_torrent_file() {
 #[ignore = "Test hits api endpoint"]
 async fn delete_created_task() {
     let client = login_default_client().await;
-    let task_id = create_dummy_torrent(&client).await.unwrap();
+    let random_name = create_random_name();
+    let task_id = create_dummy_torrent(&client, random_name).await.unwrap();
     let list = client.list_tasks().await.unwrap();
     assert!(!list.is_empty());
     assert!(list.iter().any(|t| t.task_id == task_id.task_id));
