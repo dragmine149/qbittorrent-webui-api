@@ -28,14 +28,26 @@ pub struct Torrent {
     pub completed: i64,
     /// Time (Unix Epoch) when the torrent completed
     pub completion_on: i64,
-    /// Absolute path of torrent content (root path for multifile torrents, absolute file path for singlefile torrents)
+    /// Absolute path of torrent content
+    ///
+    /// root path for multifile torrents, absolute file path for singlefile torrents
     pub content_path: String,
+    /// The root path of the torrent.
+    ///
+    /// Empty string if not a folder
+    pub root_path: String,
+    /// Path where this torrent's data is stored
+    ///
+    /// The parent folder of `content_path`
+    pub save_path: String,
+    /// Path where the torrent's data is downloaded when incomplet.
+    ///
+    /// Empty when not used.
+    pub download_path: String,
     /// Torrent download speed limit (bytes/s). -1 if unlimited.
     pub dl_limit: i64,
     /// Torrent download speed (bytes/s)
     pub dlspeed: i64,
-    /// TODO: Need to look into the purposes of the field.
-    pub download_path: String,
     /// Amount of data downloaded
     pub downloaded: i64,
     /// Amount of data downloaded this session
@@ -50,24 +62,60 @@ pub struct Torrent {
     pub has_metadata: bool,
     /// Torrent hash
     pub hash: String,
-    /// TODO: need doc block
-    /// I dont know if this is the right filed: [#set-torrent-share-limit](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit)
+    /// Torrent elapsed time while complete (seconds)
+    pub seeding_time: i64,
+    /// The maximum amount of time (minutes) the torrent is allowed to seed before stopped.
+    ///
+    /// This field is used to override the global setting for this specific torrent.
+    ///
+    /// - `-2` means the global limit should be used. `max_seeding_time`
+    ///     will have the global setting set.
+    /// - `-1` means no limit.
+    pub seeding_time_limit: i64,
+    /// The maximum amount of time (minutes) the torrent is allowed to seed before stopped.
+    ///
+    /// - `-1` means no limit.
+    ///
+    /// Uses global limit if `seeding_time_limit` is set to `-2`.
+    pub max_seeding_time: i64,
+    /// The maximum amount of time (minutes) the torrent is allowed to seed while being inactive before stopped.
+    ///
+    /// This field is used to override the global setting for this specific torrent.
+    ///
+    /// - `-2` means the global limit should be used. `max_inactive_seeding_time`
+    ///     will have the global setting set.
+    /// - `-1` means no limit.
     pub inactive_seeding_time_limit: i64,
+    /// The maximum amount of time (minutes) the torrent is allowed to seed while being inactive before stopped.
+    ///
+    /// - `-1` means no limit.
+    ///
+    /// Uses global limit if `inactive_seeding_time_limit` is set to `-2`.
+    pub max_inactive_seeding_time: i64,
+    /// Torrent share ratio. Max ratio value: 9999.
+    pub ratio: f32,
+    /// Maximum share ratio until torrent is stopped from seeding/uploading
+    ///
+    /// This field is used to override the global setting for this specific torrent.
+    ///
+    /// - `-2` means the global limit should be used. `max_ratio` will have the
+    ///     global setting set.
+    /// - `-1` means no limit.
+    pub ratio_limit: f32,
+    /// Maximum share ratio until torrent is stopped from seeding/uploading
+    ///
+    /// - `-1` means no limit.
+    ///
+    /// Uses global limit if `ratio_limit` is set to `-2`.
+    pub max_ratio: f32,
     /// The SHA-1 hash of the torrent's info dictionary (used in BitTorrent v1).
     pub infohash_v1: String,
     ///  SHA-256 hash of the torrent's info dictionary (used in BitTorrent v2).
     pub infohash_v2: String,
     /// Last time (Unix Epoch) when a chunk was downloaded/uploaded
     pub last_activity: i64,
-    /// TODO: need doc block
-    /// I dont know if this is the right filed: [#set-torrent-share-limit](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit)
-    pub max_inactive_seeding_time: i64,
     /// Magnet URI corresponding to this torrent
     pub magnet_uri: String,
-    /// Maximum share ratio until torrent is stopped from seeding/uploading
-    pub max_ratio: f32,
-    /// Maximum seeding time (seconds) until torrent is stopped from seeding
-    pub max_seeding_time: i64,
     /// Torrent name
     pub name: String,
     /// Number of seeds in the swarm
@@ -87,25 +135,11 @@ pub struct Torrent {
     ///
     /// The value will be `None` if the torrent metadata is not available yet.
     /// See issue [#10](https://github.com/Mattress237/qbittorrent-webui-api/issues/10)
-    ///
-    /// NOTE: Documentation is incorrect. The field name is "private", not "isPrivate".
     pub private: Option<bool>,
     /// Torrent progress (percentage/100)
     pub progress: f32,
-    /// Torrent share ratio. Max ratio value: 9999.
-    pub ratio: f32,
-    /// TODO (what is different from max_ratio?)
-    pub ratio_limit: f32,
     /// Time until the next tracker reannounce
     pub reannounce: i64,
-    /// TODO: need doc block
-    pub root_path: String,
-    /// Path where this torrent's data is stored
-    pub save_path: String,
-    /// Torrent elapsed time while complete (seconds)
-    pub seeding_time: i64,
-    /// TODO (what is different from max_seeding_time?) seeding_time_limit is a per torrent setting, when Automatic Torrent Management is disabled, furthermore then max_seeding_time is set to seeding_time_limit for this torrent. If Automatic Torrent Management is enabled, the value is -2. And if max_seeding_time is unset it have a default value -1.
-    pub seeding_time_limit: i64,
     /// Time (Unix Epoch) when this torrent was last seen complete
     pub seen_complete: i64,
     /// True if sequential download is enabled
