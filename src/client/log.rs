@@ -17,6 +17,27 @@ impl super::Api {
     /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
     /// * `log_types` - List of desierd log types. (default: all)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    /// use qbit::models::LogType;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let types = vec![LogType::Critical, LogType::Warning];
+    ///     let log = client.log(None, Some(types)).await.unwrap();
+    ///
+    ///     for item in log {
+    ///         println!("{:?}", item);
+    ///     }
+    /// }
+    /// ```
     pub async fn log(
         &self,
         last_known_id: Option<i64>,
@@ -55,6 +76,25 @@ impl super::Api {
     ///
     /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let log = client.peer_log(None).await.unwrap();
+    ///
+    ///     for item in log {
+    ///         println!("{:?}", item);
+    ///     }
+    /// }
+    /// ```
     pub async fn peer_log(&self, last_known_id: Option<i64>) -> Result<Vec<LogPeers>, Error> {
         let mut query = HashMap::new();
         if let Some(last_known_id) = last_known_id {

@@ -51,7 +51,7 @@ pub struct Torrent {
     /// Torrent hash
     pub hash: String,
     /// TODO: need doc block
-    /// I dont know if this is the right filed: https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit
+    /// I dont know if this is the right filed: [#set-torrent-share-limit](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit)
     pub inactive_seeding_time_limit: i64,
     /// The SHA-1 hash of the torrent's info dictionary (used in BitTorrent v1).
     pub infohash_v1: String,
@@ -60,7 +60,7 @@ pub struct Torrent {
     /// Last time (Unix Epoch) when a chunk was downloaded/uploaded
     pub last_activity: i64,
     /// TODO: need doc block
-    /// I dont know if this is the right filed: https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit
+    /// I dont know if this is the right filed: [#set-torrent-share-limit](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit)
     pub max_inactive_seeding_time: i64,
     /// Magnet URI corresponding to this torrent
     pub magnet_uri: String,

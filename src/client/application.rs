@@ -14,6 +14,23 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-application-version)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let version = client.version().await.unwrap();
+    ///
+    ///     println!("{}", version);
+    /// }
+    /// ```
     pub async fn version(&self) -> Result<String, Error> {
         let version = self
             ._get("app/version")
@@ -33,6 +50,23 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-api-version)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let version = client.webapi_version().await.unwrap();
+    ///
+    ///     println!("{}", version);
+    /// }
+    /// ```
     pub async fn webapi_version(&self) -> Result<String, Error> {
         let version = self
             ._get("app/webapiVersion")
@@ -50,6 +84,23 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-build-info)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let build = client.build_info().await.unwrap();
+    ///
+    ///     println!("{:#?}", build);
+    /// }
+    /// ```
     pub async fn build_info(&self) -> Result<BuildInfo, Error> {
         let build_info = self
             ._get("app/buildInfo")
@@ -67,6 +118,21 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#shutdown-application)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     client.shutdown().await.unwrap();
+    /// }
+    /// ```
     pub async fn shutdown(&self) -> Result<(), Error> {
         self._post("app/shutdown")
             .await?
@@ -83,8 +149,25 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-application-preferences)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let preferences = client.preferences().await.unwrap();
+    ///
+    ///     println!("{:#?}", preferences);
+    /// }
+    /// ```
     pub async fn preferences(&self) -> Result<Preferences, Error> {
-        let build_info = self
+        let preferences = self
             ._get("app/preferences")
             .await?
             .send()
@@ -93,13 +176,33 @@ impl super::Api {
             .json::<Preferences>()
             .await?;
 
-        Ok(build_info)
+        Ok(preferences)
     }
 
     /// Set application preferences
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-application-preferences)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    /// use qbit::models::Preferences;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let preferences = Preferences::default();
+    ///
+    ///     let resulte = client.set_preferences(preferences).await;
+    ///
+    ///     assert!(resulte.is_ok());
+    /// }
+    /// ```
     pub async fn set_preferences(&self, preferences: Preferences) -> Result<(), Error> {
         let form = multipart::Form::new().text("json", serde_json::to_string(&preferences)?);
 
@@ -117,6 +220,23 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-default-save-path)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let save_path = client.default_save_path().await.unwrap();
+    ///
+    ///     println!("{}", save_path);
+    /// }
+    /// ```
     pub async fn default_save_path(&self) -> Result<String, Error> {
         let preferences = self
             ._get("app/defaultSavePath")
@@ -136,6 +256,25 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-cookies)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let cookies = client.cookies().await.unwrap();
+    ///
+    ///     for cookie in cookies {
+    ///         println!("{:?}", cookie);
+    ///     }
+    /// }
+    /// ```
     pub async fn cookies(&self) -> Result<Vec<Cookie>, Error> {
         let cookies = self
             ._get("app/cookies")
@@ -161,6 +300,25 @@ impl super::Api {
     ///
     /// * `cookies` - A list of cookies to be set.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    /// use qbit::models::Cookie;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let cookie = Cookie::default();
+    ///     let result = client.cookies().await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_cookies(&self, cookies: Vec<Cookie>) -> Result<(), Error> {
         let form = multipart::Form::new().text("cookies", serde_json::to_string(&cookies)?);
 
@@ -175,6 +333,29 @@ impl super::Api {
     }
 
     /// List the contents of the directory. (Yes this is an endpoint)
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    /// use qbit::models::DirMode;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let contents = client.get_directory_contents("dir_path", &DirMode::All)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     for item in contents {
+    ///         println!("{}", item);
+    ///     }
+    /// }
+    /// ```
     pub async fn get_directory_contents(
         &self,
         dir: &str,

@@ -1,12 +1,41 @@
+[![Crates.io version](https://img.shields.io/crates/v/qbit)](https://crates.io/crates/qbit)
+[![Github repo](https://img.shields.io/badge/Github-Repo-orange?logo=github)](https://github.com/Mattress237/qbittorrent-webui-api)
+[![docs.rs](https://img.shields.io/docsrs/qbit)](https://docs.rs/qbit)
+[![Rust](https://img.shields.io/badge/Rust-stable-brightgreen?logo=rust)](https://www.rust-lang.org/)
+
 # Qbittorrent WebUI Api
 
-Rust wrapper for Qbittorrent WebUI API
+Asynchronous Rust wrapper for Qbittorrent Web API, supporting all documented endpoints.
 
-Supported Qbittorrent version: `5.0`
+Supported Qbittorrent version: `5.1`
 
-[WebUI 5.0 documentation](<https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)>)
+# Usage
+
+Add it using cargo:
+```
+cargo add qbit
+```
+
+Add it manualy:
+``` toml
+[dependencies]
+qbit = "0.1"
+```
+
+Basic usage to get all torrents:
+``` rust
+use qbit::API;
+use qbit::Credentials;
+
+let cred = Credentials::new("username", "secret_password");
+let client = API::new_login("http://qBittorrent.server:6969", cred).await.unwrap();
+
+let torrents = client.torrents(None).await.unwrap();
+```
 
 ## Implemented
+
+[WebUI 5.0 documentation](<https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)>)
 
 ### Authentication
 
