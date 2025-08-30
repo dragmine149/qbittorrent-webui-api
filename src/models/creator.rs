@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 /// The format of the torrent.
 ///
-/// See https://www.reddit.com/r/qBittorrent/comments/uiwchy/torrent_format_hybrid_v1_and_v2/ for more information
+/// See [torrent format hybrid v1 and v2](https://www.reddit.com/r/qBittorrent/comments/uiwchy/torrent_format_hybrid_v1_and_v2/) for more information
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Debug)]
 pub enum TorrentFormat {
     /// Old version, uses SHA-1 for hashing.

@@ -37,6 +37,7 @@ impl super::Api {
     /// * `feed_url` - URL of RSS feed (e.g. "http://thepiratebay.org/rss//top100/200")
     /// * `path` - Full path of added feed. Use `\\` instead of `/` as the delimiter. (e.g. "The Pirate Bay\\Top100")
     ///
+    #[allow(rustdoc::bare_urls)]
     pub async fn rss_add_feed(&self, feed_url: &str, path: Option<&str>) -> Result<(), Error> {
         let form = multipart::Form::new()
             .text("url", feed_url.to_string())
