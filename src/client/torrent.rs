@@ -1254,7 +1254,7 @@ impl super::Api {
     /// * `oldPath` - The old path of the torrent
     /// * `newPath` - The new path to use for the file
     ///
-    pub async fn torrent_rename_folder(
+    pub async fn rename_folder(
         &self,
         hash: &str,
         old_path: &str,
