@@ -11,18 +11,21 @@
 //! # Example
 //!
 //! Basic usage to get all torrents
-//! ```rust
+//! ```no_run
 //! use qbit::{Api, Credentials};
 //!
-//! let credentials = Credentials::new("username", "password");
-//! let client = API::new_login("http://qBittorrent.server:6969", cred)
-//!     .await
-//!     .unwrap();
+//! #[tokio::main]
+//! async fn main() {
+//!     let credentials = Credentials::new("username", "password");
+//!     let client = Api::new_login("http://qBittorrent.server:6969", credentials)
+//!         .await
+//!         .unwrap();
 //!
-//! let torrents = client.torrents(None).await.unwrap();
+//!     let torrents = client.torrents(None).await.unwrap();
 //!
-//! for torrent in torrents {
-//!    println!("{}", torrent);
+//!     for torrent in torrents {
+//!         println!("{:?}", torrent);
+//!     }
 //! }
 //! ```
 //!
