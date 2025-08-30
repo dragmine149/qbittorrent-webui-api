@@ -1,9 +1,10 @@
 use dotenv::dotenv;
 use qbit::{
     Api,
-    models::{TorrentCreatorBuilder, TorrentCreatorTask, Torrent},
+    models::{Torrent, TorrentCreatorBuilder, TorrentCreatorTask},
     parameters::AddTorrentBuilder,
 };
+use rand::{Rng, distr::Alphabetic};
 use std::{env, fs, path};
 
 pub mod application;
@@ -81,10 +82,24 @@ pub async fn get_debian_torrent(client: &Api) -> Option<Torrent> {
         .map(|t| t.to_owned())
 }
 
-pub fn create_test_data() -> String {
+pub fn create_random_name() -> Option<String> {
+    Some(
+        rand::rng()
+            .sample_iter(&Alphabetic)
+            .take(7)
+            .map(char::from)
+            .collect::<String>(),
+    )
+}
+
+pub fn create_test_data(random_name: Option<String>) -> String {
     dotenv().ok();
     // persionally did not want to have to do this, but `/tmp` can cause some issues so...
-    let folder = env::var("temp_dir").unwrap();
+    let folder = format!(
+        "{}{}",
+        env::var("temp_dir").unwrap(),
+        random_name.clone().unwrap_or_default()
+    );
 
     if !fs::exists(&folder).unwrap() {
         fs::create_dir(&folder).unwrap_or_default();
@@ -94,7 +109,7 @@ pub fn create_test_data() -> String {
     }
 
     fs::write(
-        format!("{folder}/dummy.txt"),
+        format!("{folder}/dummy{}.txt", random_name.unwrap_or_default()),
         "This is a dummy file. You are a dummy for downloading this file.",
     )
     .expect("Failed to write dummy file");
@@ -102,15 +117,21 @@ pub fn create_test_data() -> String {
     path::absolute(folder).unwrap().display().to_string()
 }
 
-pub async fn create_dummy_torrent(client: &Api) -> Result<TorrentCreatorTask, qbit::Error> {
-    let folder = create_test_data();
+pub async fn create_dummy_torrent(
+    client: &Api,
+    random_name: Option<String>,
+) -> Result<TorrentCreatorTask, qbit::Error> {
+    let folder = create_test_data(random_name.clone());
     let torrent = TorrentCreatorBuilder::default()
         .source_path(&folder)
         .start_seeding(true)
         .private(true)
         .comment("Dummy comment for a dummy torrent")
         .source("https://example.com/dummy")
-        .torrent_file_path(format!("{folder}_data/dummy.torrent"))
+        .torrent_file_path(format!(
+            "{folder}_data/dummy{}.torrent",
+            random_name.unwrap_or_default()
+        ))
         .build()
         .expect("Failed to build torrent creator");
 

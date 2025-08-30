@@ -94,6 +94,30 @@ impl From<String> for TorrentCreatorTask {
     }
 }
 
+impl Display for TorrentCreatorTask {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.task_id)
+    }
+}
+
+impl PartialEq<TorrentCreatorTask> for String {
+    fn eq(&self, other: &TorrentCreatorTask) -> bool {
+        *self == other.task_id
+    }
+}
+
+impl PartialEq<TorrentCreatorTask> for &str {
+    fn eq(&self, other: &TorrentCreatorTask) -> bool {
+        *self == other.task_id
+    }
+}
+
+impl PartialEq<TorrentCreatorTask> for &String {
+    fn eq(&self, other: &TorrentCreatorTask) -> bool {
+        **self == other.task_id
+    }
+}
+
 /// How big the chunks of pieces can be in Bytes
 ///
 /// Custom values are allowed, however pre-made values have also been included.
