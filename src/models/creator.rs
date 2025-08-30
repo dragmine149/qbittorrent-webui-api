@@ -81,7 +81,7 @@ pub struct TorrentCreator {
     pub comment: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct TorrentCreatorTask {
     /// The task id related to the torrent just created
     #[serde(rename = "taskID")]

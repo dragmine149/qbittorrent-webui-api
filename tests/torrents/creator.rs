@@ -95,7 +95,7 @@ async fn delete_created_task() {
     assert!(!list.is_empty());
     assert!(list.iter().any(|t| t.task_id == task_id));
     client
-        .delete_task(&task_id)
+        .delete_task(task_id.clone())
         .await
         .expect("Failed to delete task");
     let list = client.list_tasks().await.unwrap();

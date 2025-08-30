@@ -9,6 +9,26 @@ use crate::{
 
 impl super::Api {
     /// Create a task to eventually make a new torrent.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    /// use qbit::models::TorrentCreator;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let torrent = TorrentCreator::default();
+    ///     let result = client.create_task(&torrent).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn create_task(&self, params: &TorrentCreator) -> Result<TorrentCreatorTask, Error> {
         let mut form = HashMap::new();
         form.insert("sourcePath", params.source_path.clone());
@@ -60,6 +80,26 @@ impl super::Api {
     }
 
     /// List all tasks that have been created before.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let list = client.list_tasks().await.unwrap();
+    ///
+    ///     for item in list {
+    ///         println!("{:?}", item);
+    ///     }
+    /// }
+    /// ```
     pub async fn list_tasks(&self) -> Result<Vec<TorrentCreatorTaskStatus>, Error> {
         Ok(self
             ._get("torrentcreator/status")
@@ -72,6 +112,24 @@ impl super::Api {
     }
 
     /// Get the `.torrent` file for a given task id. (Task must have finished)
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let task = client.get_task_file("task_id".to_string()).await.unwrap();
+    ///
+    ///     println!("{:#?}", task);
+    /// }
+    /// ```
     pub async fn get_task_file(
         &self,
         task_id: impl Into<TorrentCreatorTask>,
@@ -99,9 +157,27 @@ impl super::Api {
     }
 
     /// Delete the task with the given id.
-    pub async fn delete_task(&self, task_id: &TorrentCreatorTask) -> Result<(), Error> {
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.delete_task("task_id".to_string()).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
+    pub async fn delete_task(&self, task_id: impl Into<TorrentCreatorTask>) -> Result<(), Error> {
         let mut data = HashMap::new();
-        data.insert("taskID", task_id.task_id.to_owned());
+        data.insert("taskID", task_id.into().task_id.to_owned());
 
         self._post("torrentcreator/deleteTask")
             .await?
