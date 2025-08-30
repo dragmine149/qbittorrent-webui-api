@@ -1069,7 +1069,7 @@ impl super::Api {
     ///
     /// * `tags` - List of tags to delete.
     ///
-    pub async fn torrent_delete_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
+    pub async fn delete_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new().text("tags", tags.join(","));
 
         self._post("torrents/deleteTags")
