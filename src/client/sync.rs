@@ -15,6 +15,23 @@ impl super::Api {
     ///
     /// * `rid` - Response ID. If not provided, `rid=0` will be assumed.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let data = client.main_data(None).await.unwrap();
+    ///
+    ///     println!("{:#?}", data);
+    /// }
+    /// ```
     pub async fn main_data(&self, rid: Option<i64>) -> Result<MainData, Error> {
         let mut query = vec![];
         if let Some(rid) = rid {
@@ -46,6 +63,23 @@ impl super::Api {
     /// * `hash` - Torrent hash.
     /// * `rid` - Response ID. If not provided, `rid=0` will be assumed.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let data = client.peers_data("hash", None).await.unwrap();
+    ///
+    ///     println!("{:#?}", data);
+    /// }
+    /// ```
     pub async fn peers_data(&self, hash: &str, rid: Option<i64>) -> Result<PeersData, Error> {
         let mut query = vec![];
         query.push(("hash", hash.to_string()));
