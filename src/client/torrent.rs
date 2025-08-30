@@ -19,6 +19,27 @@ impl super::Api {
     ///
     /// * `parames` - Parameter object
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    /// use qbit::parameters::TorrentListParams;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let param = TorrentListParams::default();
+    ///     let torrents = client.torrents(Some(param)).await.unwrap();
+    ///
+    ///     for torrent in torrents {
+    ///         println!("{:?}", torrent);
+    ///     }
+    /// }
+    /// ```
     pub async fn torrents(&self, params: Option<TorrentListParams>) -> Result<Vec<Torrent>, Error> {
         let mut query = vec![];
 
@@ -68,6 +89,23 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the generic properties of.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let torrent = client.torrent("hash").await.unwrap();
+    ///
+    ///     println!("{:?}", torrent);
+    /// }
+    /// ```
     pub async fn torrent(&self, hash: &str) -> Result<TorrentProperties, Error> {
         let query = vec![("hash", hash)];
 
@@ -92,6 +130,25 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the trackers of.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let trackers = client.trackers("hash").await.unwrap();
+    ///
+    ///     for tracker in trackers {
+    ///         println!("{:?}", tracker);
+    ///     }
+    /// }
+    /// ```
     pub async fn trackers(&self, hash: &str) -> Result<Vec<Tracker>, Error> {
         let query = vec![("hash", hash)];
 
@@ -116,6 +173,25 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the webseeds of.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let webseeds = client.webseeds("hash").await.unwrap();
+    ///
+    ///     for webseed in webseeds {
+    ///         println!("{:?}", webseed);
+    ///     }
+    /// }
+    /// ```
     pub async fn webseeds(&self, hash: &str) -> Result<Vec<WebSeed>, Error> {
         let query = vec![("hash", hash)];
 
@@ -142,6 +218,25 @@ impl super::Api {
     /// * `indexes` - The indexes of the files you want to retrieve. If `None`
     ///   all files will be selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let files = client.files("hash", None).await.unwrap();
+    ///
+    ///     for file in files {
+    ///         println!("{:?}", file);
+    ///     }
+    /// }
+    /// ```
     pub async fn files(
         &self,
         hash: &str,
@@ -181,6 +276,25 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the piece states of.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let states = client.pieces_states("hash").await.unwrap();
+    ///
+    ///     for state in states {
+    ///         println!("{:?}", state);
+    ///     }
+    /// }
+    /// ```
     pub async fn pieces_states(&self, hash: &str) -> Result<Vec<PiecesState>, Error> {
         let query = vec![("hash", hash)];
 
@@ -205,6 +319,25 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the pieces hashes of.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let hashes = client.pieces_hashes("hash").await.unwrap();
+    ///
+    ///     for hash in hashes {
+    ///         println!("{}", hash);
+    ///     }
+    /// }
+    /// ```
     pub async fn pieces_hashes(&self, hash: &str) -> Result<Vec<String>, Error> {
         let query = vec![("hash", hash)];
 
@@ -229,6 +362,23 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to stop.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.stop(vec!["Hash1", "Hash2"]).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn stop(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.join("|"));
 
@@ -250,6 +400,23 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to start.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.start(vec!["Hash1", "Hash2"]).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn start(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.join("|"));
 
@@ -273,6 +440,23 @@ impl super::Api {
     /// * `delete_files` - If set to `true`, the downloaded data will also be deleted,
     ///   otherwise has no effect.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.delete(vec!["Hash1", "Hash2"], false).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn delete(&self, hashes: Vec<&str>, delete_files: bool) -> Result<(), Error> {
         let form = multipart::Form::new()
             .text("hashes", hashes.join("|"))
@@ -296,6 +480,23 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to recheck.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.recheck(vec!["Hash1", "Hash2"]).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn recheck(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.join("|"));
 
@@ -317,6 +518,23 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to reannounce.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.reannounce(vec!["Hash1", "Hash2"]).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn reannounce(&self, hashes: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.join("|"));
 
@@ -338,6 +556,25 @@ impl super::Api {
     ///
     /// * `params` - Torrent parameters
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    /// use qbit::parameters::AddTorrent;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let params = AddTorrent::default();
+    ///     let result = client.add_torrent(params).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn add_torrent(&self, params: AddTorrent) -> Result<(), Error> {
         if params.torrents.is_empty() {
             return Err(Error::InvalidRequest(
@@ -421,6 +658,24 @@ impl super::Api {
     /// * `hash` - Torrent hash.
     /// * `urls` - Trackers urls to add.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let urls = vec!["url1", "url2"];
+    ///     let result = client.add_trackers_to_torrent("hash", urls).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn add_trackers_to_torrent(&self, hash: &str, urls: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new()
             .text("hash", hash.to_string())
@@ -446,6 +701,24 @@ impl super::Api {
     /// * `orig_url` - The tracker URL you want to edit.
     /// * `new_url` - The new URL to replace the `orig_url`.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.edit_tracker_for_torrent("hash", "old_url", "new_url")
+    ///         .await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn edit_tracker_for_torrent(
         &self,
         hash: &str,
@@ -476,6 +749,24 @@ impl super::Api {
     /// * `hash` - Torrent hash.
     /// * `urls` - Trackers urls to remove.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let urls = vec!["url1", "url2"];
+    ///     let result = client.remove_trackers_from_torrent("hash", urls).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn remove_trackers_from_torrent(
         &self,
         hash: &str,
@@ -504,6 +795,25 @@ impl super::Api {
     /// * `hashes` - Torrent hash.
     /// * `peers` - The peer to add. Each peer is a colon-separated `host:port`.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let hashes = vec!["hash1", "hash2"];
+    ///     let peers = vec!["alice", "bob"];
+    ///     let result = client.add_peers(hashes, peers).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn add_peers(&self, hashes: Vec<&str>, peers: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new()
             .text("hashes", hashes.join("|"))
@@ -528,6 +838,23 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to increase the priority of.
     ///   If `None` all torrents are selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.increase_priority(None).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn increase_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.unwrap_or(vec!["all"]).join("|"));
 
@@ -550,6 +877,23 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to decrease the priority of.
     ///   If `None` all torrents are selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.decrease_priority(None).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn decrease_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.unwrap_or(vec!["all"]).join("|"));
 
@@ -572,6 +916,23 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to max the priority of.
     ///   If `None` all torrents are selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.max_priority(None).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn max_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.unwrap_or(vec!["all"]).join("|"));
 
@@ -594,6 +955,23 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to min the priority of.
     ///   If `None` all torrents are selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.min_priority(None).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn min_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.unwrap_or(vec!["all"]).join("|"));
 
@@ -617,6 +995,24 @@ impl super::Api {
     /// * `file_ids` - File ids.
     /// * `priority` - File priority to set.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    /// use qbit::models::FilePriority;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_file_priority("hash", vec![0,1,2], FilePriority::High).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_file_priority(
         &self,
         hash: &str,
@@ -654,6 +1050,25 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to get the download limit of.
     ///   If `None` all torrents are selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let limits = client.download_limit(None).await.unwrap();
+    ///
+    ///     for limit in limits {
+    ///         println!("{:?}", limit);
+    ///     }
+    /// }
+    /// ```
     pub async fn download_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -683,6 +1098,23 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `limit` - Download limit
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_download_limit(None, 10).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_download_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -718,6 +1150,23 @@ impl super::Api {
     ///   torrent is allowed to seed while being inactive. `-2` means the global limit
     ///   should be used, `-1` means no limit.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_share_limit(None, 0.3, 100, 100).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_share_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -753,6 +1202,25 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want the upload limit of.
     ///   If `None` all torrents are selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let limits = client.upload_limit(None).await.unwrap();
+    ///
+    ///     for limit in limits {
+    ///         println!("{:?}", limit);
+    ///     }
+    /// }
+    /// ```
     pub async fn upload_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -782,6 +1250,23 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `limit` - Upload limit
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_upload_limit(None, 10).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_upload_limit(
         &self,
         hashes: Option<Vec<&str>>,
@@ -811,6 +1296,23 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `location` - Location to download the torrent to.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_location(None, "new/location").await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_location(
         &self,
         hashes: Option<Vec<&str>>,
@@ -839,6 +1341,23 @@ impl super::Api {
     /// * `hash` - The hash of the torrent you want to set the name of.
     /// * `name` - Location to download the torrent to.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_name("hash", "new_torrent_name").await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_name(&self, hash: &str, name: &str) -> Result<(), Error> {
         let form = multipart::Form::new()
             .text("hash", hash.to_string())
@@ -864,6 +1383,23 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `category` - Name of the category you want to set.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_category(None, "category").await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_category(
         &self,
         hashes: Option<Vec<&str>>,
@@ -887,6 +1423,25 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-all-categories)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let categories = client.categories().await.unwrap();
+    ///
+    ///     for categori in categories {
+    ///         println!("{}", categori);
+    ///     }
+    /// }
+    /// ```
     pub async fn categories(&self) -> Result<Vec<String>, Error> {
         let categories = self
             ._get("torrents/categories")
@@ -909,6 +1464,23 @@ impl super::Api {
     /// * `category` - Name for the category to create.
     /// * `save_path` - Path to download torrents for the category.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.create_category("category", "save/path").await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn create_category(&self, category: &str, save_path: &str) -> Result<(), Error> {
         let form = multipart::Form::new()
             .text("category", category.to_string())
@@ -933,6 +1505,23 @@ impl super::Api {
     /// * `category` - Name for the category to edit.
     /// * `save_path` - Path to download torrents for the category.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.edit_category("category", "new/save/path").await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn edit_category(&self, category: &str, save_path: &str) -> Result<(), Error> {
         let form = multipart::Form::new()
             .text("category", category.to_string())
@@ -956,6 +1545,24 @@ impl super::Api {
     ///
     /// * `categories` - List of category names to remove.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let categories = vec!["movie", "distro"];
+    ///     let result = client.remove_categories(categories).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn remove_categories(&self, categories: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new().text("categories", categories.join("\n"));
 
@@ -979,6 +1586,24 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `tags` - List of names for the tags you want to set.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let tags = vec!["listed"];
+    ///     let result = client.add_tags(None, tags).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn add_tags(&self, hashes: Option<Vec<&str>>, tags: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new()
             .text("hashes", hashes.unwrap_or(vec!["all"]).join("|"))
@@ -1004,6 +1629,24 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `tags` - List of names for the tags you want to remove.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let tags = vec!["listed"];
+    ///     let result = client.remove_tags(None, tags).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn remove_tags(
         &self,
         hashes: Option<Vec<&str>>,
@@ -1027,6 +1670,25 @@ impl super::Api {
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-all-tags)
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let tags = client.tags().await.unwrap();
+    ///
+    ///     for tag in tags {
+    ///         println!("{}", tag);
+    ///     }
+    /// }
+    /// ```
     pub async fn tags(&self) -> Result<Vec<String>, Error> {
         let tags = self
             ._get("torrents/tags")
@@ -1048,6 +1710,24 @@ impl super::Api {
     ///
     /// * `tags` - List of tags to create.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let tags = vec!["listed"];
+    ///     let result = client.create_tags(tags).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn create_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new().text("tags", tags.join(","));
 
@@ -1069,6 +1749,24 @@ impl super::Api {
     ///
     /// * `tags` - List of tags to delete.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let tags = vec!["listed"];
+    ///     let result = client.delete_tags(tags).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn delete_tags(&self, tags: Vec<&str>) -> Result<(), Error> {
         let form = multipart::Form::new().text("tags", tags.join(","));
 
@@ -1092,6 +1790,23 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `enable`
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_automatic_torrent_management(None, true).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_automatic_torrent_management(
         &self,
         hashes: Option<Vec<&str>>,
@@ -1120,6 +1835,23 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to toggle sequential download for.
     ///   If `None` all torrents are selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.toggle_sequential_download(None).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn toggle_sequential_download(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.unwrap_or(vec!["all"]).join("|"));
 
@@ -1142,6 +1874,23 @@ impl super::Api {
     /// * `hashes` - The hashes of the torrents you want to toggle first/last piece priority for.
     ///   If `None` all torrents are selected.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.toggle_first_last_priority(None).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn toggle_first_last_priority(&self, hashes: Option<Vec<&str>>) -> Result<(), Error> {
         let form = multipart::Form::new().text("hashes", hashes.unwrap_or(vec!["all"]).join("|"));
 
@@ -1165,6 +1914,23 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `enable`
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_force_start(None, false).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_force_start(
         &self,
         hashes: Option<Vec<&str>>,
@@ -1194,6 +1960,23 @@ impl super::Api {
     ///   If `None` all torrents are selected.
     /// * `enable`
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.set_super_seeding(None, false).await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn set_super_seeding(
         &self,
         hashes: Option<Vec<&str>>,
@@ -1223,6 +2006,23 @@ impl super::Api {
     /// * `oldPath` - The old path of the torrent
     /// * `newPath` - The new path to use for the file
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.rename_file("hash", "old/file", "new/file").await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn rename_file(
         &self,
         hash: &str,
@@ -1254,6 +2054,23 @@ impl super::Api {
     /// * `oldPath` - The old path of the torrent
     /// * `newPath` - The new path to use for the file
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use qbit::{Api, Credentials};
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let credentials = Credentials::new("username", "password");
+    ///     let client = Api::new_login("url", credentials)
+    ///         .await
+    ///         .unwrap();
+    ///
+    ///     let result = client.rename_folder("hash", "old/folder", "new/folder").await;
+    ///
+    ///     assert!(result.is_ok());
+    /// }
+    /// ```
     pub async fn rename_folder(
         &self,
         hash: &str,
