@@ -1,3 +1,8 @@
+//!
+//! This module provides the data structures and enums necessary for managing
+//! parameters, states, and sorting options.
+//!
+
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Display};

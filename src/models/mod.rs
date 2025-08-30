@@ -1,3 +1,10 @@
+//!
+//! This module contains the core models used throughout the application.
+//!
+//! The models defined here are shared across various components and
+//! providing a consistent structure for data representation and serialization.
+//!
+
 use serde::{Deserialize, Serialize};
 
 mod application;
