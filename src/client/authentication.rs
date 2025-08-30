@@ -217,6 +217,7 @@ impl super::Api {
     ///
     ///     client.logout().await.unwrap();
     /// }
+    /// ```
     pub async fn logout(&self) -> Result<(), Error> {
         self._post("auth/logout")
             .await?
