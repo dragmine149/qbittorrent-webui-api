@@ -16,7 +16,7 @@ Add it using cargo:
 cargo add qbit
 ```
 
-Add it manualy:
+Add it manually:
 ``` toml
 [dependencies]
 qbit = "0.1"

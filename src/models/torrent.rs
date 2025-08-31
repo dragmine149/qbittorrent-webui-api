@@ -69,7 +69,7 @@ pub struct Torrent {
     /// This field is used to override the global setting for this specific torrent.
     ///
     /// - `-2` means the global limit should be used. `max_seeding_time`
-    ///     will have the global setting set.
+    ///   will have the global setting set.
     /// - `-1` means no limit.
     pub seeding_time_limit: i64,
     /// The maximum amount of time (minutes) the torrent is allowed to seed before stopped.
@@ -83,7 +83,7 @@ pub struct Torrent {
     /// This field is used to override the global setting for this specific torrent.
     ///
     /// - `-2` means the global limit should be used. `max_inactive_seeding_time`
-    ///     will have the global setting set.
+    ///   will have the global setting set.
     /// - `-1` means no limit.
     pub inactive_seeding_time_limit: i64,
     /// The maximum amount of time (minutes) the torrent is allowed to seed while being inactive before stopped.
@@ -99,7 +99,7 @@ pub struct Torrent {
     /// This field is used to override the global setting for this specific torrent.
     ///
     /// - `-2` means the global limit should be used. `max_ratio` will have the
-    ///     global setting set.
+    ///   global setting set.
     /// - `-1` means no limit.
     pub ratio_limit: f32,
     /// Maximum share ratio until torrent is stopped from seeding/uploading
