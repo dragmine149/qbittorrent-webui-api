@@ -239,6 +239,7 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
             num_incomplete: i64,
             num_leechs: i64,
             num_seeds: i64,
+            #[serde(deserialize_with = "deserializers::from_null_to_default")]
             popularity: f64,
             priority: i64,
             private: Option<bool>,
