@@ -9,7 +9,11 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 use crate::parameters::TorrentState;
 use crate::utiles::deserializers;
 
-/// Torrent info response object
+/// Represents a torrent and its associated metadata.
+///
+/// This struct contains detailed information about a torrent, including its
+/// download/upload statistics, state, and various properties.
+///
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct Torrent {
     /// Time (Unix Epoch) when the torrent was added to the client
@@ -59,6 +63,9 @@ pub struct Torrent {
     /// True if force start is enabled for this torrent
     pub force_start: bool,
     /// True if the torrent has metadata available
+    ///
+    /// Dependent on this being `true` or `false` fields like `private` may
+    /// have a undefinde value and might be using a default value or `None`
     pub has_metadata: bool,
     /// Torrent hash
     pub hash: String,
@@ -170,6 +177,17 @@ pub struct Torrent {
     pub upspeed: i64,
 }
 
+/// Represents a map of torrents, where the key of the `HashMap` is the
+/// torrent's hash and the value is the corresponding `Torrent` object.
+///
+/// This struct is a wrapper around a `HashMap` to provide additional
+/// custom deserialization. It will insert the key into the hash filed on
+/// the `Torrent` when deserialized
+///
+/// Its not mean to be used direactly and only as a deserialization object.
+///
+/// The `TorrentsMap` struct also implements the `Deref` trait, allowing you
+/// to use it as if it were a `HashMap` directly.
 #[derive(Debug, Serialize, Clone, Default, PartialEq)]
 pub struct TorrentsMap(pub HashMap<String, Torrent>);
 
@@ -336,7 +354,9 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
     }
 }
 
-/// Generic torrent properties
+/// Generic Torrent properties.
+///
+/// This struct provides some generic data and statistics about a torrent.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct TorrentProperties {
     /// Torrent save path
@@ -412,14 +432,18 @@ pub struct TorrentProperties {
     pub private: Option<bool>,
 }
 
-/// Torrent tracker data object
+/// Torrent tracker object
+///
+/// This struct contains detailed information about a tracker.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct Tracker {
     /// Tracker url
     pub url: String,
     /// Tracker status. See the table below for possible values
     pub status: i64,
-    /// Tracker priority tier. Lower tier trackers are tried before higher tiers. Tier numbers are valid when `>= 0`, `< 0` is used as placeholder when `tier` does not exist for special entries (such as DHT).
+    /// Tracker priority tier. Lower tier trackers are tried before higher
+    /// tiers. Tier numbers are valid when `>= 0`, `< 0` is used as placeholder
+    /// when `tier` does not exist for special entries (such as DHT).
     pub tier: i64,
     /// Number of peers for current torrent, as reported by the tracker
     pub num_peers: i64,
@@ -433,14 +457,20 @@ pub struct Tracker {
     pub msg: String,
 }
 
-/// Web seed data object
+/// Web seed for torrent
+///
+/// Link to torrent that allows the client to download files directly.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct WebSeed {
     /// Web seed URL
     pub url: String,
 }
 
-/// Torrent file/content data object
+/// Torrent file/content.
+///
+/// This struct provides detailed information about individual files within a torrent,
+/// including their index, name, size, progress, priority, and more.
+///
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct TorrentContent {
     /// File index
