@@ -13,7 +13,7 @@ use crate::{
 impl super::Api {
     /// Get a list of all torrents
     ///
-    /// Can be filtered and sorted withe the use of the `parames` attribute
+    /// Can be filtered and sorted with the use of the `parames` attribute
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-list)
     ///
@@ -83,9 +83,7 @@ impl super::Api {
         Ok(torrents)
     }
 
-    /// Get generic properties for torrent
-    ///
-    /// It get generic data and statistics about a torrent
+    /// Gets generic data and statistics about a torrent
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-generic-properties)
     ///

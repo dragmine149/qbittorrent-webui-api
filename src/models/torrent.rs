@@ -32,9 +32,7 @@ pub struct Torrent {
     pub completed: i64,
     /// Time (Unix Epoch) when the torrent completed
     pub completion_on: i64,
-    /// Absolute path of torrent content
-    ///
-    /// root path for multifile torrents, absolute file path for singlefile torrents
+    /// Root path for multifile torrents, absolute file path for singlefile torrents
     pub content_path: String,
     /// The root path of the torrent.
     ///
