@@ -117,6 +117,7 @@ impl super::Api {
     ///
     /// ```no_run
     /// use qbit::{Api, Credentials};
+    /// use std::fs;
     ///
     /// #[tokio::main]
     /// async fn main() {
@@ -125,9 +126,11 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
-    ///     let task = client.get_task_file("task_id".to_string()).await.unwrap();
+    ///     let raw_task = client.get_task_file("task_id".to_string())
+    ///         .await
+    ///         .unwrap();
     ///
-    ///     println!("{:#?}", task);
+    ///     fs::write("task.torrent", raw_task);
     /// }
     /// ```
     pub async fn get_task_file(

@@ -11,7 +11,9 @@ use crate::{
 };
 
 impl super::Api {
-    /// Get torrent list
+    /// Get a list of all torrents
+    ///
+    /// Can be filtered and sorted with the use of the `parames` attribute
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-list)
     ///
@@ -81,7 +83,7 @@ impl super::Api {
         Ok(torrents)
     }
 
-    /// Get torrent generic properties
+    /// Gets generic data and statistics about a torrent
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-generic-properties)
     ///
@@ -122,7 +124,9 @@ impl super::Api {
         Ok(torrent)
     }
 
-    /// Get torrent trackers
+    /// Get torrent trackers information
+    ///
+    /// Gets a information of all trackers for the torrent.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-trackers)
     ///
@@ -167,6 +171,8 @@ impl super::Api {
 
     /// Get torrent web seeds
     ///
+    /// Gets a list of direct downloads for files.
+    ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-web-seeds)
     ///
     /// # Arguments
@@ -209,6 +215,8 @@ impl super::Api {
     }
 
     /// Get torrent contents
+    ///
+    /// Makes a list of all files from the torrent.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-contents)
     ///
@@ -270,6 +278,8 @@ impl super::Api {
 
     /// Get torrent pieces' states
     ///
+    /// Status of every piece of the torrent
+    ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-pieces-states)
     ///
     /// # Arguments
@@ -312,6 +322,8 @@ impl super::Api {
     }
 
     /// Get torrent pieces' hashes
+    ///
+    /// Hash of every piece of the torrent.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-pieces-hashes)
     ///
@@ -431,6 +443,9 @@ impl super::Api {
     }
 
     /// Delete torrents
+    ///
+    /// Deletes a list of torrents. By default, it will only remove the torrent
+    /// from Qbittorrent, but it can be set to delete the downloaded data as well.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#delete-torrents)
     ///
@@ -693,6 +708,8 @@ impl super::Api {
 
     /// Edit trackers
     ///
+    /// Change a tracker url on a torrent.
+    ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#edit-trackers)
     ///
     /// # Arguments
@@ -786,7 +803,7 @@ impl super::Api {
         Ok(())
     }
 
-    /// Remove trackers from torrent
+    /// Add peers to torrent
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#add-peers)
     ///
@@ -1135,6 +1152,8 @@ impl super::Api {
     }
 
     /// Set torrent share limit
+    ///
+    /// Sets the share limits for torrents used to stop torrents from seeding automatically
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit)
     ///

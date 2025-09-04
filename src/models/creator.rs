@@ -224,7 +224,12 @@ pub struct TorrentCreatorTaskStatus {
     pub error_message: Option<String>,
     /// The comment attached to the torrent
     pub comment: Option<String>,
+    /// Should optimize alignment
     pub optimize_alignment: Option<bool>,
+    /// Size limit for padding files
+    ///
+    /// Used with other clients that are not `LibTorrent2`, shouldn't need to be
+    /// changed unless the client is different.
     pub padded_file_size_limit: Option<i64>,
     /// How big the pieces of the torrent is.
     pub piece_size: TorrentPieceSize,
@@ -243,6 +248,9 @@ pub struct TorrentCreatorTaskStatus {
     pub time_finished: Option<String>,
     /// The time this task started being processed
     pub time_started: Option<String>,
+    /// Source metadata field.
+    ///
+    /// Used for cross-seeding by some private trackers
     pub source: Option<String>,
     /// List of trackers
     pub trackers: Vec<String>,

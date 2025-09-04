@@ -9,7 +9,11 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 use crate::parameters::TorrentState;
 use crate::utiles::deserializers;
 
-/// Torrent info response object
+/// Represents a torrent and its associated metadata.
+///
+/// This struct contains detailed information about a torrent, including its
+/// download/upload statistics, state, and various properties.
+///
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct Torrent {
     /// Time (Unix Epoch) when the torrent was added to the client
@@ -28,14 +32,24 @@ pub struct Torrent {
     pub completed: i64,
     /// Time (Unix Epoch) when the torrent completed
     pub completion_on: i64,
-    /// Absolute path of torrent content (root path for multifile torrents, absolute file path for singlefile torrents)
+    /// Root path for multifile torrents, absolute file path for singlefile torrents
     pub content_path: String,
+    /// The root path of the torrent.
+    ///
+    /// Empty string if not a folder
+    pub root_path: String,
+    /// Path where this torrent's data is stored
+    ///
+    /// The parent folder of `content_path`
+    pub save_path: String,
+    /// Path where the torrent's data is downloaded when incomplet.
+    ///
+    /// Empty when not used.
+    pub download_path: String,
     /// Torrent download speed limit (bytes/s). -1 if unlimited.
     pub dl_limit: i64,
     /// Torrent download speed (bytes/s)
     pub dlspeed: i64,
-    /// TODO: Need to look into the purposes of the field.
-    pub download_path: String,
     /// Amount of data downloaded
     pub downloaded: i64,
     /// Amount of data downloaded this session
@@ -47,27 +61,66 @@ pub struct Torrent {
     /// True if force start is enabled for this torrent
     pub force_start: bool,
     /// True if the torrent has metadata available
+    ///
+    /// Dependent on this being `true` or `false` fields like `private` may
+    /// have a undefinde value and might be using a default value or `None`
     pub has_metadata: bool,
     /// Torrent hash
     pub hash: String,
-    /// TODO: need doc block
-    /// I dont know if this is the right filed: [#set-torrent-share-limit](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit)
+    /// Torrent elapsed time while complete (seconds)
+    pub seeding_time: i64,
+    /// The maximum amount of time (minutes) the torrent is allowed to seed before stopped.
+    ///
+    /// This field is used to override the global setting for this specific torrent.
+    ///
+    /// - `-2` means the global limit should be used. `max_seeding_time`
+    ///   will have the global setting set.
+    /// - `-1` means no limit.
+    pub seeding_time_limit: i64,
+    /// The maximum amount of time (minutes) the torrent is allowed to seed before stopped.
+    ///
+    /// - `-1` means no limit.
+    ///
+    /// Uses global limit if `seeding_time_limit` is set to `-2`.
+    pub max_seeding_time: i64,
+    /// The maximum amount of time (minutes) the torrent is allowed to seed while being inactive before stopped.
+    ///
+    /// This field is used to override the global setting for this specific torrent.
+    ///
+    /// - `-2` means the global limit should be used. `max_inactive_seeding_time`
+    ///   will have the global setting set.
+    /// - `-1` means no limit.
     pub inactive_seeding_time_limit: i64,
+    /// The maximum amount of time (minutes) the torrent is allowed to seed while being inactive before stopped.
+    ///
+    /// - `-1` means no limit.
+    ///
+    /// Uses global limit if `inactive_seeding_time_limit` is set to `-2`.
+    pub max_inactive_seeding_time: i64,
+    /// Torrent share ratio. Max ratio value: 9999.
+    pub ratio: f32,
+    /// Maximum share ratio until torrent is stopped from seeding/uploading
+    ///
+    /// This field is used to override the global setting for this specific torrent.
+    ///
+    /// - `-2` means the global limit should be used. `max_ratio` will have the
+    ///   global setting set.
+    /// - `-1` means no limit.
+    pub ratio_limit: f32,
+    /// Maximum share ratio until torrent is stopped from seeding/uploading
+    ///
+    /// - `-1` means no limit.
+    ///
+    /// Uses global limit if `ratio_limit` is set to `-2`.
+    pub max_ratio: f32,
     /// The SHA-1 hash of the torrent's info dictionary (used in BitTorrent v1).
     pub infohash_v1: String,
     ///  SHA-256 hash of the torrent's info dictionary (used in BitTorrent v2).
     pub infohash_v2: String,
     /// Last time (Unix Epoch) when a chunk was downloaded/uploaded
     pub last_activity: i64,
-    /// TODO: need doc block
-    /// I dont know if this is the right filed: [#set-torrent-share-limit](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#set-torrent-share-limit)
-    pub max_inactive_seeding_time: i64,
     /// Magnet URI corresponding to this torrent
     pub magnet_uri: String,
-    /// Maximum share ratio until torrent is stopped from seeding/uploading
-    pub max_ratio: f32,
-    /// Maximum seeding time (seconds) until torrent is stopped from seeding
-    pub max_seeding_time: i64,
     /// Torrent name
     pub name: String,
     /// Number of seeds in the swarm
@@ -87,25 +140,11 @@ pub struct Torrent {
     ///
     /// The value will be `None` if the torrent metadata is not available yet.
     /// See issue [#10](https://github.com/Mattress237/qbittorrent-webui-api/issues/10)
-    ///
-    /// NOTE: Documentation is incorrect. The field name is "private", not "isPrivate".
     pub private: Option<bool>,
     /// Torrent progress (percentage/100)
     pub progress: f32,
-    /// Torrent share ratio. Max ratio value: 9999.
-    pub ratio: f32,
-    /// TODO (what is different from max_ratio?)
-    pub ratio_limit: f32,
     /// Time until the next tracker reannounce
     pub reannounce: i64,
-    /// TODO: need doc block
-    pub root_path: String,
-    /// Path where this torrent's data is stored
-    pub save_path: String,
-    /// Torrent elapsed time while complete (seconds)
-    pub seeding_time: i64,
-    /// TODO (what is different from max_seeding_time?) seeding_time_limit is a per torrent setting, when Automatic Torrent Management is disabled, furthermore then max_seeding_time is set to seeding_time_limit for this torrent. If Automatic Torrent Management is enabled, the value is -2. And if max_seeding_time is unset it have a default value -1.
-    pub seeding_time_limit: i64,
     /// Time (Unix Epoch) when this torrent was last seen complete
     pub seen_complete: i64,
     /// True if sequential download is enabled
@@ -136,6 +175,17 @@ pub struct Torrent {
     pub upspeed: i64,
 }
 
+/// Represents a map of torrents, where the key of the `HashMap` is the
+/// torrent's hash and the value is the corresponding `Torrent` object.
+///
+/// This struct is a wrapper around a `HashMap` to provide additional
+/// custom deserialization. It will insert the key into the hash filed on
+/// the `Torrent` when deserialized
+///
+/// Its not mean to be used direactly and only as a deserialization object.
+///
+/// The `TorrentsMap` struct also implements the `Deref` trait, allowing you
+/// to use it as if it were a `HashMap` directly.
 #[derive(Debug, Serialize, Clone, Default, PartialEq)]
 pub struct TorrentsMap(pub HashMap<String, Torrent>);
 
@@ -205,6 +255,7 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
             num_incomplete: i64,
             num_leechs: i64,
             num_seeds: i64,
+            #[serde(deserialize_with = "deserializers::from_null_to_default")]
             popularity: f64,
             priority: i64,
             private: Option<bool>,
@@ -301,7 +352,9 @@ impl<'de> Visitor<'de> for TorrentMapVisitor {
     }
 }
 
-/// Generic torrent properties
+/// Generic Torrent properties.
+///
+/// This struct provides some generic data and statistics about a torrent.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct TorrentProperties {
     /// Torrent save path
@@ -377,14 +430,18 @@ pub struct TorrentProperties {
     pub private: Option<bool>,
 }
 
-/// Torrent tracker data object
+/// Torrent tracker object
+///
+/// This struct contains detailed information about a tracker.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct Tracker {
     /// Tracker url
     pub url: String,
     /// Tracker status. See the table below for possible values
     pub status: i64,
-    /// Tracker priority tier. Lower tier trackers are tried before higher tiers. Tier numbers are valid when `>= 0`, `< 0` is used as placeholder when `tier` does not exist for special entries (such as DHT).
+    /// Tracker priority tier. Lower tier trackers are tried before higher
+    /// tiers. Tier numbers are valid when `>= 0`, `< 0` is used as placeholder
+    /// when `tier` does not exist for special entries (such as DHT).
     pub tier: i64,
     /// Number of peers for current torrent, as reported by the tracker
     pub num_peers: i64,
@@ -398,14 +455,20 @@ pub struct Tracker {
     pub msg: String,
 }
 
-/// Web seed data object
+/// Web seed for torrent
+///
+/// Link to torrent that allows the client to download files directly.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct WebSeed {
     /// Web seed URL
     pub url: String,
 }
 
-/// Torrent file/content data object
+/// Torrent file/content.
+///
+/// This struct provides detailed information about individual files within a torrent,
+/// including their index, name, size, progress, priority, and more.
+///
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct TorrentContent {
     /// File index

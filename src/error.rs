@@ -4,12 +4,19 @@
 /// HTTP request errors, URL parsing errors, and JSON serialization/deserialization errors.
 #[derive(Debug)]
 pub enum Error {
+    /// Represents a generic error that occurs during authentication.
     AuthFailed(String),
+    /// Error that occurs when the response from a service is invalid or unexpected.
     InvalidResponse(String),
+    /// Error that occurs when a request is invalid.
     InvalidRequest(String),
+    /// Error that occurs during an HTTP request using the Reqwest library.
     ReqwestError(reqwest::Error),
+    /// Error that occurs when parsing a URL fails.
     UrlParseError(url::ParseError),
+    /// Error that occurs during JSON serialization or deserialization.
     SerdeJsonError(serde_json::Error),
+    /// HTTP 409 Conflict error.
     Http409(String),
 }
 

@@ -172,11 +172,11 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
-    ///     let searchs = client.search_results(1337, 10, None)
+    ///     let searches = client.search_results(1337, 10, None)
     ///         .await
     ///         .unwrap();
     ///
-    ///     println!("{:#?}", searchs);
+    ///     println!("{:#?}", searches);
     ///
     /// }
     /// ```
