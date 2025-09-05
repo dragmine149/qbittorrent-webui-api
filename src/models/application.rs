@@ -1,4 +1,4 @@
-use std::{collections::HashMap, default, fmt::Display};
+use std::{collections::HashMap, fmt::Display};
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -93,7 +93,7 @@ pub struct Preferences {
     // ========== External Programs ==========
     /// Should an external program be run after a torrent has completed?
     pub autorun_enabled: bool,
-    /// Program path/name/arguments to run if `autorun_enabled` is enabled;
+    /// Program path/name/arguments to run if `autorun_enabled` is enabled
     ///
     /// Supported parameters (case sensitive)
     /// - %N: Torrent Name
@@ -116,6 +116,12 @@ pub struct Preferences {
     /// ./path/to/some/program.sh "%N" "%C"
     /// ```
     pub autorun_program: String,
+    /// Should an external program be run after a torrent has been added?
+    pub autorun_on_torrent_added_enabled: bool,
+    /// Program path/name/argumets to run if `autorun_on_torrent_added_enabled` is enabled.
+    ///
+    /// See `autorun_program` for the supported parameters, tips and examples.
+    pub autorun_on_torrent_added_program: String,
 
     // ========== Queue Management ==========
     /// Is torrent queuing enabled?
@@ -167,12 +173,13 @@ pub struct Preferences {
     // ========== Connection Settings ==========
     /// Port for incoming connections
     pub listen_port: u16,
-    /// True if UPnP/NAT-PMP is enabled
+    /// Is UPnP/NAT-PMP enabled?
     pub upnp: bool,
     /// True if the port is randomly selected
     ///
     /// NOTE: This is marked as deprecated in the src file
     /// [Github referanse](https://github.com/qbittorrent/qBittorrent/blob/4f94eac235cefa8b83489cb3135dad87fcbed1e3/src/webui/api/appcontroller.cpp#L228)
+    #[deprecated(note = "This field is deprecated upstream; retained here for compatibility.")]
     pub random_port: bool,
     /// Maximum global number of simultaneous connections
     ///
@@ -192,17 +199,25 @@ pub struct Preferences {
     pub max_uploads_per_torrent: i64,
 
     // ========== Speed Limits ==========
-    /// Global download speed limit in KiB/s; -1 means no limit is applied
-    pub dl_limit: i64,
-    /// Global upload speed limit in KiB/s; -1 means no limit is applied
-    pub up_limit: i64,
-    /// Alternative global download speed limit in KiB/s
-    pub alt_dl_limit: i64,
-    /// Alternative global upload speed limit in KiB/s
-    pub alt_up_limit: i64,
+    /// Global download speed limit in KiB/s; 0 means unlimited
+    ///
+    /// Note: Value is in Bytes.
+    pub dl_limit: u64,
+    /// Global upload speed limit in KiB/s; 0 means unlimited
+    ///
+    /// Note: Value is in Bytes.
+    pub up_limit: u64,
+    /// Alternative global download speed limit in KiB/s. 0 means unlimited
+    ///
+    /// Note: Value is in Bytes.
+    pub alt_dl_limit: u64,
+    /// Alternative global upload speed limit in KiB/s. 0 means unlimited
+    ///
+    /// Note: Value is in Bytes.
+    pub alt_up_limit: u64,
 
     // ========== Speed Limit Scheduler ==========
-    /// True if alternative limits should be applied according to schedule
+    /// Should alternative limits be applied according to the schedule
     pub scheduler_enabled: bool,
     /// Scheduler starting hour
     pub schedule_from_hour: i8,
@@ -212,33 +227,42 @@ pub struct Preferences {
     pub schedule_to_hour: i8,
     /// Scheduler ending minute
     pub schedule_to_min: i8,
-    /// Scheduler days. See possible values here below
+    /// Days on which the schedule is applied.
     pub scheduler_days: SchedulerTime,
 
     // ========== BitTorrent Protocol ==========
     /// Bittorrent Protocol to use (see list of possible values below)
     pub bittorrent_protocol: BittorrentProtocol,
-    /// True if `dl_limit` should be applied to uTP connections; this option is only available in qBittorent built against libtorrent version `0.16.X` and higher
+    /// Should `dl_limit` be applied to uTP connections?
+    ///
+    /// Note: qbittorrent built against libtorrent version `0.16.x` and higher is required for this setting.
     pub limit_utp_rate: bool,
-    /// True if `dl_limit` should be applied to estimated TCP overhead (service data: e.g. packet headers)
+    /// Should `dl_limit` be applied to estimated TCP overhead? (e.g. service data such as packet headers)
     pub limit_tcp_overhead: bool,
-    /// True if `dl_limit` should be applied to peers on the LAN
+    /// Should `dl_limit` be applied to peers on the LAN?
     pub limit_lan_peers: bool,
     /// μTP-TCP mixed mode algorithm (see list of possible values below)
     pub utp_tcp_mixed_mode: UtpTcpMixedMode,
 
     // ========== Peer Discovery ==========
-    /// True if DHT is enabled
+    // More info (can't work out where to place this): https://www.reddit.com/r/torrents/comments/jmcmx1/comment/gauf8kn/
+    /// Is DHT (Decentrialized Network) enabled?
+    ///
+    /// See https://superuser.com/a/592244 for more info.
     pub dht: bool,
-    /// True if PeX is enabled
+    /// Is PeX (Peer Exchange) enabled?
     pub pex: bool,
-    /// True if LSD is enabled
+    /// Is LSD (Local Peer Discovery) enabled?
     pub lsd: bool,
 
     // ========== Encryption & Privacy ==========
-    /// See list of possible values here below
+    /// State of encryption for file transfer.
     pub encryption: Encryption,
-    /// If true anonymous mode will be enabled; read more here; this option is only available in qBittorent built against libtorrent version 0.16.X and higher
+    /// Is the user anonymous?
+    ///
+    /// WARNING: This doesn't grant enough protection on its own. See https://github.com/qbittorrent/qBittorrent/wiki/Anonymous-Mode for more information.
+    ///
+    /// Note: qbittorrent built against libtorrent version `0.16.x` and higher is required for this setting.
     pub anonymous_mode: bool,
 
     // ========== Proxy Settings ==========
@@ -592,13 +616,16 @@ pub enum SeedLimitActions {
 #[derive(Debug, Deserialize_repr, Serialize_repr, Clone, Default, PartialEq)]
 #[repr(u8)]
 pub enum BittorrentProtocol {
-    Tcpμtp = 0,
+    /// To use both TCP and UTP
+    TcpUtp = 0,
     #[default]
+    /// To just use TCP
     Tcp = 1,
-    MicroTransportProtocol = 2,
+    /// To just use UTP
+    Utp = 2,
 }
 
-/// Scheduler
+/// Days on which the alternative speed limit schedule is applied.
 #[derive(Debug, Deserialize_repr, Serialize_repr, Clone, Default, PartialEq)]
 #[repr(u8)]
 pub enum SchedulerTime {
@@ -630,9 +657,12 @@ pub enum SchedulerTime {
 #[repr(u8)]
 pub enum Encryption {
     #[default]
-    Prefer = 0,
-    ForceOn = 1,
-    ForceOff = 2,
+    /// Allows encryption for file transfer.
+    Allow = 0,
+    /// Requires encryption for file transfer.
+    Require = 1,
+    /// Disables encryption for file transfer.
+    Disable = 2,
 }
 
 /// Proxy types states
