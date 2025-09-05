@@ -184,11 +184,13 @@ pub struct Preferences {
     /// Maximum global number of simultaneous connections
     ///
     /// `-1` means disabled
-    pub max_connec: i64,
+    #[serde(rename = "max_connec")]
+    pub max_connections: i64,
     /// Maximum number of simultaneous connections per torrent
     ///
     /// `-1` means disabled
-    pub max_connec_per_torrent: i64,
+    #[serde(rename = "max_connec_per_torrent")]
+    pub max_connections_per_torrent: i64,
     /// Maximum number of upload slots
     ///
     /// `-1` means disabled
