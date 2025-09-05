@@ -33,13 +33,19 @@ pub struct Preferences {
     pub incomplete_files_ext: bool,
 
     // ========== Torrent Management ==========
-    /// True if Automatic Torrent Management is enabled by default
+    /// Should `Automatic Torrent Mangament` be enabled for new torrents by default?
     pub auto_tmm_enabled: bool,
-    /// True if torrent should be relocated when its Category changes
+    /// Should the torrent be relocated or switched to manual mode when category is changed?
+    ///
+    /// True = Relocated, False = Manual Mode
     pub torrent_changed_tmm_enabled: bool,
-    /// True if torrent should be relocated when the default save path changes
+    /// Should the affected torrents be relocated or switched to manual mode when the default save/incomplete path is changed?
+    ///
+    /// True = Relocated, False = Manual Mode
     pub save_path_changed_tmm_enabled: bool,
-    /// True if torrent should be relocated when its Category's save path changes
+    /// Should the affected torrents be relocated or switched to manual mode when it's category save path has changed?
+    ///
+    /// True = Relocated, False = Manual Mode
     pub category_changed_tmm_enabled: bool,
     /// The default layout of the torrent content.
     pub torrent_content_layout: ContentLayout,
@@ -51,31 +57,33 @@ pub struct Preferences {
     pub torrent_content_remove_option: TorrentDeletion,
 
     // ========== File Paths ==========
-    /// Default save path for torrents, separated by slashes
+    /// Default save path for torrents
     pub save_path: String,
-    /// True if folder for incomplete torrents is enabled
+    /// Should another path be used for incomplete torrents?
     pub temp_path_enabled: bool,
-    /// Path for incomplete torrents, separated by slashes
+    /// The path to use for incomplete torrents.
     pub temp_path: String,
     // Property: directory to watch for torrent files, value: where torrents loaded from this directory should be downloaded to (see list of possible values below). Slashes are used as path separators; multiple key/value pairs can be specified
     pub scan_dirs: HashMap<String, ScanDir>,
-    /// Path to directory to copy .torrent files to. Slashes are used as path separators
+    /// Path to copy `.torrent` files to.
     pub export_dir: String,
-    /// Path to directory to copy .torrent files of completed downloads to. Slashes are used as path separators
+    /// Path to copy `.torrent` files of completed downloads to.
     pub export_dir_fin: String,
 
     // ========== Email Notifications ==========
-    /// True if e-mail notification should be enabled
+    /// Should email notifications be sent after a download is finished?
     pub mail_notification_enabled: bool,
     /// e-mail where notifications should originate from
+    ///
+    /// Client default: qBittorrent_notification@example.com
     pub mail_notification_sender: String,
     /// e-mail to send notifications to
     pub mail_notification_email: String,
     /// smtp server for e-mail notifications
     pub mail_notification_smtp: String,
-    /// True if smtp server requires SSL connection
+    /// Does the smtp server require a secure connection (SSL)?
     pub mail_notification_ssl_enabled: bool,
-    /// True if smtp server requires authentication
+    /// Does the smtp server require authentication?
     pub mail_notification_auth_enabled: bool,
     /// Username for smtp authentication
     pub mail_notification_username: String,
@@ -83,13 +91,34 @@ pub struct Preferences {
     pub mail_notification_password: String,
 
     // ========== External Programs ==========
-    /// True if external program should be run after torrent has finished downloading
+    /// Should an external program be run after a torrent has completed?
     pub autorun_enabled: bool,
-    /// Program path/name/arguments to run if `autorun_enabled` is enabled; path is separated by slashes; you can use `%f` and `%n` arguments, which will be expanded by qBittorent as path_to_torrent_file and torrent_name (from the GUI; not the .torrent file name) respectively
+    /// Program path/name/arguments to run if `autorun_enabled` is enabled;
+    ///
+    /// Supported parameters (case sensitive)
+    /// - %N: Torrent Name
+    /// - %L: Torrent Category
+    /// - %G: Torrent Tags (CSV)
+    /// - %F: Torrent Content Path (same as root path for multi-file torrents)
+    /// - %R: Torrent Root Path (first torrent subdirectory path)
+    /// - %D: Torrent Save Path
+    /// - %C: Number of files in torrent
+    /// - %Z: Torrent Size (bytes)
+    /// - %T: Current Tracker of Torrent
+    /// - %I: Torrent Hash v1
+    /// - %J: Torrent Hash v2
+    /// - %K: Torrent ID
+    ///
+    /// Tip: Encapsulate parameter with quotation marks to avoid text being cut off at whitespace (e.g., "%N")
+    ///
+    /// # Example
+    /// ```norun
+    /// ./path/to/some/program.sh "%N" "%C"
+    /// ```
     pub autorun_program: String,
 
     // ========== Queue Management ==========
-    /// True if torrent queuing is enabled
+    /// Is torrent queuing enabled?
     pub queueing_enabled: bool,
     /// Maximum number of active simultaneous downloads
     pub max_active_downloads: i64,
@@ -97,7 +126,7 @@ pub struct Preferences {
     pub max_active_torrents: i64,
     /// Maximum number of active simultaneous uploads
     pub max_active_uploads: i64,
-    /// If true torrents w/o any activity (stalled ones) will not be counted towards `max_active_*` limits; see dont_count_slow_torrents for more information
+    /// If true torrents w/o any activity (stalled ones) will not be counted towards `max_active_*` limits
     pub dont_count_slow_torrents: bool,
     /// Download rate in KiB/s for a torrent to be considered "slow"
     pub slow_torrent_dl_rate_threshold: i64,
@@ -408,7 +437,7 @@ pub struct Preferences {
 /// How the torrent content is laied out.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub enum ContentLayout {
-    /// Does whatever the server says to do, which by default is Subfolder
+    /// Does whatever the client says to do, which by default is Subfolder
     #[default]
     Original,
     /// In cases of batches, will create a separate subfolder automatically of the batch name.
