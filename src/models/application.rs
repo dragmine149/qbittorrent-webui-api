@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display};
+use std::{collections::HashMap, default, fmt::Display};
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -434,21 +434,42 @@ pub struct Preferences {
     /// See https://www.libtorrent.org/reference-Settings.html#announce_to_all_trackers for more information
     pub announce_to_all_trackers: bool,
 
-    // ========== Advanced LibTorrent Settings ==========
-    /// True if the advanced libtorrent option piece_extent_affinity is enabled
+    // ========== Advanced Settings ==========
+    /// Enables LibTorrent `piece_extent_affinity` setting.
+    ///
+    /// See https://libtorrent.org/single-page-ref.html#piece_extent_affinity for more information.
     pub enable_piece_extent_affinity: bool,
     /// Number of asynchronous I/O threads
     pub async_io_threads: u16,
-    /// Outstanding memory when checking torrents in MiB
+    /// Keep x number of blocks outstanding to allow for faster re-checks at cost of memory.
+    /// Value in MiB.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#checking_mem_usage for more information.
     pub checking_memory_use: u32,
     /// IP Address to bind to. Empty String means All addresses
     pub current_interface_address: String,
     /// Network Interface used
     pub current_network_interface: String,
     /// Disk cache used in MiB
+    ///
+    /// Only supported in LibTorrent < 2.0
     pub disk_cache: i64,
     /// Disk cache expiry interval in seconds
+    ///
+    /// Only supported in LibTorrent < 2.0
     pub disk_cache_ttl: i64,
+    /// Is the OS allowed to cache read data from files?
+    pub disk_io_read_mode: DiskRead,
+    /// Is the OS allowed to cache write data to files?
+    pub disk_io_write_mode: DiskWrite,
+    /// See: https://www.libtorrent.org/single-page-ref.html#default-disk-io-constructor
+    /// (i can't work out how to explain this!)
+    pub disk_io_type: DiskIOType,
+    /// Maximum number of bytes that can wait in the I/O thread queue.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#max_queued_disk_bytes for more information.
+    pub disk_queue_size: u64,
+
     /// Port used for embedded tracker
     pub embedded_tracker_port: u16,
     /// True enables coalesce reads & writes
@@ -820,4 +841,45 @@ impl Display for DirMode {
             }
         )
     }
+}
+
+/// Is the OS allowed to cache read data from files?
+///
+/// See https://www.libtorrent.org/reference-Settings.html#disk_io_read_mode for more information.
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
+pub enum DiskRead {
+    /// Allow the OS to cache read data.
+    #[default]
+    Enable,
+    /// Don't Allow the OS to cache read data.
+    Disable,
+}
+
+/// Is the OS allowed to cache write data to files?
+///
+/// See https://www.libtorrent.org/reference-Settings.html#disk_io_write_mode for more information.
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
+pub enum DiskWrite {
+    /// Allow the OS to cache write data.
+    #[default]
+    Enable,
+    /// Don't Allow the OS to cache write data.
+    Disable,
+    /// FLushes pieces to disk as they complete validation.
+    ///
+    /// Requires LibTorrent >= 2.0.6
+    WriteThrough,
+}
+
+/// See: https://www.libtorrent.org/single-page-ref.html#default-disk-io-constructor
+///
+/// Enum values gotten from VueTorrent.
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
+pub enum DiskIOType {
+    /// Uses Memory Mapped, otherwise POSIX.
+    #[default]
+    Default,
+    MemoryMappedFiles,
+    POSIX_compliant,
+    SinglePReadWrite,
 }
