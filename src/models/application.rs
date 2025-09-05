@@ -1,5 +1,6 @@
-use std::{collections::HashMap, default, fmt::Display};
+use std::{collections::HashMap, fmt::Display};
 
+use derive_builder::Builder;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
@@ -20,7 +21,7 @@ pub struct BuildInfo {
     pub bitness: u8,
 }
 /// Preferences response data object.
-#[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
+#[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq, Builder)]
 pub struct Preferences {
     // ========== General Settings ==========
     /// Currently selected language (e.g. en_GB for English)
