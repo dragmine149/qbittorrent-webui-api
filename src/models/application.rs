@@ -549,6 +549,23 @@ pub struct Preferences {
     ///
     /// See https://www.libtorrent.org/reference-Settings.html#upnp_lease_duration for more information
     pub upnp_lease_duration: u32,
+
+    // ========== File Log Settings ==========
+    /// Enable storing logs to disk
+    pub file_log_enabled: bool,
+    /// The folder to store logs to
+    pub file_log_path: String,
+    /// Enable backing up log files when the file gets too big.
+    pub file_log_backup_enabled: bool,
+    /// How big should the log file be before being backed up (in KiB)
+    pub file_log_max_size: u64,
+    /// Should old logs be deleted?
+    pub file_log_delete_old: u64,
+    /// How old does the log need to be before being auto deleted?
+    /// See `file_log_age_type`
+    pub file_log_age: u64,
+    /// The type of age the log needs to be before being deleted.
+    pub file_log_age_type: FileAge,
 }
 
 /// How the torrent content is laied out.
@@ -923,4 +940,16 @@ pub enum DiskIOType {
     /// Use single pread/pwrite operations for reads and writes.
     /// This is a more basic I/O method that performs single-shot read/write calls.
     SinglePReadWrite,
+}
+
+/// The type of age
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
+pub enum FileAge {
+    /// After X days
+    Day,
+    /// After X months
+    #[default]
+    Month,
+    /// After X years
+    Year,
 }
