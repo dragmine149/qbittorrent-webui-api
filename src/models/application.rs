@@ -463,8 +463,10 @@ pub struct Preferences {
     pub disk_io_read_mode: DiskRead,
     /// Is the OS allowed to cache write data to files?
     pub disk_io_write_mode: DiskWrite,
+    /// Configure how libtorrent should perform disk I/O for reading and writing
+    /// torrent data.
+    ///
     /// See: https://www.libtorrent.org/single-page-ref.html#default-disk-io-constructor
-    /// (i can't work out how to explain this!)
     pub disk_io_type: DiskIOType,
     /// Maximum number of bytes that can wait in the I/O thread queue.
     ///
