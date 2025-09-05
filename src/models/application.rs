@@ -4,6 +4,8 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 /// Build info response data object.
+///
+/// Contains version information of software used to run qbittorrent.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct BuildInfo {
     /// QT version

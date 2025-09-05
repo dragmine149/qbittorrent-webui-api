@@ -10,7 +10,7 @@ use crate::{
 impl super::Api {
     /// Get Qbittorrent application version
     ///
-    /// The response is a string withe the application version, e.g. `v5.1.0`
+    /// The response is a string with the application version, e.g. `v5.1.0`
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-application-version)
     ///
