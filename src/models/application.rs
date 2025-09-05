@@ -63,7 +63,7 @@ pub struct Preferences {
     pub temp_path_enabled: bool,
     /// The path to use for incomplete torrents.
     pub temp_path: String,
-    // Property: directory to watch for torrent files, value: where torrents loaded from this directory should be downloaded to (see list of possible values below). Slashes are used as path separators; multiple key/value pairs can be specified
+    /// Directories to scan for `.torrent` files. `ScanDir` enum is used to overwrite the default save path of adding torrents.
     pub scan_dirs: HashMap<String, ScanDir>,
     /// Path to copy `.torrent` files to.
     pub export_dir: String,
@@ -266,15 +266,27 @@ pub struct Preferences {
     pub anonymous_mode: bool,
 
     // ========== Proxy Settings ==========
-    /// See list of possible values here below
+    /// The protocol to use for the proxy server
     pub proxy_type: ProxyType,
     /// Proxy IP address or domain name
     pub proxy_ip: String,
     /// Proxy port
     pub proxy_port: u16,
-    /// True if peer and web seed connections should be proxified; this option will have any effect only in qBittorent built against libtorrent version 0.16.X and higher
+    /// Should the proxyy be used for bittorrent purposes?
+    pub proxy_bittorrent: bool,
+    /// Should the proxyy be used for peer and web seed connections?
+    ///
+    /// Note: requires `proxy_bittorrent`
     pub proxy_peer_connections: bool,
-    /// True proxy requires authentication; doesn't apply to SOCKS4 proxies
+    /// Should the proxyy be used for RSS purposes?
+    pub proxy_rss: bool,
+    /// Should the proxyy be used for General purposes?
+    pub proxy_misc: bool,
+    /// Should the proxyy be used for Hostname lookup?
+    pub proxy_hostname_lookup: bool,
+    /// Does the proxy require authentication?
+    ///
+    /// Note: This does not apply when ProxyType is SOCKS4
     pub proxy_auth_enabled: bool,
     /// Username for proxy authentication
     pub proxy_username: String,
@@ -282,24 +294,26 @@ pub struct Preferences {
     pub proxy_password: String,
 
     // ========== IP Filtering ==========
-    /// True if external IP filter should be enabled
+    /// Should external IPs be filtered?
     pub ip_filter_enabled: bool,
     /// Path to IP filter file (.dat, .p2p, .p2b files are supported); path is separated by slashes
     pub ip_filter_path: String,
-    /// True if IP filters are applied to trackers
+    /// Is the IP filter also applied to trackers?
     pub ip_filter_trackers: bool,
-    /// List of banned IPs
+    /// List of banned IPs. Separated by new lines (`\n`)
     #[serde(rename = "banned_IPs")]
     pub banned_ips: String,
 
     // ========== WebUI Settings ==========
-    /// Semicolon-separated list of domains to accept when performing Host header validation
+    /// Semicolon-separated list of domains to accept when performing Host header validation. Accepts: '*'
+    ///
+    /// Requires: `web_ui_host_header_validation_enabled` to be true.
     pub web_ui_domain_list: String,
-    /// IP address to use for the WebUI
+    /// IP address to use for the WebUI. Accepts: '*'
     pub web_ui_address: String,
     /// WebUI port
     pub web_ui_port: u16,
-    /// True if upnp is used for the WebUI port
+    /// Use UPnP for port forwarding from the router
     pub web_ui_upnp: bool,
     /// WebUI username
     pub web_ui_username: String,
@@ -313,7 +327,7 @@ pub struct Preferences {
     pub web_ui_csrf_protection_enabled: bool,
     /// True if WebUI clickjacking protection is enabled
     pub web_ui_clickjacking_protection_enabled: bool,
-    /// True if WebUI cookie Secure flag is enabled
+    /// True if WebUI cookie Secure flag is enabled (requires `use_https`)
     pub web_ui_secure_cookie_enabled: bool,
     /// Maximum number of authentication failures before WebUI access ban
     pub web_ui_max_auth_fail_count: i64,
@@ -321,7 +335,7 @@ pub struct Preferences {
     pub web_ui_ban_duration: i64,
     /// Seconds until WebUI is automatically signed off
     pub web_ui_session_timeout: i64,
-    /// True if WebUI host header validation is enabled
+    /// Is WebUI Host header validated?
     pub web_ui_host_header_validation_enabled: bool,
     /// True if authentication challenge for loopback address (127.0.0.1) should be disabled
     pub bypass_local_auth: bool,
@@ -329,31 +343,41 @@ pub struct Preferences {
     pub bypass_auth_subnet_whitelist_enabled: bool,
     /// (White)list of ipv4/ipv6 subnets for which webui authentication should be bypassed; list entries are separated by commas
     pub bypass_auth_subnet_whitelist: String,
+    /// Are using reverse proxies allowed?
+    pub web_ui_reverse_proxy_enabled: bool,
+    /// List of trusted proxies to access the webui. Separated by `;`
+    pub web_ui_reverse_proxies_list: String,
 
     // ========== Alternative WebUI ==========
-    /// True if an alternative WebUI should be used
+    /// Should an alternative web ui be used?
+    ///
+    /// NOTE: This is not the same as a theme (`.qbttheme`)
     pub alternative_webui_enabled: bool,
     /// File path to the alternative WebUI
     pub alternative_webui_path: String,
 
     // ========== WebUI HTTPS ==========
-    /// True if WebUI HTTPS access is enabled
+    /// Does the server use HTTPS?
     pub use_https: bool,
     /// For API ≥ v2.0.1: Path to SSL keyfile
     pub web_ui_https_key_path: String,
     /// For API ≥ v2.0.1: Path to SSL certificate
+    ///
+    /// See https://httpd.apache.org/docs/current/ssl/ssl_faq.html#aboutcerts for information on certificates.
     pub web_ui_https_cert_path: String,
 
     // ========== WebUI Custom Headers ==========
     /// For API ≥ v2.5.1: Enable custom http headers
     pub web_ui_use_custom_http_headers_enabled: bool,
-    /// For API ≥ v2.5.1: List of custom http headers
+    /// For API ≥ v2.5.1: List of custom http headers.
+    ///
+    /// Format: `Key: Value`. Separated by a new line
     pub web_ui_custom_http_headers: String,
 
     // ========== Dynamic DNS ==========
-    /// True if server DNS should be updated dynamically
+    /// Should the server DNS be updated dynamically?
     pub dyndns_enabled: bool,
-    /// See list of possible values here below
+    /// The DNS service that is in use.
     pub dyndns_service: DyndnsService,
     /// Username for DDNS service
     pub dyndns_username: String,
@@ -363,33 +387,49 @@ pub struct Preferences {
     pub dyndns_domain: String,
 
     // ========== RSS Settings ==========
-    /// RSS refresh interval
-    pub rss_refresh_interval: i64,
-    /// Max stored articles per RSS feed
-    pub rss_max_articles_per_feed: u32,
-    /// Enable processing of RSS feeds
+    /// Enable processing of RSS feeds (Also enables fetching them, etc)
     pub rss_processing_enabled: bool,
+    /// How long (in minutes) before the feeds are refreshed?
+    pub rss_refresh_interval: i64,
+    /// How long (in seconds) should be waited before a fetch request from the same host?
+    pub rss_fetch_delay: i64,
+    /// Maximum number of articles stored per feed.
+    pub rss_max_articles_per_feed: u32,
     /// Enable auto-downloading of torrents from the RSS feeds
     pub rss_auto_downloading_enabled: bool,
     /// For API ≥ v2.5.1: Enable downloading of repack/proper Episodes
     pub rss_download_repack_proper_episodes: bool,
-    /// For API ≥ v2.5.1: List of RSS Smart Episode Filters
+    /// For API ≥ v2.5.1: List of RSS Smart Episode Filters. Separated by a new line (`\n`)
     pub rss_smart_episode_filters: String,
 
     // ========== Tracker Settings ==========
     /// Enable automatic adding of trackers to new torrents
     pub add_trackers_enabled: bool,
-    /// List of trackers to add to new torrent
+    /// List of trackers to add to new torrent. Separated by a new line (`\n`)
     pub add_trackers: String,
+    /// Enables automatic adding of trackers (from URL) to a new torrent
+    pub add_trackers_from_url_enabled: bool,
+    /// The URL to get the trackers from
+    pub add_trackers_url: String,
+    /// Read-only list of trackers automatiaclly updated from provided url in `add_trackers_url`. Separated by new line (`\n`)
+    pub add_trackers_url_list: String,
     /// Timeout in seconds for a stopped announce request to trackers
     ///
     /// If the value is set to 0, the connections to trackers with the stopped event are suppressed.
     pub stop_tracker_timeout: i64,
-    /// TODO
+    /// The IP address passed along to trackers. Requires qbittorrent restart
+    ///
+    /// More information: https://www.libtorrent.org/reference-Settings.html#announce_ip
     pub announce_ip: String,
-    /// True always announce to all tiers
+    /// The port reported to trackers. 0 uses `listening_port`.
+    pub announce_port: u16,
+    /// Always announce to all tiers.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#announce_to_all_tiers for more information
     pub announce_to_all_tiers: bool,
-    /// True always announce to all trackers in a tier
+    /// Always announce to all trackers in a tier.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#announce_to_all_trackers for more information
     pub announce_to_all_trackers: bool,
 
     // ========== Advanced LibTorrent Settings ==========
@@ -552,12 +592,15 @@ impl std::fmt::Display for TorrentDeletion {
     }
 }
 
-/// Scan dir types
+/// Where to save the torrent if it's appears in the specified folder.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub enum ScanDir {
+    /// The folder that is monitored.
     MonitoredFolder,
+    /// The default save path according to client settings.
     #[default]
     DefaultSavePath,
+    /// A user-specified path.
     OtherPath(String),
 }
 
@@ -665,60 +708,32 @@ pub enum Encryption {
     Disable = 2,
 }
 
-/// Proxy types states
-#[derive(Debug, Clone, Default, PartialEq)]
+/// The proxy protocol to use.
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub enum ProxyType {
+    /// Use no proxy at all
     #[default]
-    Disabled,
-    Other(String),
-    HttpWithoutAuth,
-    Socks5WithoutAuth,
-    HttpWithAuth,
-    Socks5WithAuth,
-    Socks4WithoutAuth,
+    None,
+    /// Use HTTP Protocol
+    Http,
+    /// Use SOCKS5 protocol
+    Socks5,
+    /// Use SOCKS4 protocol
+    Socks4,
 }
 
-impl<'de> Deserialize<'de> for ProxyType {
-    fn deserialize<D>(deserializer: D) -> Result<ProxyType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        #[derive(Deserialize)]
-        #[serde(untagged)]
-        enum Helper {
-            Int(i8),
-            Str(String),
-        }
-
-        match Helper::deserialize(deserializer)? {
-            Helper::Int(-1) => Ok(ProxyType::Disabled),
-            Helper::Str(s) => Ok(ProxyType::Other(s)),
-            Helper::Int(1) => Ok(ProxyType::HttpWithoutAuth),
-            Helper::Int(2) => Ok(ProxyType::Socks5WithoutAuth),
-            Helper::Int(3) => Ok(ProxyType::HttpWithAuth),
-            Helper::Int(4) => Ok(ProxyType::Socks5WithAuth),
-            Helper::Int(5) => Ok(ProxyType::Socks4WithoutAuth),
-            _ => Err(serde::de::Error::custom(
-                "unexpected value, expected 1 to 5, -1 or a string",
-            )),
-        }
-    }
-}
-
-impl Serialize for ProxyType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        match self {
-            ProxyType::Disabled => serializer.serialize_i8(-1),
-            ProxyType::HttpWithoutAuth => serializer.serialize_i8(1),
-            ProxyType::Socks5WithoutAuth => serializer.serialize_i8(2),
-            ProxyType::HttpWithAuth => serializer.serialize_i8(3),
-            ProxyType::Socks5WithAuth => serializer.serialize_i8(4),
-            ProxyType::Socks4WithoutAuth => serializer.serialize_i8(5),
-            ProxyType::Other(s) => serializer.serialize_str(s),
-        }
+impl std::fmt::Display for ProxyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                ProxyType::None => "None",
+                ProxyType::Http => "HTTP",
+                ProxyType::Socks5 => "SOCKS5",
+                ProxyType::Socks4 => "SOCKS4",
+            }
+        )
     }
 }
 
@@ -727,7 +742,9 @@ impl Serialize for ProxyType {
 #[repr(u8)]
 pub enum DyndnsService {
     #[default]
+    /// Uses DYN: https://account.dyn.com/
     Dydns = 0,
+    /// Uses NO-IP: https://www.noip.com/
     Noip = 1,
 }
 
