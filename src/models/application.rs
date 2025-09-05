@@ -566,6 +566,26 @@ pub struct Preferences {
     pub file_log_age: u64,
     /// The type of age the log needs to be before being deleted.
     pub file_log_age_type: FileAge,
+
+    // ========== I2P Settings ==========
+    /// Is I2P (Invisible Internet Project) networking enabled?
+    ///
+    /// NOTE: This is experimental!
+    pub i2p_enabled: bool,
+    /// I2P SAM bridge address
+    pub i2p_address: String,
+    /// I2P SAM bridge port
+    pub i2p_port: u16,
+    /// Should I2P mixed mode be enabled? (allows both I2P and regular connections)
+    pub i2p_mixed_mode: bool,
+    /// Length of inbound I2P tunnels (number of hops)
+    pub i2p_inbound_length: u64,
+    /// Number of inbound I2P tunnels to create
+    pub i2p_inbound_quantity: u64,
+    /// Length of outbound I2P tunnels (number of hops)
+    pub i2p_outbound_length: u64,
+    /// Number of outbound I2P tunnels to create
+    pub i2p_outbound_quantity: u64,
 }
 
 /// How the torrent content is laied out.
