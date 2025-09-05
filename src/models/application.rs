@@ -160,7 +160,7 @@ pub struct Preferences {
     /// Tip: Encapsulate parameter with quotation marks to avoid text being cut off at whitespace (e.g., "%N")
     ///
     /// # Example
-    /// ```norun
+    /// ```sh
     /// ./path/to/some/program.sh "%N" "%C"
     /// ```
     pub autorun_program: String,

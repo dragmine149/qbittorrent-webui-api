@@ -314,7 +314,7 @@ impl super::Api {
     ///         .unwrap();
     ///
     ///     let cookie = Cookie::default();
-    ///     let result = client.cookies(vec![cookie]).await;
+    ///     let result = client.set_cookies(vec![cookie]).await;
     ///
     ///     assert!(result.is_ok());
     /// }
