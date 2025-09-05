@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display};
+use std::{collections::HashMap, default, fmt::Display};
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -27,9 +27,9 @@ pub struct Preferences {
     pub locale: String,
     /// When (and should) the `.torrent` file be deleted after added.
     pub auto_delete_mode: AutoDeleteMode,
-    /// True if disk space should be pre-allocated for all files
+    /// Should disk space be pre-allocated for all files?
     pub preallocate_all: bool,
-    /// True if ".!qB" should be appended to incomplete files
+    /// Should `.!qb` be added to incomplete files?
     pub incomplete_files_ext: bool,
 
     // ========== Torrent Management ==========
@@ -676,6 +676,8 @@ pub enum UtpTcpMixedMode {
     PreferTcp = 0,
     PeerProportional = 1,
 }
+
+/// Struct containing information about an individual cookie.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq)]
 pub struct Cookie {
     /// The name of the cookie.
@@ -691,17 +693,18 @@ pub struct Cookie {
     pub expiration: i64,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, PartialOrd, Ord)]
+/// The type of results to get back whilst doing `get_directory_contents`
+///
+/// Hidden files are not included.
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub enum DirMode {
+    /// Only return directories
     Dirs,
+    /// Only return files
     Files,
+    /// Returns everything
+    #[default]
     All,
-}
-
-impl Default for DirMode {
-    fn default() -> Self {
-        Self::All
-    }
 }
 
 impl Display for DirMode {
