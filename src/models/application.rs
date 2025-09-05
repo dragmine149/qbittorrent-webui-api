@@ -25,8 +25,8 @@ pub struct Preferences {
     // ========== General Settings ==========
     /// Currently selected language (e.g. en_GB for English)
     pub locale: String,
-    /// TODO
-    pub auto_delete_mode: u8,
+    /// When (and should) the `.torrent` file be deleted after added.
+    pub auto_delete_mode: AutoDeleteMode,
     /// True if disk space should be pre-allocated for all files
     pub preallocate_all: bool,
     /// True if ".!qB" should be appended to incomplete files
@@ -449,6 +449,18 @@ impl std::fmt::Display for StopCondition {
             StopCondition::FilesChecked => write!(f, "FilesChecked"),
         }
     }
+}
+
+/// Whether the `.torrent` file should be deleted after the torrent is added.
+#[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
+pub enum AutoDeleteMode {
+    /// Never delete the `.torrent` file.
+    #[default]
+    Never,
+    /// Only delete the `.torrent` file if the torrent is added.
+    IfAdded,
+    /// Always delete the `.torrent` file.
+    Always,
 }
 
 /// What to do when removing content files upon removing a torrent.
