@@ -20,6 +20,7 @@ pub struct BuildInfo {
     /// Application bitness (e.g. 64-bit)
     pub bitness: u8,
 }
+
 /// Preferences response data object.
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq, Builder)]
 pub struct Preferences {
@@ -32,6 +33,31 @@ pub struct Preferences {
     pub preallocate_all: bool,
     /// Should `.!qb` be added to incomplete files?
     pub incomplete_files_ext: bool,
+    /// Should unchecked files be added to the `.unwanted` folder?
+    ///
+    /// See https://github.com/qbittorrent/qBittorrent/issues/13531 for an argument on the subject.
+    pub use_unwanted_folder: bool,
+    /// Customise the name of the app instance
+    pub app_instance_name: String,
+    /// How often should the UI refresh to get new updates? (in ms)
+    pub refresh_interval: u64,
+    /// Should the client external IP be shown in the status bar?
+    pub status_bar_external_ip: bool,
+    /// Show a confirmation message before deleting a torrent. Does not apply to the API
+    pub confirm_torrent_deletion: bool,
+    /// To delete content files alongside the torrent. A "cache" setting
+    ///
+    /// NOTE: In the webui, this setting is only visible by checking the icon next to the `Also remove content files`
+    /// checkbox upon deleting a file.
+    pub delete_torrent_content_files: bool,
+    /// Show a confirmation message before rechecking a torrent. Does not apply to the API
+    pub confirm_torrent_recheck: bool,
+    /// Allow using of sub-categories. Sub-categories are made by adding `/` between the parent and child.
+    pub use_subcategories: bool,
+    /// Memory usage limit of Physical RAM in MiB
+    ///
+    /// Note: Requires Libtorrent >= 2.0.0
+    pub memory_working_set_limit: u64,
 
     // ========== Torrent Management ==========
     /// Should `Automatic Torrent Mangament` be enabled for new torrents by default?
@@ -56,6 +82,16 @@ pub struct Preferences {
     pub torrent_stop_condition: StopCondition,
     /// What to do with removing torrents.
     pub torrent_content_remove_option: TorrentDeletion,
+    /// If the torrent exists, do we merge trackers with it or fail to add the torrent altogether?
+    pub merge_trackers: bool,
+    /// Use the path specified by the category even if the torrent is in manual mode.
+    pub use_category_paths_in_manual_mode: bool,
+    /// Number of connection attempts made per second.
+    ///
+    /// If number < 0, a default of 200 will be made.
+    pub connection_speed: i64,
+    /// How many torrents can be actively checking at one time.
+    pub max_active_checking_torrents: i64,
 
     // ========== File Paths ==========
     /// Default save path for torrents
@@ -70,6 +106,17 @@ pub struct Preferences {
     pub export_dir: String,
     /// Path to copy `.torrent` files of completed downloads to.
     pub export_dir_fin: String,
+    /// Is the filename blacklist enabled?
+    pub excluded_file_names_enabled: bool,
+    /// Blacklist filter file names from being downloaded from the torrent.
+    ///
+    /// Files matching any of this list will have the priority set to `Do Not Download` by default. (newline separator)
+    ///
+    /// The follow wildcards can be used:
+    /// - *: Any character
+    /// - ?: Any Single character
+    /// - [...]: Sets of characters
+    pub excluded_file_names: String,
 
     // ========== Email Notifications ==========
     /// Should email notifications be sent after a download is finished?
@@ -123,6 +170,14 @@ pub struct Preferences {
     ///
     /// See `autorun_program` for the supported parameters, tips and examples.
     pub autorun_on_torrent_added_program: String,
+    /// Enables Mark-of-the-web. Tells external programs that this file is potentiall unsafe.
+    ///
+    /// Windows (MOTW) and Mac (quarantine) only
+    pub mark_of_the_web: bool,
+    /// Python executable path. For use in stuff like search engine plugins which require python.
+    ///
+    /// Will attempt to find and use a system wide one if nothing is specified.
+    pub python_executable_path: String,
 
     // ========== Queue Management ==========
     /// Is torrent queuing enabled?
@@ -141,6 +196,13 @@ pub struct Preferences {
     pub slow_torrent_ul_rate_threshold: i64,
     /// Seconds a torrent should be inactive before considered "slow"
     pub slow_torrent_inactive_timer: i64,
+    /// To add new torrents to the top of the queue by default or not?
+    pub add_to_top_of_queue: bool,
+    /// Default setting for allowing new torrents to start automatically.
+    ///
+    /// - True = don't start downloading automatically.
+    /// - False = Start downloading automatically.
+    pub add_stopped_enabled: bool,
 
     // ========== Seed Limits ==========
     /// Show an action be taken once the torrent ratio is achieved?
@@ -324,8 +386,6 @@ pub struct Preferences {
     ///
     /// The password is used exclusively for setting or updating the WebUI password.
     pub web_ui_password: Option<String>,
-
-    // ========== WebUI Security ==========
     /// True if WebUI CSRF protection is enabled
     pub web_ui_csrf_protection_enabled: bool,
     /// True if WebUI clickjacking protection is enabled
@@ -350,16 +410,12 @@ pub struct Preferences {
     pub web_ui_reverse_proxy_enabled: bool,
     /// List of trusted proxies to access the webui. Separated by `;`
     pub web_ui_reverse_proxies_list: String,
-
-    // ========== Alternative WebUI ==========
     /// Should an alternative web ui be used?
     ///
     /// NOTE: This is not the same as a theme (`.qbttheme`)
     pub alternative_webui_enabled: bool,
     /// File path to the alternative WebUI
     pub alternative_webui_path: String,
-
-    // ========== WebUI HTTPS ==========
     /// Does the server use HTTPS?
     pub use_https: bool,
     /// For API ≥ v2.0.1: Path to SSL keyfile
@@ -368,8 +424,6 @@ pub struct Preferences {
     ///
     /// See https://httpd.apache.org/docs/current/ssl/ssl_faq.html#aboutcerts for information on certificates.
     pub web_ui_https_cert_path: String,
-
-    // ========== WebUI Custom Headers ==========
     /// For API ≥ v2.5.1: Enable custom http headers
     pub web_ui_use_custom_http_headers_enabled: bool,
     /// For API ≥ v2.5.1: List of custom http headers.
@@ -426,6 +480,8 @@ pub struct Preferences {
     pub announce_ip: String,
     /// The port reported to trackers. 0 uses `listening_port`.
     pub announce_port: u16,
+    /// Tells all trackers when either the IP or Port of our client changes.
+    pub reannounce_when_address_changed: bool,
     /// Always announce to all tiers.
     ///
     /// See https://www.libtorrent.org/reference-Settings.html#announce_to_all_tiers for more information
@@ -434,6 +490,10 @@ pub struct Preferences {
     ///
     /// See https://www.libtorrent.org/reference-Settings.html#announce_to_all_trackers for more information
     pub announce_to_all_trackers: bool,
+    /// Limits the number of concurrent HTTP tracker announces.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#max_concurrent_http_announces for more information.
+    pub max_concurrent_http_announces: i64,
 
     // ========== Advanced Settings ==========
     /// Enables LibTorrent `piece_extent_affinity` setting.
@@ -451,6 +511,8 @@ pub struct Preferences {
     pub current_interface_address: String,
     /// Network Interface used
     pub current_network_interface: String,
+    /// The name of the network interface used.
+    pub current_interface_name: String,
     /// Disk cache used in MiB
     ///
     /// Only supported in LibTorrent < 2.0
@@ -472,6 +534,10 @@ pub struct Preferences {
     ///
     /// See https://www.libtorrent.org/reference-Settings.html#max_queued_disk_bytes for more information.
     pub disk_queue_size: u64,
+    /// Number of threads to use for piece hash verification
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#hashing_threads for more information.
+    pub hashing_threads: u64,
 
     /// Enable qbittorrent to become a tracker.
     ///
@@ -490,6 +556,21 @@ pub struct Preferences {
     ///
     /// See https://www.libtorrent.org/reference-Settings.html#allow_multiple_connections_per_ip for more information.
     pub enable_multi_connections_from_same_ip: bool,
+    /// Don't make network requests to peers who ports are < 1024
+    ///
+    /// See https://libtorrent.org/single-page-ref.html#no_connect_privileged_ports for more information
+    pub block_peers_on_privileged_ports: bool,
+    /// Should Server-side request forgery (SSRF) be mitigated?
+    pub ssrf_mitigation: bool,
+    /// Makes the certificate of trackers and web seeds validated against the system certificate.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#validate_https_trackers for more information.
+    pub validate_https_tracker_certificate: bool,
+    /// Allows trackers/web seeds with an internationalised domain name.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#allow_idna for more information.
+    pub idn_support_enabled: bool,
+
     /// Enable sending out a message with recent read pieces of a torrent in order to create a bias.
     ///
     /// See https://www.libtorrent.org/reference-Settings.html#suggest_mode for more information.
@@ -551,6 +632,49 @@ pub struct Preferences {
     ///
     /// See https://www.libtorrent.org/reference-Settings.html#upnp_lease_duration for more information
     pub upnp_lease_duration: u32,
+    /// Specify the max number of nested lists/dictionaries in the data structure
+    ///
+    /// See https://www.libtorrent.org/reference-Bdecoding.html#bdecode() for more information
+    pub bdecode_depth_limit: u64,
+    /// The maximum number of tokens to be parsed from the buffer.
+    ///
+    /// See https://www.libtorrent.org/reference-Bdecoding.html#bdecode() for more information
+    pub bdecode_token_limit: u64,
+    /// Determinds the DSCP field in the IP header
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#peer_dscp for more information
+    ///
+    /// Note: Qbittorrent uses the old version of this setting name.
+    #[serde(rename = "peer_tos")]
+    pub peer_dscp: u64,
+    /// Percentage of peers to disconnect every turnover.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#peer_turnover for more information.
+    pub peer_turnover: u64,
+    /// The limit of the maximum limit before turnover starts
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#peer_turnover for more information.
+    pub peer_turnover_cutoff: u64,
+    /// How often the turnover occurs
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#peer_turnover for more information.
+    pub peer_turnover_interval: u64,
+    /// Affects certification validation and non-torrent activities.
+    pub ignore_ssl_errors: bool,
+    /// Should torrents use SSL connections
+    pub ssl_enabled: bool,
+    /// The port for SSL Torrents to connect to.
+    pub ssl_listen_port: u16,
+    /// What type of storage should be used to save the Fastresume files.
+    pub resume_data_storage_type: FastResumeType,
+    /// CSV of IP port-pairs added to the DHT Node if enabled
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#dht_bootstrap_nodes for more information
+    pub dht_bootstrap_nodes: String,
+    /// Maximum number of outstanding requests to send to a peer.
+    ///
+    /// See ttps://www.libtorrent.org/reference-Settings.html#max_out_request_queue for more information.
+    pub request_queue_size: u64,
 
     // ========== File Log Settings ==========
     /// Enable storing logs to disk
@@ -568,6 +692,8 @@ pub struct Preferences {
     pub file_log_age: u64,
     /// The type of age the log needs to be before being deleted.
     pub file_log_age_type: FileAge,
+    /// Log performance warnings as well as everything else.
+    pub performance_warning: bool,
 
     // ========== I2P Settings ==========
     /// Is I2P (Invisible Internet Project) networking enabled?
@@ -974,4 +1100,27 @@ pub enum FileAge {
     Month,
     /// After X years
     Year,
+}
+
+/// The file structure to use for the fastresume file.
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
+pub enum FastResumeType {
+    /// Use the "legacy" file format
+    #[default]
+    Files,
+    /// Use the experimental SQLite Database format.
+    SQLite,
+}
+
+impl std::fmt::Display for FastResumeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::Files => "Legacy",
+                Self::SQLite => "SQLite",
+            }
+        )
+    }
 }
