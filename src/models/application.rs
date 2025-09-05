@@ -135,17 +135,34 @@ pub struct Preferences {
     /// Seconds a torrent should be inactive before considered "slow"
     pub slow_torrent_inactive_timer: i64,
 
-    // ========== Share Ratio Limits ==========
-    /// True if share ratio limit is enabled
+    // ========== Seed Limits ==========
+    /// Show an action be taken once the torrent ratio is achieved?
     pub max_ratio_enabled: bool,
-    /// Get the global share ratio limit
+    /// THe ratio to achieve to take an action.
     pub max_ratio: f64,
-    /// Action performed when a torrent reaches the maximum share ratio. See list of possible values here below.
-    pub max_ratio_act: RatioAct,
-    /// True enables max seeding time
+    /// Should an action be taken once the torrent has been seeding for a certain amount of time?
     pub max_seeding_time_enabled: bool,
-    /// Number of minutes to seed a torrent
+    /// Number of minutes to seed a torrent before an action is taken
+    ///
+    /// -1 = disabled (will also set `max_seeding_time_enabled` to false)
     pub max_seeding_time: i64,
+    /// Should an action be taken once the torrent has been inactive (during seeding) for a certain amount of time?
+    pub max_inactive_seeding_time_enabled: bool,
+    /// Number of minutes for the torrent to be inactive (during seeding) before an action is taken.
+    ///
+    /// -1 = disabled (will also set `max_inactive_seeding_time_enabled` to false)
+    pub max_inactive_seeding_time: i64,
+    /// Action performed when a torrent reaches a ratio / seed limit.
+    ///
+    /// See: `max_ratio`, `max_seeding_time` and `max_inactive_seeding_time`
+    ///
+    /// The selected action in `max_ratio_act` is executed when either condition is met:
+    /// - If `max_ratio_enabled` is true and the torrent's ratio reaches or exceeds `max_ratio`.
+    /// - If `max_seeding_time_enabled` is true and the torrent has been seeding for at least `max_seeding_time` minutes.
+    /// - If `max_inactive_seeding_time_enabled` is true and the torrent has been inactive (during seeding) for at least `max_inactive_seeding_time` minutes.
+    ///
+    /// If any are enabled, the action occurs when either condition is satisfied.
+    pub max_ratio_act: SeedLimitActions,
 
     // ========== Connection Settings ==========
     /// Port for incoming connections
@@ -556,13 +573,19 @@ impl Serialize for ScanDir {
     }
 }
 
-/// Ratio actions
+/// What action should be taken when the seeding limit is reached?
 #[derive(Debug, Deserialize_repr, Serialize_repr, Clone, Default, PartialEq)]
 #[repr(u8)]
-pub enum RatioAct {
+pub enum SeedLimitActions {
     #[default]
-    PauseTorrent = 0,
+    /// Stop the torrent upon the limit being reached
+    StopTorrent = 0,
+    /// Remove the torrent upon the limit being reached
     RemoveTorrent = 1,
+    /// Remove the torrent and files upon the limit being reached
+    RemoveTorrentFiles = 2,
+    /// Make the torrent use the super seeding algorithm upon the limit being reached.
+    TorrentSuperSeeding = 3,
 }
 
 /// Bittorrent protocols
