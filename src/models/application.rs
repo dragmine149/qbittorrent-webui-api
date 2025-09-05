@@ -471,71 +471,83 @@ pub struct Preferences {
     /// See https://www.libtorrent.org/reference-Settings.html#max_queued_disk_bytes for more information.
     pub disk_queue_size: u64,
 
-    /// Port used for embedded tracker
-    pub embedded_tracker_port: u16,
-    /// True enables coalesce reads & writes
-    pub enable_coalesce_read_write: bool,
-    /// True enables embedded tracker
-    pub enable_embedded_tracker: bool,
-    /// True allows multiple connections from the same IP address
-    pub enable_multi_connections_from_same_ip: bool,
-    /// True enables sending of upload piece suggestions
-    pub enable_upload_suggestions: bool,
-    /// File pool size
+    /// Enable qbittorrent to become a tracker.
     ///
-    /// Sets the upper limit on the total number of files this session will keep open.
-    /// The reason why files are left open at all is that some anti virus software hooks
-    /// on every file close, and scans the file for viruses. deferring the closing of
-    /// the files will be the difference between a usable system and a completely hogged
-    /// down system. Most operating systems also has a limit on the total number of file
-    /// descriptors a process may have open.
+    /// See https://github.com/qbittorrent/qBittorrent/wiki/How-to-use-qBittorrent-as-a-tracker for more information.
+    pub enable_embedded_tracker: bool,
+    /// The port used for the embedded tracker.
+    pub embedded_tracker_port: u16,
+    /// Enables the embedded tracker to use port forwarding.
+    pub embedded_tracker_port_forwarding: bool,
+
+    /// Enable coalesce read/writes
+    ///
+    /// Requires LibTorrent < 2.0.0
+    pub enable_coalesce_read_write: bool,
+    /// Allows multiple connections from the same IP address.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#allow_multiple_connections_per_ip for more information.
+    pub enable_multi_connections_from_same_ip: bool,
+    /// Enable sending out a message with recent read pieces of a torrent in order to create a bias.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#suggest_mode for more information.
+    pub enable_upload_suggestions: bool,
+    /// The maximum number of files this session will keep open.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#file_pool_size for more information.
     pub file_pool_size: i64,
     /// Maximal outgoing port (0: Disabled)
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#outgoing_port for more information
     pub outgoing_ports_max: u16,
     /// Minimal outgoing port (0: Disabled)
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#outgoing_port for more information
     pub outgoing_ports_min: u16,
-    /// True rechecks torrents on completion
+    /// Recheck the torrent upon the torrent being completed.
     pub recheck_completed_torrents: bool,
     /// True resolves peer countries
     pub resolve_peer_countries: bool,
-    /// Save resume data interval in min
-    pub save_resume_data_interval: i64,
-    /// Send buffer low watermark in KiB
+    /// How often the `fastresume` file is saved (in minutes). 0 = disabled
+    pub save_resume_data_interval: u64,
+    /// How often the `statistics` file is saved (in minutes). 0 = disabled
+    pub save_statistics_interval: u64,
+    /// Send buffer low watermark in KiB. The minimum send buffer target size (includes bytes pending read from disk); for snappy seeding set this high enough to fit a few blocks.
     ///
-    /// The minimum send buffer target size (send buffer includes bytes pending being
-    /// read from disk). For good and snappy seeding performance, set this fairly high,
-    /// to at least fit a few blocks. This is essentially the initial window size
-    /// which will determine how fast we can ramp up the send rate
+    /// See https://www.libtorrent.org/reference-Settings.html#send_buffer_low_watermark for more information
     pub send_buffer_low_watermark: i64,
-    /// Send buffer watermark in KiB
+    /// Send buffer watermark in KiB. If the send buffer has fewer bytes than this value, another block will be read onto it; setting it too small hurts upload capacity, too large wastes memory.
     ///
-    /// if the send buffer has fewer bytes than send_buffer_watermark, we'll read
-    /// another 16 kiB block onto it. If set too small, upload rate capacity will
-    /// suffer. If set too high, memory will be wasted. The actual watermark may be
-    /// lower than this in case the upload rate is low, this is the upper limit.
+    /// See https://www.libtorrent.org/reference-Settings.html#send_buffer_watermark for more information
     pub send_buffer_watermark: i64,
-    /// Send buffer watermark factor in percent
+    /// Send buffer watermark factor in percent. The current upload rate to a peer is multiplied by this percentage to derive the watermark (clamped to send_buffer_watermark); higher values can improve throughput but may waste RAM.
     ///
-    /// the current upload rate to a peer is multiplied by this factor to get the
-    /// send buffer watermark. The factor is specified as a percentage. i.e.
-    /// 50 -> 0.5 This product is clamped to the send_buffer_watermark setting to
-    /// not exceed the max. For high speed upload, this should be set to a greater
-    /// value than 100. For high capacity connections, setting this higher can
-    /// improve upload performance and disk throughput. Setting it too high may
-    /// waste RAM and create a bias towards read jobs over write jobs.
+    /// See https://www.libtorrent.org/reference-Settings.html#send_buffer_watermark_factor for more information
     pub send_buffer_watermark_factor: i64,
-    /// Socket backlog size
-    pub socket_backlog_size: i64,
-    /// Upload choking algorithm used (see list of possible values below)
-    pub upload_choking_algorithm: UploadChokingAlgorithm,
-    /// Upload slots behavior used (see list of possible values below)
-    pub upload_slots_behavior: UploadSlotsBehavior,
-    /// upnp lease duration (0: Permanent lease)
+    /// Number of outstanding incoming connections to queue whilst not actively waiting for one to be accepted
     ///
-    /// The expiration time of upnp port-mappings, specified in seconds. 0 means
-    /// permanent lease. Some routers do not support expiration times on port-maps
-    /// (nor correctly returning an error indicating lack of support). In those
-    /// cases, set this to 0. Otherwise, don't set it any lower than 5 minutes.
+    /// See https://www.libtorrent.org/reference-Settings.html#listen_queue_size for more information
+    pub socket_backlog_size: i64,
+    /// Specify the buffer size on receiving peer sockets. 0 = system default.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#send_socket_buffer_size for more information
+    pub socket_send_buffer_size: u64,
+    /// Specify the buffer size on sending peer sockets. 0 = system default.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#send_socket_buffer_size for more information
+    pub socket_receive_buffer_size: u64,
+
+    /// Controls the bahviour of unchocking. How peers are selected
+    ///
+    /// Read more: https://transfercloud.io/blog/2024/02/26/what-is-torrent-chokin/
+    pub upload_choking_algorithm: UploadChokingAlgorithm,
+    /// Specify which algorithm to use to determine how many peers to unchoke.
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#choking_algorithm for more information
+    pub upload_slots_behavior: UploadSlotsBehavior,
+    /// upnp lease duration specified in seconds (0: Permanent lease)
+    ///
+    /// See https://www.libtorrent.org/reference-Settings.html#upnp_lease_duration for more information
     pub upnp_lease_duration: u32,
 }
 
@@ -777,26 +789,44 @@ pub enum DyndnsService {
 #[repr(u8)]
 pub enum UploadChokingAlgorithm {
     #[default]
+    /// Rotate unchoked peers in a round-robin fashion, giving each peer a fair chance to upload.
     RoundRobin = 0,
+    /// Prefer peers that currently offer the fastest upload throughput to maximise overall upload performance.
     FastestUpload = 1,
+    /// Use anti-leech heuristics to deprioritize peers that do not contribute, favouring peers that upload data back.
     AntiLeech = 2,
 }
 
-/// Upload slots behavior
+/// Algorithm to use for unchoking peers.
 #[derive(Debug, Deserialize_repr, Serialize_repr, Clone, Default, PartialEq)]
 #[repr(u8)]
 pub enum UploadSlotsBehavior {
     #[default]
+    /// Unchokes a fixed amount of seeders
     Fixed = 0,
+    /// Opens up slots based on the upload rate achieved to peers.
     UploadRate = 1,
 }
 
-/// Mix mode UTP / TCP
+/// μTP / TCP mixed-mode algorithm selection.
+///
+/// This setting controls how the client mixes uTP and TCP connections when both
+/// protocols are available. It determines the preference or distribution of
+/// connection attempts between the two transport protocols.
 #[derive(Debug, Deserialize_repr, Serialize_repr, Clone, Default, PartialEq)]
 #[repr(u8)]
 pub enum UtpTcpMixedMode {
+    /// Prefer TCP connections when both TCP and uTP are available.
+    ///
+    /// When this mode is selected, the client will favour establishing TCP
+    /// connections over uTP ones whenever possible.
     #[default]
     PreferTcp = 0,
+    /// Distribute connections proportionally based on peer capabilities.
+    ///
+    /// In this mode the client attempts to balance or proportion connections
+    /// between TCP and uTP according to peer availability and characteristics,
+    /// rather than strictly preferring one protocol.
     PeerProportional = 1,
 }
 
@@ -872,15 +902,25 @@ pub enum DiskWrite {
     WriteThrough,
 }
 
+/// Disk I/O constructor selection.
+///
 /// See: https://www.libtorrent.org/single-page-ref.html#default-disk-io-constructor
 ///
-/// Enum values gotten from VueTorrent.
+/// Enum values sourced from VueTorrent. Choose how libtorrent should perform
+/// disk I/O for reading and writing torrent data.
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum DiskIOType {
-    /// Uses Memory Mapped, otherwise POSIX.
+    /// Use the library's default behaviour: memory-mapped I/O when available,
+    /// otherwise fall back to POSIX-based I/O.
     #[default]
     Default,
+    /// Use memory-mapped files (mmap) for disk I/O. This can improve performance
+    /// by mapping file contents directly into memory.
     MemoryMappedFiles,
-    POSIX_compliant,
+    /// Use POSIX-compliant file I/O methods. This variant selects a POSIX-style
+    /// approach (e.g., pread/pwrite semantics) for compatibility on POSIX systems.
+    PosixComplaint,
+    /// Use single pread/pwrite operations for reads and writes.
+    /// This is a more basic I/O method that performs single-shot read/write calls.
     SinglePReadWrite,
 }
