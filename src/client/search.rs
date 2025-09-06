@@ -82,7 +82,10 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
-    ///     let result = client.search_stop(1337).await;
+    ///     let id = client.search_start("Ubuntu 18.04", "legittorrents", "all")
+    ///         .await
+    ///         .unwrap();
+    ///     let result = client.search_stop(id).await;
     ///
     ///     assert!(result.is_ok());
     /// }
@@ -120,7 +123,10 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
-    ///     let status = client.search_status(Some(1337))
+    ///     let id = client.search_start("Ubuntu 18.04", "legittorrents", "all")
+    ///         .await
+    ///         .unwrap();
+    ///     let status = client.search_status(Some(id))
     ///         .await
     ///         .unwrap();
     ///
@@ -148,9 +154,7 @@ impl super::Api {
         Ok(searches)
     }
 
-    /// Get search results
-    ///
-    /// This function retrieves search results for a given search job.
+    /// Retrieves search results for a given search job.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-search-results)
     ///
@@ -172,7 +176,10 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
-    ///     let searches = client.search_results(1337, 10, None)
+    ///     let id = client.search_start("Ubuntu 18.04", "legittorrents", "all")
+    ///         .await
+    ///         .unwrap();
+    ///     let searches = client.search_results(id, 10, None)
     ///         .await
     ///         .unwrap();
     ///
@@ -225,7 +232,10 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
-    ///     let result = client.search_delete(1337).await;
+    ///     let id = client.search_start("Ubuntu 18.04", "legittorrents", "all")
+    ///         .await
+    ///         .unwrap();
+    ///     let result = client.search_delete(id).await;
     ///
     ///     assert!(result.is_ok());
     /// }
@@ -281,7 +291,7 @@ impl super::Api {
         Ok(plugins)
     }
 
-    /// Install search plugin
+    /// Install search plugin/s
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#install-search-plugin)
     ///
@@ -318,7 +328,7 @@ impl super::Api {
         Ok(())
     }
 
-    /// Uninstall search plugin
+    /// Uninstall search plugin/s
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#uninstall-search-plugin)
     ///
@@ -337,6 +347,7 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
+    ///     client.search_install_plugin(vec!["plugin"]).await.unwrap();
     ///     let result = client.search_uninstall_plugin(vec!["plugin"]).await;
     ///
     ///     assert!(result.is_ok());
@@ -355,7 +366,7 @@ impl super::Api {
         Ok(())
     }
 
-    /// Enable search plugin
+    /// Enable search plugin/s
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#enable-search-plugin)
     ///
@@ -374,6 +385,7 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
+    ///     client.search_install_plugin(vec!["plugin"]).await.unwrap();
     ///     let result = client.search_enable_plugin(vec!["plugin"], true).await;
     ///
     ///     assert!(result.is_ok());
@@ -394,7 +406,7 @@ impl super::Api {
         Ok(())
     }
 
-    /// Update search plugins
+    /// Update all search plugins currently installed.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#update-search-plugins)
     ///
@@ -410,6 +422,7 @@ impl super::Api {
     ///         .await
     ///         .unwrap();
     ///
+    ///     client.search_install_plugin(vec!["plugin"]).await.unwrap();
     ///     let result = client.search_update_plugin().await;
     ///
     ///     assert!(result.is_ok());
