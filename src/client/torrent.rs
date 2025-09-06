@@ -561,7 +561,7 @@ impl super::Api {
     ///
     /// ```no_run
     /// use qbit::{Api, Credentials};
-    /// use qbit::parameters::AddTorrent;
+    /// use qbit::parameters::{AddTorrentBuilder, AddTorrentType};
     ///
     /// #[tokio::main]
     /// async fn main() {
