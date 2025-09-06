@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl super::Api {
-    /// Retrieves the main log of the qBittorrent application.
+    /// Retrieves the main log (application log)
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-log)
     ///
@@ -64,7 +64,7 @@ impl super::Api {
         Ok(log)
     }
 
-    /// Retrieves the peer log of the qBittorrent application.
+    /// Retrieves the peer log
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-peer-log)
     ///
