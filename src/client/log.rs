@@ -6,8 +6,6 @@ use crate::{
 };
 
 impl super::Api {
-    /// Get log
-    ///
     /// Retrieves the main log of the qBittorrent application.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-log)
@@ -16,6 +14,7 @@ impl super::Api {
     ///
     /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
     /// * `log_types` - List of desierd log types. (default: all)
+    ///     Doesn't matter if multiple of the same type are provided as only one will be counted in the end.
     ///
     /// # Example
     ///
@@ -66,8 +65,6 @@ impl super::Api {
         Ok(log)
     }
 
-    /// Get peer log
-    ///
     /// Retrieves the peer log of the qBittorrent application.
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-peer-log)
