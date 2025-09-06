@@ -53,7 +53,7 @@ impl super::Api {
 
     /// Get torrent peers data
     ///
-    /// Fetches main data changes since the last request. If the given `rid` is different from the one of last server reply,
+    /// Fetches peer data changes since the last request. If the given `rid` is different from the one of last server reply,
     /// `full_update` will be `true`
     ///
     /// [official documentation](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)#get-torrent-peers-data)
