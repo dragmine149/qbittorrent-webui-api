@@ -200,7 +200,11 @@ pub struct Peer {
     pub peer_id_client: Option<String>,
     /// Connection port
     pub port: Option<i64>,
+    /// How much has the specified peer already downloaded.
     pub progress: Option<f32>,
+    /// The ratio of the number of pieces the peer have but you don't have to the total number of pieces you don't have.
+    ///
+    /// See https://github.com/qbittorrent/qBittorrent/issues/18536 for more information.
     pub relevance: Option<f32>,
     /// Upload speed
     pub up_speed: Option<i64>,

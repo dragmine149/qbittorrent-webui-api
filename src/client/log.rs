@@ -13,8 +13,7 @@ impl super::Api {
     /// # Arguments
     ///
     /// * `last_known_id` - Exclude messages with "message id" <= `last_known_id` (default: `-1`)
-    /// * `log_types` - List of desierd log types. (default: all)
-    ///     Doesn't matter if multiple of the same type are provided as only one will be counted in the end.
+    /// * `log_types` - List of desierd log types. (default: all). Doesn't matter if multiple of the same type are provided as only one will be counted in the end.
     ///
     /// # Example
     ///
