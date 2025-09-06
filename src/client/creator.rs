@@ -27,7 +27,7 @@ impl super::Api {
     ///     let result = client.create_task(&torrent).await;
     ///
     ///     assert!(result.is_ok());
-    ///     println!("{}", result.ok().task_id);
+    ///     println!("{}", result.ok().unwrap().task_id);
     /// }
     /// ```
     pub async fn create_task(&self, params: &TorrentCreator) -> Result<TorrentCreatorTask, Error> {
@@ -166,6 +166,7 @@ impl super::Api {
     ///
     /// ```no_run
     /// use qbit::{Api, Credentials};
+    /// use qbit::models::TorrentCreator;
     ///
     /// #[tokio::main]
     /// async fn main() {
@@ -175,7 +176,7 @@ impl super::Api {
     ///         .unwrap();
     ///
     ///     let torrent = TorrentCreator::default();
-    ///     let torrent_task = client.create_task(&torrent).await;
+    ///     let torrent_task = client.create_task(&torrent).await.unwrap();
     ///     let result = client.delete_task(torrent_task).await;
     ///
     ///     assert!(result.is_ok());
